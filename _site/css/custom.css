@@ -1,0 +1,49 @@
+div#notebook {
+    margin-top:5px;
+    margin-bottom:5px;
+    max-width:900px;
+}
+div.cell {
+    max-width:60em;
+    margin-left:auto;
+    margin-right:auto;
+}
+div.input {
+    margin-top:1em;
+    margin-bottom:1em;
+    margin-right:auto;
+    margin-left:10%;
+    min-width:540px;
+}
+div.output_wrapper {
+    margin-top:1em;
+    margin-bottom:1em;
+    margin-left:10%;
+    margin-right:auto;
+    min-width:540px;
+}
+div.text_cell {
+    margin-top:-2px;
+    margin-bottom:-2px;
+    padding-top:2px;
+    padding-bottom:2px;
+    border-collapse:collapse;
+    border-top:none;
+    border-bottom:none;
+}
+div.input_prompt {
+    border-top: none
+}
+.prompt {
+    min-width: 0px;
+    padding: 0px;
+}
+
+#notebook {
+    background: #eee;
+    margin:auto;
+}
+
+.footer-col-wrapper {
+    font-size:14px;
+}

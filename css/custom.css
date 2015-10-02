@@ -47,3 +47,11 @@ div.input_prompt {
 .footer-col-wrapper {
     font-size:14px;
 }
+
+.index-header {
+  background-color: #aaaaaa;
+  -webkit-background-size: 60%;
+  -moz-background-size: 60%;
+  background-size: 60%;
+  -o-background-size: 60%;
+}

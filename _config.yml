@@ -1,6 +1,7 @@
 # Site settings
 title: Activision Analytic Services
-header-img: img/home-bg.jpg
+header-img: img/analytic_services_logo(pv2)-small.png
+# header-img: img/home-bg.jpg
 email: william.kirwin@activision.com
 description: "We are awesome."
 baseurl: ""

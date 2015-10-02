@@ -2,19 +2,19 @@
 
 ## Jupyter (IPython) Notebooks
 
-To convert a Jupyter (IPython) notebook to a post, but <notebook>.ipynb into /_notebooks and run
+To convert a Jupyter (IPython) notebook to a post, but `<post-name>.ipynb` into `/_notebooks`and run
 
-    ipython nbconvert <notebook>.ipynb --template jekyll-html
+    ipython nbconvert <post-name>.ipynb --template jekyll-html
 
-Edit the first few lines of the resulting .html (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in " ", but a list of tags needs [ ]; for example, [Classification, Machine Learning] works well.
+Edit the first few lines of the resulting `.html` (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in `" "`, but a list of tags needs `[ ]`; for example, `[Classification, Machine Learning]` works well.
 
-To view the post first as a draft, move <notebook>.html into /_drafts. 
+To view the post first as a draft, move <post-name>.html into `/_drafts`. 
 
 **Note**: the name of the post will be the file name. So make stupid filenames like `SOD\ vs\ One-class\ SVM.html` and not normal filenames like `sod-vs-one-class-svm.html`.
 
 **Note**: Spencer's hide-input-cells trick is automatically included (it's in the jekyll template and blog layouts). So ***don't*** use it in your notebook.
 
-Once you're happy, move <notebook>.html to /_posts and rename it to <YR>-<MO>-<DY>-<notebook>.html. The naming convention is important for indexing.
+Once you're happy, move `<post-name>.html` to `/_posts` and rename it to `<YR>-<MO>-<DY>-<post-name>.html`. The naming convention is important for indexing.
 
 
 ## Installing Jekyll
@@ -43,9 +43,9 @@ For development, add `--watch` if you want to automatically update the site when
 
  - Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. `/css` and `/img` are not jekyll specific.)
 
- - IPython CSS is kind of a nightmare. The standard `ipython nbconvert` inlines a bunch of CSS that they hand cut from Bootstrap, etc... (they are aware that that is a shitty thing to do, but it's what they did). That makes the generated .html files play badly with anything else. Hence the custom jekyll-html.tpl.
+ - IPython CSS is kind of a nightmare. The standard `ipython nbconvert` inlines a bunch of CSS that they hand cut from Bootstrap, etc... (they are aware that that is a shitty thing to do, but it's what they did). That makes the generated .html files play badly with anything else. Hence the custom `jekyll-html.tpl`.
 
- - Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. about.html, category.html, archive.html).
+ - Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. `about.html`, `category.html`, `archive.html`).
 
  - For more info:
     - [Jekyll Introduction](http://jekyllbootstrap.com/lessons/jekyll-introduction.html)

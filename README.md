@@ -39,7 +39,7 @@ For development, add `--watch` if you want to automatically update the site when
 
 ## Some general Jekyll stuff
 
- - All the HTML is in `/_layouts` and `/_includes`.
+ - All the HTML for generating posts and other "dynamic" content is in `/_layouts` and `/_includes`. There are also a few important HTML files in the base directory (`index.html`, `category.html`, `archive.html`, and `about.html`).
 
  - Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. `/css` and `/img` are not jekyll specific.)
 
@@ -57,3 +57,5 @@ For development, add `--watch` if you want to automatically update the site when
 1. Find better background images for About/Categories/Archive (Will took the current one with his phone).
 2. Write some "About" text.
 3. Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).
+4. Make more awesome posts.
+5. Publish to GitHub pages.

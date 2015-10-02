@@ -8,7 +8,7 @@ To convert a Jupyter (IPython) notebook to a post, but `<post-name>.ipynb` into 
 
 Edit the first few lines of the resulting `.html` (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in `" "`, but a list of tags needs `[ ]`; for example, `[Classification, Machine Learning]` works well.
 
-To view the post first as a draft, move <post-name>.html into `/_drafts`. 
+To view the post first as a draft, move `<post-name>.html` into `/_drafts`. 
 
 **Note**: the name of the post will be the file name. So make stupid filenames like `SOD\ vs\ One-class\ SVM.html` and not normal filenames like `sod-vs-one-class-svm.html`.
 

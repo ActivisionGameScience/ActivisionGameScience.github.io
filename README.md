@@ -1,24 +1,59 @@
-#Clean Blog by Start Bootstrap - Jekyll Version
+# Blog
 
-The official Jekyll version of the Clean Blog theme by [Start Bootstrap](http://startbootstrap.com/).
+## Jupyter (IPython) Notebooks
 
-###[View Live Demo &rarr;](http://ironsummitmedia.github.io/startbootstrap-clean-blog-jekyll/)
+To convert a Jupyter (IPython) notebook to a post, but <notebook>.ipynb into /_notebooks and run
 
-## Before You Begin
+    ipython nbconvert <notebook>.ipynb --template jekyll-html
 
-In the _config.yml file, the base URL is set to /startbootstrap-clean-blog-jekyll which is this themes gh-pages preview. It's recommended that you remove the base URL before working with this theme locally!
+Edit the first few lines of the resulting .html (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in " ", but a list of tags needs [ ]; for example, [Classification, Machine Learning] works well.
 
-It should look like this:
-`baseurl: ""`
+To view the post first as a draft, move <notebook>.html into /_drafts. 
 
-## What's Included
+**Note**: the name of the post will be the file name. So make stupid filenames like `SOD\ vs\ One-class\ SVM.html` and not normal filenames like `sod-vs-one-class-svm.html`.
 
-A full Jekyll environment is included with this theme. If you have Jekyll installed, simply run `jekyll serve` in your command line and preview the build in your browser. You can use `jekyll serve --watch` to watch for changes in the source files as well.
+**Note**: Spencer's hide-input-cells trick is automatically included (it's in the jekyll template and blog layouts). So ***don't*** use it in your notebook.
 
-A Grunt environment is also included. There are a number of tasks it performs like minification of the JavaScript, compiling of the LESS files, adding banners to keep the Apache 2.0 license intact, and watching for changes. Run the grunt default task by entering `grunt` into your command line which will build the files. You can use `grunt watch` if you are working on the JavaScript or the LESS.
+Once you're happy, move <notebook>.html to /_posts and rename it to <YR>-<MO>-<DY>-<notebook>.html. The naming convention is important for indexing.
 
-You can run `jekyll serve --watch` and `grunt watch` at the same time to watch for changes and then build them all at once.
 
-## Support
+## Installing Jekyll
 
-Visit Clean Blog's template overview page on Start Bootstrap at http://startbootstrap.com/template-overviews/clean-blog/ and leave a comment, email feedback@startbootstrap.com, or open an issue here on GitHub for support.
+The following seems to work on Ubuntu 14.04. YMMV.
+
+    sudo apt-get install ruby-dev zlib1g-dev nodejs
+    sudo gem install jekyll
+
+
+## Serving the Blog
+
+To serve the blog locally, run
+
+    jekyll serve
+
+Add `--host 0.0.0.0` if you serve from a VM or an internal server. The site should be available on port 4000.
+
+Add `--drafts` if you want to see draft posts.
+
+For development, add `--watch` if you want to automatically update the site whenever jekyll detects filechanges. This doesn't always work, though; sometimes you need to run `jekyll build` or `jekyll build --drafts` explicitly.
+
+## Some general Jekyll stuff
+
+ - All the HTML is in `/_layouts` and `/_includes`.
+
+ - Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. `/css` and `/img` are not jekyll specific.)
+
+ - IPython CSS is kind of a nightmare. The standard `ipython nbconvert` inlines a bunch of CSS that they hand cut from Bootstrap, etc... (they are aware that that is a shitty thing to do, but it's what they did). That makes the generated .html files play badly with anything else. Hence the custom jekyll-html.tpl.
+
+ - Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. about.html, category.html, archive.html).
+
+ - For more info:
+    - [Jekyll Introduction](http://jekyllbootstrap.com/lessons/jekyll-introduction.html)
+    - [Quick Start](http://jekyllrb.com/docs/quickstart/)
+
+
+## To Do
+
+1. Find better background images for About/Categories/Archive (Will took the current one with his phone).
+2. Write some "About" text.
+3. Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).

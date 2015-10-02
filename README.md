@@ -59,3 +59,7 @@ For development, add `--watch` if you want to automatically update the site when
 3. Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).
 4. Make more awesome posts.
 5. Publish to GitHub pages.
+
+### Credits
+
+The blog is based on the [Jekyll version of Clean Blog Theme by Start Bootstrap](https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll). The archive and category generating code is from [Jekyll-Bootstrap](https://github.com/plusjade/jekyll-bootstrap/).

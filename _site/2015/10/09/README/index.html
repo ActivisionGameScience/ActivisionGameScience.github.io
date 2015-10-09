@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="We are awesome.">
+
+    <title>Blog README (Internal) - Activision Analytic Services</title>
+
+    <link rel="canonical" href="http://activisiongamescience.github.io/2015/10/09/README/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom stylesheet-->
+    <link rel="stylesheet" href="/css/custom.css">
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Activision Analytic Services</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+                
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+                
+                <li>
+                    <a href="/category/">Categories</a>
+                </li>
+                
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Blog README (Internal)</h1>
+                    
+                    <span class="meta">Posted by Activision Analytic Services on October 9, 2015</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<h1 id="analytic-services-blog">Analytic Services Blog</h1>
+
+<h2 id="jupyter-ipython-notebooks">Jupyter (IPython) Notebooks</h2>
+
+<p>To convert a Jupyter (IPython) notebook to a post, but <code>&lt;post-name&gt;.ipynb</code> into <code>/_notebooks</code>and run</p>
+
+<pre><code>ipython nbconvert &lt;post-name&gt;.ipynb --template jekyll-html
+</code></pre>
+
+<p>Edit the first few lines of the resulting <code>.html</code> (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in <code>" "</code>, but a list of tags needs <code>[ ]</code>; for example, <code>[Classification, Machine Learning]</code> works well.</p>
+
+<p>To view the post first as a draft, move <code>&lt;post-name&gt;.html</code> into <code>/_drafts</code>.</p>
+
+<p><strong>Note</strong>: the name of the post will be the file name. So make stupid filenames like <code>SOD\ vs\ One-class\ SVM.html</code> and not normal filenames like <code>sod-vs-one-class-svm.html</code>.</p>
+
+<p><strong>Note</strong>: Spencer’s hide-input-cells trick is automatically included (it’s in the jekyll template and blog layouts). So <strong><em>don’t</em></strong> use it in your notebook.</p>
+
+<p>Once you’re happy, move <code>&lt;post-name&gt;.html</code> to <code>/_posts</code> and rename it to <code>&lt;YR&gt;-&lt;MO&gt;-&lt;DY&gt;-&lt;post-name&gt;.html</code>. The naming convention is important for indexing.</p>
+
+<h2 id="installing-jekyll">Installing Jekyll</h2>
+
+<p>The following seems to work on Ubuntu 14.04. YMMV.</p>
+
+<pre><code>sudo apt-get install ruby-dev zlib1g-dev nodejs
+sudo gem install jekyll
+</code></pre>
+
+<h2 id="serving-the-blog">Serving the Blog</h2>
+
+<p>To serve the blog locally, run</p>
+
+<pre><code>jekyll serve
+</code></pre>
+
+<p>Add <code>--host 0.0.0.0</code> if you serve from a VM or an internal server. The site should be available on port 4000.</p>
+
+<p>Add <code>--drafts</code> if you want to see draft posts.</p>
+
+<p>For development, add <code>--watch</code> if you want to automatically update the site whenever jekyll detects filechanges. This doesn’t always work, though; sometimes you need to run <code>jekyll build</code> or <code>jekyll build --drafts</code> explicitly.</p>
+
+<h2 id="some-general-jekyll-stuff">Some general Jekyll stuff</h2>
+
+<ul>
+  <li>
+    <p>All the HTML for generating posts and other “dynamic” content is in <code>/_layouts</code> and <code>/_includes</code>. There are also a few important HTML files in the base directory (<code>index.html</code>, <code>category.html</code>, <code>archive.html</code>, and <code>about.html</code>).</p>
+  </li>
+  <li>
+    <p>Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. <code>/css</code> and <code>/img</code> are not jekyll specific.)</p>
+  </li>
+  <li>
+    <p>IPython CSS is kind of a nightmare. The standard <code>ipython nbconvert</code> inlines a bunch of CSS that they hand cut from Bootstrap, etc… (they are aware that that is a shitty thing to do, but it’s what they did). That makes the generated .html files play badly with anything else. Hence the custom <code>jekyll-html.tpl</code>.</p>
+  </li>
+  <li>
+    <p>Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. <code>about.html</code>, <code>category.html</code>, <code>archive.html</code>).</p>
+  </li>
+  <li>
+    <p>For more info:</p>
+    <ul>
+      <li><a href="http://jekyllbootstrap.com/lessons/jekyll-introduction.html">Jekyll Introduction</a></li>
+      <li><a href="http://jekyllrb.com/docs/quickstart/">Quick Start</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="to-do">To Do</h2>
+
+<ol>
+  <li>Find better background images for About/Categories/Archive (Will took the current one with his phone).</li>
+  <li>Write some “About” text.</li>
+  <li>Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).</li>
+  <li>Make more awesome posts.</li>
+  <li>Publish to GitHub pages.</li>
+</ol>
+
+<h3 id="credits">Credits</h3>
+
+<p>The blog is based on the <a href="https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll">Jekyll version of Clean Blog Theme by Start Bootstrap</a>. The archive and category generating code is from <a href="https://github.com/plusjade/jekyll-bootstrap/">Jekyll-Bootstrap</a>.</p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/10/02/SOD%20vs%20One-class%20SVM/" data-toggle="tooltip" data-placement="top" title="SOD vs One-class SVM">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <!-- RSS Feed 
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    -->
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/activisiongamescience">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; Activision Analytic Services 2015</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+<!-- hide the input cells by default -->
+<script>
+    hide_code=true; 
+    function code_toggle() {
+       if (hide_code){
+           $('div.input').hide();
+       } else {
+           $('div.input').show();
+       }
+       hide_code = !hide_code
+    } 
+    $( document ).ready(code_toggle);
+</script>
+
+</body>
+
+</html>

@@ -5,9 +5,96 @@
     <description>We are awesome.</description>
     <link>http://activisiongamescience.github.io/</link>
     <atom:link href="http://activisiongamescience.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 02 Oct 2015 20:09:03 +0000</pubDate>
-    <lastBuildDate>Fri, 02 Oct 2015 20:09:03 +0000</lastBuildDate>
+    <pubDate>Fri, 09 Oct 2015 09:42:28 -0700</pubDate>
+    <lastBuildDate>Fri, 09 Oct 2015 09:42:28 -0700</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Blog README (Internal)</title>
+        <description>&lt;h1 id=&quot;analytic-services-blog&quot;&gt;Analytic Services Blog&lt;/h1&gt;
+
+&lt;h2 id=&quot;jupyter-ipython-notebooks&quot;&gt;Jupyter (IPython) Notebooks&lt;/h2&gt;
+
+&lt;p&gt;To convert a Jupyter (IPython) notebook to a post, but &lt;code&gt;&amp;lt;post-name&amp;gt;.ipynb&lt;/code&gt; into &lt;code&gt;/_notebooks&lt;/code&gt;and run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ipython nbconvert &amp;lt;post-name&amp;gt;.ipynb --template jekyll-html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Edit the first few lines of the resulting &lt;code&gt;.html&lt;/code&gt; (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in &lt;code&gt;&quot; &quot;&lt;/code&gt;, but a list of tags needs &lt;code&gt;[ ]&lt;/code&gt;; for example, &lt;code&gt;[Classification, Machine Learning]&lt;/code&gt; works well.&lt;/p&gt;
+
+&lt;p&gt;To view the post first as a draft, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; into &lt;code&gt;/_drafts&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: the name of the post will be the file name. So make stupid filenames like &lt;code&gt;SOD\ vs\ One-class\ SVM.html&lt;/code&gt; and not normal filenames like &lt;code&gt;sod-vs-one-class-svm.html&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Spencer’s hide-input-cells trick is automatically included (it’s in the jekyll template and blog layouts). So &lt;strong&gt;&lt;em&gt;don’t&lt;/em&gt;&lt;/strong&gt; use it in your notebook.&lt;/p&gt;
+
+&lt;p&gt;Once you’re happy, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; to &lt;code&gt;/_posts&lt;/code&gt; and rename it to &lt;code&gt;&amp;lt;YR&amp;gt;-&amp;lt;MO&amp;gt;-&amp;lt;DY&amp;gt;-&amp;lt;post-name&amp;gt;.html&lt;/code&gt;. The naming convention is important for indexing.&lt;/p&gt;
+
+&lt;h2 id=&quot;installing-jekyll&quot;&gt;Installing Jekyll&lt;/h2&gt;
+
+&lt;p&gt;The following seems to work on Ubuntu 14.04. YMMV.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo apt-get install ruby-dev zlib1g-dev nodejs
+sudo gem install jekyll
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;serving-the-blog&quot;&gt;Serving the Blog&lt;/h2&gt;
+
+&lt;p&gt;To serve the blog locally, run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add &lt;code&gt;--host 0.0.0.0&lt;/code&gt; if you serve from a VM or an internal server. The site should be available on port 4000.&lt;/p&gt;
+
+&lt;p&gt;Add &lt;code&gt;--drafts&lt;/code&gt; if you want to see draft posts.&lt;/p&gt;
+
+&lt;p&gt;For development, add &lt;code&gt;--watch&lt;/code&gt; if you want to automatically update the site whenever jekyll detects filechanges. This doesn’t always work, though; sometimes you need to run &lt;code&gt;jekyll build&lt;/code&gt; or &lt;code&gt;jekyll build --drafts&lt;/code&gt; explicitly.&lt;/p&gt;
+
+&lt;h2 id=&quot;some-general-jekyll-stuff&quot;&gt;Some general Jekyll stuff&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;All the HTML for generating posts and other “dynamic” content is in &lt;code&gt;/_layouts&lt;/code&gt; and &lt;code&gt;/_includes&lt;/code&gt;. There are also a few important HTML files in the base directory (&lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;category.html&lt;/code&gt;, &lt;code&gt;archive.html&lt;/code&gt;, and &lt;code&gt;about.html&lt;/code&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. &lt;code&gt;/css&lt;/code&gt; and &lt;code&gt;/img&lt;/code&gt; are not jekyll specific.)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;IPython CSS is kind of a nightmare. The standard &lt;code&gt;ipython nbconvert&lt;/code&gt; inlines a bunch of CSS that they hand cut from Bootstrap, etc… (they are aware that that is a shitty thing to do, but it’s what they did). That makes the generated .html files play badly with anything else. Hence the custom &lt;code&gt;jekyll-html.tpl&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. &lt;code&gt;about.html&lt;/code&gt;, &lt;code&gt;category.html&lt;/code&gt;, &lt;code&gt;archive.html&lt;/code&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For more info:&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;http://jekyllbootstrap.com/lessons/jekyll-introduction.html&quot;&gt;Jekyll Introduction&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;http://jekyllrb.com/docs/quickstart/&quot;&gt;Quick Start&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;to-do&quot;&gt;To Do&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Find better background images for About/Categories/Archive (Will took the current one with his phone).&lt;/li&gt;
+  &lt;li&gt;Write some “About” text.&lt;/li&gt;
+  &lt;li&gt;Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).&lt;/li&gt;
+  &lt;li&gt;Make more awesome posts.&lt;/li&gt;
+  &lt;li&gt;Publish to GitHub pages.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;credits&quot;&gt;Credits&lt;/h3&gt;
+
+&lt;p&gt;The blog is based on the &lt;a href=&quot;https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll&quot;&gt;Jekyll version of Clean Blog Theme by Start Bootstrap&lt;/a&gt;. The archive and category generating code is from &lt;a href=&quot;https://github.com/plusjade/jekyll-bootstrap/&quot;&gt;Jekyll-Bootstrap&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 09 Oct 2015 09:39:37 -0700</pubDate>
+        <link>http://activisiongamescience.github.io/2015/10/09/README/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/09/README/</guid>
+        
+        
+      </item>
     
       <item>
         <title>SOD vs One-class SVM</title>
@@ -1811,7 +1898,7 @@ ZjOzinFhNjOrGBdmM7OKcWE2M6sYF2Yzs4pxYTYzq5j/D8EIqKC0676SAAAAAElFTkSuQmCC
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;h3 id=&quot;Discussion&quot;&gt;Discussion&lt;a class=&quot;anchor-link&quot; href=&quot;#Discussion&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;From the above graphs it is clear that the quality of SOD depends on the choice of $\text{snn}$.  Interestingly, the optimal setting for $\text{snn}$ appears to be approximately the same as the number of anomalies in the dataset (or slightly larger).&lt;/p&gt;
-&lt;p&gt;Since in practice we won't know the number of anomalies to expect, we won't be able to tune $\text{snn}$ effectively.  It is important to notice that the quality drops especially quickly if $\text{snn}$ is chosen too small.&lt;/p&gt;
+&lt;p&gt;Since in practice we won&#39;t know the number of anomalies to expect, we won&#39;t be able to tune $\text{snn}$ effectively.  It is important to notice that the quality drops especially quickly if $\text{snn}$ is chosen too small.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -9863,7 +9950,7 @@ Lec. Notes in Comp. Sci. Vol. 5476, 2009, pp 831-38&lt;/p&gt;
 Neural Computation 13(7), 2001, pp 1443-71&lt;/p&gt;
 &lt;h3 id=&quot;amer2013&quot;&gt;amer2013&lt;a class=&quot;anchor-link&quot; href=&quot;#amer2013&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://outlier-analytics.org/odd13kdd/papers/amer,goldstein,abdennadher.pdf&quot;&gt;Amer, Goldstein, Abdennadher&lt;/a&gt;,
 &lt;em&gt;Enhancing One-class Support Vector Machines for Unsupervised Anomaly Detection&lt;/em&gt;,
-ODD '13, 2013, pp 8-15&lt;/p&gt;
+ODD &#39;13, 2013, pp 8-15&lt;/p&gt;
 &lt;h3 id=&quot;davis2006&quot;&gt;davis2006&lt;a class=&quot;anchor-link&quot; href=&quot;#davis2006&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://www.autonlab.org/icml_documents/camera-ready/030_The_Relationship_Bet.pdf&quot;&gt;Davis, Goadrich&lt;/a&gt;,
 &lt;em&gt;The Relationship Between Precision-Recall and ROC Curves&lt;/em&gt;,
 Intl. Proc. on Mach. Learn., 2006&lt;/p&gt;
@@ -9891,7 +9978,7 @@ ICANN’07, pages 269–278. Springer, 2007&lt;/p&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 </description>
-        <pubDate>Fri, 02 Oct 2015 19:32:34 +0000</pubDate>
+        <pubDate>Fri, 02 Oct 2015 12:32:34 -0700</pubDate>
         <link>http://activisiongamescience.github.io/2015/10/02/SOD%20vs%20One-class%20SVM/</link>
         <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/02/SOD%20vs%20One-class%20SVM/</guid>
         

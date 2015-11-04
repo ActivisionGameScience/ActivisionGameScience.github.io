@@ -5,93 +5,420 @@
     <description>We are awesome.</description>
     <link>http://activisiongamescience.github.io/</link>
     <atom:link href="http://activisiongamescience.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 09 Oct 2015 09:55:13 -0700</pubDate>
-    <lastBuildDate>Fri, 09 Oct 2015 09:55:13 -0700</lastBuildDate>
+    <pubDate>Wed, 04 Nov 2015 10:17:55 +0000</pubDate>
+    <lastBuildDate>Wed, 04 Nov 2015 10:17:55 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
-        <title>Blog README (Internal)</title>
-        <description>&lt;h1 id=&quot;analytic-services-blog&quot;&gt;Analytic Services Blog&lt;/h1&gt;
+        <title>Implicit Recommender Systems - Biased Matrix Factorization</title>
+        <description>&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;div&gt;&lt;/div&gt;
+&lt;p&gt;
+NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 
-&lt;h2 id=&quot;jupyter-ipython-notebooks&quot;&gt;Jupyter (IPython) Notebooks&lt;/h2&gt;
+  &lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
+    &lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
 
-&lt;p&gt;To convert a Jupyter (IPython) notebook to a post, but &lt;code&gt;&amp;lt;post-name&amp;gt;.ipynb&lt;/code&gt; into &lt;code&gt;/_notebooks&lt;/code&gt;and run&lt;/p&gt;
+        &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+            &lt;div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;inner_cell&quot;&gt;
+                &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+                    &lt;p&gt;
+                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
+                    &lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+     
 
-&lt;pre&gt;&lt;code&gt;ipython nbconvert &amp;lt;post-name&amp;gt;.ipynb --template jekyll-html
-&lt;/code&gt;&lt;/pre&gt;
+        
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h1 id=&quot;Implicit-Recommender-Systems:-Biased-Matrix-Factorization&quot;&gt;Implicit Recommender Systems: Biased Matrix Factorization&lt;a class=&quot;anchor-link&quot; href=&quot;#Implicit-Recommender-Systems:-Biased-Matrix-Factorization&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h1&gt;&lt;h3 id=&quot;Will-Kirwin&quot;&gt;&lt;a href=&quot;https://github.com/wkirwin&quot;&gt;Will Kirwin&lt;/a&gt;&lt;a class=&quot;anchor-link&quot; href=&quot;#Will-Kirwin&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;October 15, 2015&lt;/p&gt;
 
-&lt;p&gt;Edit the first few lines of the resulting &lt;code&gt;.html&lt;/code&gt; (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in &lt;code&gt;&quot; &quot;&lt;/code&gt;, but a list of tags needs &lt;code&gt;[ ]&lt;/code&gt;; for example, &lt;code&gt;[Classification, Machine Learning]&lt;/code&gt; works well.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name &lt;em&gt;Alternating Least Squares&lt;/em&gt; (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.&lt;/p&gt;
+&lt;p&gt;We will also go through the ALS algorithm for implicit feedback, and then explain how to modify &lt;em&gt;that&lt;/em&gt; to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren't aware of any good source for &lt;em&gt;implicit ALS with biases&lt;/em&gt;... hence, this post.&lt;/p&gt;
 
-&lt;p&gt;To view the post first as a draft, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; into &lt;code&gt;/_drafts&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Introduction&quot;&gt;Introduction&lt;a class=&quot;anchor-link&quot; href=&quot;#Introduction&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Recommendation engines are becoming ubiquitous in the modern consumer landscape. From Netflix's personalized movie recommendations to Amazon's raft of suggested items (New For Your, Recommendations for You in the Kindle Store, etc...), to Spotify's wildly popular personalized Discover Weekly Playlist, recommendation engines have become an essential tool for promoting content discovery and extending consumer engagement.&lt;/p&gt;
+&lt;p&gt;There has been a proliferation of algorithms in the data science community upon which recommender systems are built, but they all follow the basic central dogma that similar users like similar items. The hard part, of course, is deciding exactly what &quot;similar&quot; means and how to measure it. For Netflix, similar users are users who rate movies similarly. For Spotify, similar users are users who listen to the same kinds of music (a little thought will convince you that these two ideas, while similar, are not really the same).&lt;/p&gt;
+&lt;p&gt;The simplest type of recommender system, called a &lt;em&gt;collaborative filter&lt;/em&gt;, is essentially a literal interpretation of &quot;similar users like similar things&quot;. Once a metric for similarity is decided on, one just looks at the top rated items of the $k$ nearest neighbors (with respect to the similarity metric), filters out those items which the user of interest has already seen/consumed, and &lt;em&gt;voila&lt;/em&gt;, personalized recommendations.&lt;/p&gt;
+&lt;p&gt;Collaborative filters have the advantages of being relatively easy to implement and relatively easy to interpret (e.g. we recommended movie A to user 1 because users 2, 3, and 4 all rated it highly and have similar ratings profiles to user 1). This being the age of data science, though, it is no longer enough to have a reasonable explanation. We can actually measure how effectively a recommender system predicts the ratings of users on unseen items. Thus began Netflix's famous quest for better recommender systems, leading to the famous million dollar prize and eventual solution (by a team of experts working for several years).&lt;/p&gt;
+&lt;p&gt;Although the recommender system that won the Netflix prize was never put into production (it was a carefully tuned mix of many, many, many statistical models, and the marginal gain obtained by implementing all of the models was not worth the technical price compared to simply implementing a few of the best ones), the data science community, and the wider commercial world, learned without a doubt that while collaborative filters are explainable and easily implementable, one can do significantly better if one is willing to flex a bit of mathematical muscle.&lt;/p&gt;
+&lt;p&gt;There were essentially two types of recommender systems in the final solution to the Netflix prize, and they have become the bread and butter of the current state of the art: matrix factorization models and restricted Bolzmann machines (RBMs). We will discuss matrix factorization models in this post.&lt;/p&gt;
+&lt;p&gt;We will be interested in two refinements of the basic matrix factorization model for recommendations: using implicit feedback, and using user and item biases.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: the name of the post will be the file name. So make stupid filenames like &lt;code&gt;SOD\ vs\ One-class\ SVM.html&lt;/code&gt; and not normal filenames like &lt;code&gt;sod-vs-one-class-svm.html&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Spencer’s hide-input-cells trick is automatically included (it’s in the jekyll template and blog layouts). So &lt;strong&gt;&lt;em&gt;don’t&lt;/em&gt;&lt;/strong&gt; use it in your notebook.&lt;/p&gt;
-
-&lt;p&gt;Once you’re happy, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; to &lt;code&gt;/_posts&lt;/code&gt; and rename it to &lt;code&gt;&amp;lt;YR&amp;gt;-&amp;lt;MO&amp;gt;-&amp;lt;DY&amp;gt;-&amp;lt;post-name&amp;gt;.html&lt;/code&gt;. The naming convention is important for indexing.&lt;/p&gt;
-
-&lt;h2 id=&quot;installing-jekyll&quot;&gt;Installing Jekyll&lt;/h2&gt;
-
-&lt;p&gt;The following seems to work on Ubuntu 14.04. YMMV.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;sudo apt-get install ruby-dev zlib1g-dev nodejs
-sudo gem install jekyll
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&quot;serving-the-blog&quot;&gt;Serving the Blog&lt;/h2&gt;
-
-&lt;p&gt;To serve the blog locally, run&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;jekyll serve
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Add &lt;code&gt;--host 0.0.0.0&lt;/code&gt; if you serve from a VM or an internal server. The site should be available on port 4000.&lt;/p&gt;
-
-&lt;p&gt;Add &lt;code&gt;--drafts&lt;/code&gt; if you want to see draft posts.&lt;/p&gt;
-
-&lt;p&gt;For development, add &lt;code&gt;--watch&lt;/code&gt; if you want to automatically update the site whenever jekyll detects filechanges. This doesn’t always work, though; sometimes you need to run &lt;code&gt;jekyll build&lt;/code&gt; or &lt;code&gt;jekyll build --drafts&lt;/code&gt; explicitly.&lt;/p&gt;
-
-&lt;h2 id=&quot;some-general-jekyll-stuff&quot;&gt;Some general Jekyll stuff&lt;/h2&gt;
-
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;User-and-Item-Biases&quot;&gt;User and Item Biases&lt;a class=&quot;anchor-link&quot; href=&quot;#User-and-Item-Biases&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It was realized early on, even for collaborative filters, that recommender systems work a lot better if one accounts for user and item biases.&lt;/p&gt;
+&lt;p&gt;Suppose, for example, that we are trying to predict movie ratings and&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;All the HTML for generating posts and other “dynamic” content is in &lt;code&gt;/_layouts&lt;/code&gt; and &lt;code&gt;/_includes&lt;/code&gt;. There are also a few important HTML files in the base directory (&lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;category.html&lt;/code&gt;, &lt;code&gt;archive.html&lt;/code&gt;, and &lt;code&gt;about.html&lt;/code&gt;).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. &lt;code&gt;/css&lt;/code&gt; and &lt;code&gt;/img&lt;/code&gt; are not jekyll specific.)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;IPython CSS is kind of a nightmare. The standard &lt;code&gt;ipython nbconvert&lt;/code&gt; inlines a bunch of CSS that they hand cut from Bootstrap, etc… (they are aware that that is a shitty thing to do, but it’s what they did). That makes the generated .html files play badly with anything else. Hence the custom &lt;code&gt;jekyll-html.tpl&lt;/code&gt;.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. &lt;code&gt;about.html&lt;/code&gt;, &lt;code&gt;category.html&lt;/code&gt;, &lt;code&gt;archive.html&lt;/code&gt;).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;For more info:&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://jekyllbootstrap.com/lessons/jekyll-introduction.html&quot;&gt;Jekyll Introduction&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;http://jekyllrb.com/docs/quickstart/&quot;&gt;Quick Start&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Bob&lt;/em&gt; is grouchy and rates items with an average of 2 stars.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Alice&lt;/em&gt; is chipper and cheery and rates things with an average of 4 stars.&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;Then pretty clearly 3 stars from &lt;em&gt;Bob&lt;/em&gt; is very different than 3 stars from &lt;em&gt;Alice&lt;/em&gt;. If we keep track of the average movie rating per user, and just try to predict the difference from that average, the recommender system works &lt;em&gt;much&lt;/em&gt; better.&lt;/p&gt;
+&lt;p&gt;Similarly, suppose&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Snakes on a Plane&lt;/em&gt; gets an average rating (over all users) of 1 star.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;The Shawshank Redemption&lt;/em&gt; gets an average rating of 5 stars.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then a 3 star rating is very different for &lt;em&gt;Snakes on a Plane&lt;/em&gt; than for &lt;em&gt;The Shawshank Redemption&lt;/em&gt;. If we keep track of the average user rating for each movie, and just try to predict the difference from that average, the recommender system also works &lt;em&gt;much&lt;/em&gt; better.&lt;/p&gt;
+&lt;p&gt;Obviously, one should keep track of both user and item biases. (We will explain the technical details below.)&lt;/p&gt;
 
-&lt;h2 id=&quot;to-do&quot;&gt;To Do&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Implicit-Feedback&quot;&gt;Implicit Feedback&lt;a class=&quot;anchor-link&quot; href=&quot;#Implicit-Feedback&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;One of the challenges of recommender systems in the wider commercial world is that one rarely has explicit ratings data (Netflix push their users quite hard to rate movies and leverage a lot of the tech on those ratings).&lt;/p&gt;
+&lt;p&gt;Instead, things like clicks, purchases, song listens (or fast-forwards), etc... are available; user-item interactions that somehow, possibly very weekly, indicate a preference or distaste for a particular item. If a user listens to a song only once, maybe it indicates that they didn't like the song, or maybe they were busy and weren't paying attention and actually would like it if they heard it again. If a user listens to a song 100 times, it is a safe bet that they like the song. But it is hard to draw a line between unknown preference and known preference.&lt;/p&gt;
+&lt;p&gt;This kind of indirect information about user-item preferences is known as &lt;em&gt;implicit feedback&lt;/em&gt;, and many smart people have thought long and hard about how to deal with it. We won't delve much into the modeling of implicit feedback in today's post except to say that it turns out to be relatively effective to try to model a user's preference, as measured on a scale of 0 (bad) to 1 (good), instead of the user's actual number of interactions (or whatever number is actually being meausured).&lt;/p&gt;
+&lt;p&gt;We can interpret the number of user-item interations (song listens, for example) as a measure of our confidence in our model's prediction for the user's preference of the item.&lt;/p&gt;
+&lt;p&gt;Below, we'll step through the details of how a matrix factorization model can be used to deal with implicit feedback. The basic algorithm we discuss is from the seminal paper &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;Hu, et al. Collaborative Filtering for Implicit Feedback Datasets&lt;/a&gt;.&lt;/p&gt;
 
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Basic-Matrix-Factorization-for-Recommendations&quot;&gt;Basic Matrix Factorization for Recommendations&lt;a class=&quot;anchor-link&quot; href=&quot;#Basic-Matrix-Factorization-for-Recommendations&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The most basic matrix factorization model for recommender systems models the rating a user &lt;code&gt;u&lt;/code&gt; would give to an item &lt;code&gt;i&lt;/code&gt; by&lt;/p&gt;
+$$r_{ui} = x_u^T y_i,$$&lt;p&gt;where $x_u^T = (x_u^1, x_u^2, \dots, x_u^N)$ is a vector associated to the user, and $y_i^T = (y_i^1, y_i^2, \dots, y_i^N)$ is a vector associated to the item. The dimension of the vectors is the &lt;em&gt;rank&lt;/em&gt; of the model, and the dimensions are called &lt;em&gt;factors&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;If we collect the user-item ratings into a matrix $R=(r_{ui})$, collect the user vectors into a matrix
+$$X = \left(\begin{matrix} \cdots &amp; x_{u_1} &amp; \cdots \\ 
+                           \cdots &amp; x_{u_2} &amp; \cdots \\
+                              &amp;  \vdots &amp; \\
+                           \cdots &amp; x_{u_{n_\text{users}}} &amp; \cdots \end{matrix}\right),$$&lt;br&gt;
+and the item vectors into a matrix
+$$Y = \left(\begin{matrix} \cdots &amp; y_{i_1} &amp; \cdots \\ 
+                           \cdots &amp; y_{i_2} &amp; \cdots \\
+                              &amp;  \vdots &amp; \\
+                           \cdots &amp; y_{i_{n_\text{items}}} &amp; \cdots \end{matrix}\right),$$
+then we can express the above model as&lt;/p&gt;
+$$ R = X^TY.$$&lt;p&gt;Of course, there is no reason that the true user-item matrix $R$ should have rank $N$, and indeed, we won't even know the &quot;true&quot; user-item matrix $R$. But we try to approximate the true $R$ by a rank $N$ factorization:&lt;/p&gt;
+$$ R \sim \widehat{R} = X^TY.$$&lt;p&gt;That is, we want to find an $n_\text{users}\times N$ matrix $X$ and an $n_\text{items}\times N$ matrix $Y$ such that $\widehat{R}:=X^TY$ approximates $R$.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Alternating-Least-Squares&quot;&gt;Alternating Least Squares&lt;a class=&quot;anchor-link&quot; href=&quot;#Alternating-Least-Squares&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;One popular method for finding the matrices $X$ and $Y$ given partial information about $R$ is known as &lt;em&gt;alternating least squares&lt;/em&gt;. The idea is to find the parameters $x^j_{u_k}$ and $y^j_{i_k}$ (the entries of the matrices $X$ and $Y$) which minimize the $L^2$ cost function&lt;/p&gt;
+$$ C = \sum_{u,i\in\text{observed ratings}} (r_{ui} - x_u^T y_i)^2 + \lambda \left( \sum_{u} \|x_u\|^2 + \sum_{i} \|y_i\|^2 \right).$$&lt;p&gt;The constant $\lambda$ is called the regularization parameter and essentially penalizes the components of the matrices $X$ and $Y$ if they get too large (in magnitude). This is important for numerical stability (and some kind of regularization is almost always used). It has an even more important effect in this setting, though:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fundamental Observation&lt;/strong&gt;: If we hold the item vectors $Y$ fixed, $C$ is a &lt;em&gt;quadratic&lt;/em&gt; function of the components of $X$. Similarly, if we hold the user vectors $X$ fixed, $C$ is a quadratic function of the components of $Y$.&lt;/p&gt;
+&lt;p&gt;So in order to minimize $C$, one could try the following:&lt;/p&gt;
 &lt;ol&gt;
-  &lt;li&gt;Find better background images for About/Categories/Archive (Will took the current one with his phone).&lt;/li&gt;
-  &lt;li&gt;Write some “About” text.&lt;/li&gt;
-  &lt;li&gt;Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).&lt;/li&gt;
-  &lt;li&gt;Make more awesome posts.&lt;/li&gt;
-  &lt;li&gt;Publish to GitHub pages.&lt;/li&gt;
+&lt;li&gt;Hold the user vectors fixed and &lt;em&gt;solve&lt;/em&gt; the quadratic equation for the $y^j_{i_k}$'s. This will (probably) not be the global minimum of $C$ since we haven't touched half of the variables (the $x^j_{u_k}$'s), but we have at least decreased $C$.&lt;/li&gt;
+&lt;li&gt;Hold the item vectors fixed and &lt;em&gt;solve&lt;/em&gt; the quadratic equation for the $x^j_{u_k}$'s.&lt;/li&gt;
+&lt;li&gt;Repeat.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Some remarks are in order.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Since $C$ is a convex function, and each step of the above algorithm is a minimization, the process must converge at some point. &lt;/li&gt;
+&lt;li&gt;There are other methods for minimizing such a convex cost function, for example, gradient descent (or stochastic gradient descent, or batch SGD, etc...). One important difference here is that at each step of our algorithm, we find the &lt;em&gt;exact&lt;/em&gt; minimum; we don't take small steps in a downward direction. So if we do step 1), a second application of step 1) will have no effect: we're already at the absolute minimum of $C$ with $Y$ held fixed. It also means that single iteration of the above algorithm generally moves much further than an iteration of a gradient descent algorithm; i.e. we need fewer iterations for convergence.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The above algorithm is called (for obvious reasons) &lt;em&gt;alternating least squares&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;A bit of linear algebra yields the following algorithm.&lt;/p&gt;
+&lt;h3 id=&quot;Alternating-Least-Squares-(ALS)&quot;&gt;Alternating Least Squares (ALS)&lt;a class=&quot;anchor-link&quot; href=&quot;#Alternating-Least-Squares-(ALS)&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Initialize the user vectors $X$ somehow (e.g. randomly).&lt;/li&gt;
+&lt;li&gt;For each item &lt;code&gt;i&lt;/code&gt;, let $r_i$ be the vector of ratings of that item (it will have &lt;code&gt;n_users&lt;/code&gt; components; one for each user). Compute 
+$$y_i = \left(X^T X + \lambda I\right)^{-1} X^T r_i$$
+for each item &lt;code&gt;i&lt;/code&gt;. ($I$ is the $N\times N$ identity matrix.)&lt;/li&gt;
+&lt;li&gt;For each user &lt;code&gt;u&lt;/code&gt;, let $r_u$ be the vector of ratings of that user (it will have &lt;code&gt;n_items&lt;/code&gt; components; one for each item).
+Compute
+$$x_u = \left(Y^T Y + \lambda I\right)^{-1} Y^T r_u$$
+for each user &lt;code&gt;u&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Repeat 2), 3) until desired level of convergence is achieved.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Remark.&lt;/em&gt;&lt;/strong&gt; It is almost always faster to solve the linear system $\left(X^T X + \lambda I\right)y_i = X^T r_i$ instead of inverting the matrix $\left(X^T X + \lambda I\right)$ as written in the algorithm (similarly for the user vectors).&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;User-and-Item-Biases&quot;&gt;User and Item Biases&lt;a class=&quot;anchor-link&quot; href=&quot;#User-and-Item-Biases&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;As we mentioned above, it turns out that most recommenders systems perform better if user and item biases are taken into account.&lt;/p&gt;
+&lt;p&gt;Suppose we have a ratings system which allows each user to rate each item on a scale of 1 to 5 stars. Suppose we have two users &lt;code&gt;Alice&lt;/code&gt;, who rates items with an average of &lt;code&gt;4&lt;/code&gt; stars, and &lt;code&gt;Bob&lt;/code&gt;, whose average rating is &lt;code&gt;1.5&lt;/code&gt; stars. If &lt;code&gt;Bob&lt;/code&gt; rates some new item with &lt;code&gt;3&lt;/code&gt; stars, it means something &lt;em&gt;very&lt;/em&gt; different than if &lt;code&gt;Alice&lt;/code&gt; rates the same item with &lt;code&gt;3&lt;/code&gt; stars (&lt;code&gt;Bob&lt;/code&gt; &lt;em&gt;really&lt;/em&gt; liked the new item, &lt;code&gt;Alice&lt;/code&gt; didn't). The difference is what we call &lt;em&gt;user bias&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;For an explicit-ratings model (as discussed above, when we have explicit ratings for user-item pairs), one way to account for user bias is to model the actual user-item ratings as&lt;/p&gt;
+$$r_{ui} \sim \beta_u + \hat{r}_{ui},$$&lt;p&gt;where $\beta_u$ is the &lt;em&gt;user bias&lt;/em&gt; of user &lt;code&gt;u&lt;/code&gt; (and $\hat{r}_{ui}$ is some model for the remainder). We can account for item bias in a similar way:&lt;/p&gt;
+$$r_{ui} \sim \beta_u + \gamma_i + \hat{r}_{ui};$$&lt;p&gt;here, $\gamma_i$ is the &lt;em&gt;item bias&lt;/em&gt; of item &lt;code&gt;i&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;For a collaborative filter, one could could define $\hat{r}_{ui}$ via $k$-nearest neighbors using some similarity metric (Pearson is a standard choice), an $\beta_u$ is the average rating of user &lt;code&gt;u&lt;/code&gt; over all of that user's observed ratings and $\gamma_i$ is the average rating of item &lt;code&gt;i&lt;/code&gt; over all users.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Biased-ALS&quot;&gt;Biased ALS&lt;a class=&quot;anchor-link&quot; href=&quot;#Biased-ALS&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;User and item biases can be directly incorporated into the ALS algorithm. We model the user-item ratings matrix as&lt;/p&gt;
+$$r_{ui} \sim \beta_u + \gamma_i + y^T_i x_u$$&lt;p&gt;and minimize the cost function&lt;/p&gt;
+$$ C^\text{biased} = \sum_{u,i\in\text{observed ratings}} (r_{ui} - x_u^T y_i)^2 + \lambda \left( \sum_{u} \left( \|x_u\|^2 + \beta_u^2\right) + \sum_{i} \left(\|y_i\|^2 + \gamma_i^2\right) \right).$$&lt;p&gt;Again, because of the regularization, we can hold the user variables fixed, solve for the minimum in the item variables. Then hold the item variables fixed and solve for the minimum in the user variables.&lt;/p&gt;
+&lt;p&gt;The biases $\beta_u$ and $\gamma_i$ appear in $C^\text{biased}$ without any coefficients, whereas all the other parameters appear at least once with some coefficient. So one approach would be to solve for the biases separately from the other parameters in each step.&lt;/p&gt;
+&lt;p&gt;It is easier, though, to leverage the work we've already done. We can rewrite our cost function at each step so that it looks like an unbiased model, and then just use the same formulas we found above for the unbiased ALS. The &quot;trick&quot; (if it is even worthy of being called such) is to define new vectors that include the biases as components in the &quot;right&quot; way.&lt;/p&gt;
+&lt;p&gt;Let $\beta$ be the vector of user biases (with &lt;code&gt;n_users&lt;/code&gt; components) and $\gamma$ the vector of item biases (with &lt;code&gt;n_items&lt;/code&gt; components). Here is the algorithm:&lt;/p&gt;
+&lt;h3 id=&quot;ALS-with-Biases&quot;&gt;ALS with Biases&lt;a class=&quot;anchor-link&quot; href=&quot;#ALS-with-Biases&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Initial user vectors randomly and set all biases to zero (or initialize them randomly, it doesn't matter very much).&lt;/li&gt;
+&lt;li&gt;For each item &lt;code&gt;i&lt;/code&gt;, define three new vectors :
+$$r^\beta_i := r_i - \beta$$
+with components $r^\beta_{ui}:= r_{ui}-\beta_u$ (notice that both vectors have &lt;code&gt;n_users&lt;/code&gt; components), 
+$$\tilde{x}^T_u := (1, x_u),$$ 
+and
+$$\tilde{y}^T_i := (\gamma_i, y_i).$$
+Then $C^\text{biased} = \sum \left(r^\beta_{ui} - \widetilde{y}_i^T\widetilde{x}_u\right)^2 + \lambda\left( \sum_u \|\widetilde{x}_u\|^2 + \sum_i \|\widetilde{y}_i\|^2\right)$. Hence, we compute that the item bias and vector can be computed as
+$$ \widetilde{y}_i := \left(\begin{matrix} \gamma_i \\ y_i\end{matrix}\right) = \left(\widetilde{X}^T \widetilde{X} + \lambda I\right)^{-1} \widetilde{X}^T R_i.$$
+($I$ is now the $(N+1)\times(N+1)$ identity matrix, and $\tilde{X}$ and $\tilde{Y}$ are matrices whose columns are the vectors $\tilde{x}_u$ and $\tilde{y}_i$ as usual.)&lt;/li&gt;
+&lt;li&gt;For each user &lt;code&gt;u&lt;/code&gt;, define three new vectors:
+$$r^\gamma_u := r_u - \gamma,$$
+$$\widetilde{y}^T_i := (1, y_i),$$ 
+and
+$$\widetilde{x}^T_u := (\beta_u, x_u).$$
+The user bias and vector can be computed as
+$$ \widetilde{x}_u := \left(\begin{matrix} \beta_u \\ x_u\end{matrix}\right) = \left(\widetilde{Y}^T \widetilde{Y} + \lambda I\right)^{-1} \widetilde{Y}^T R_u.$$&lt;/li&gt;
+&lt;li&gt;Repeat 2), 3) until convergence.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h3 id=&quot;credits&quot;&gt;Credits&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Implicit-Feedback&quot;&gt;Implicit Feedback&lt;a class=&quot;anchor-link&quot; href=&quot;#Implicit-Feedback&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;For many real-world user-item interactions, no explicit ratings data are available, but there is nonetheless nontrivial information about the interactions, for example, clicks, listens/watches, purchases, etc... Such indirect &quot;ratings&quot; information about user-item interactions is known as &lt;strong&gt;implicit feedback&lt;/strong&gt;. Modeling implicit feedback is a difficult but important problem. There are several ways to use our ALS matrix factorization to approach such a model. We present here a standard solution, presented (without bias corrections) in &lt;a href=&quot;http://&quot;&gt;Hu et al.&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The basic approach is to forget about modeling the implicit feedback directly. Rather, we want to understand whether user &lt;code&gt;u&lt;/code&gt; has a preference for item &lt;code&gt;i&lt;/code&gt; or not; a simple boolean variable which we denote by $p_{ui}.$ The number of clicks, listens, views, etc... will be interpreted as our confidence in our model.&lt;/p&gt;
+&lt;p&gt;Following the fundamental idea of matrix factorization models, we try to find a user vector $x_u$ to each user &lt;code&gt;u&lt;/code&gt; and an item vector $y_i$ to each item &lt;code&gt;i&lt;/code&gt; so that 
+$$p_{ui} \sim x^T_u y_i.$$
+It is important to note, here, that we never actually observe $p_{ui}$! (This is a very different situation that for explicit feedack models, as discussed above, where $r_{ui}$ is the observer rating.)&lt;/p&gt;
+&lt;p&gt;Let's assume the our implicit feedback is a positive integer (number of clicks, number of views, number of listens, etc...). That is, 
+$$r_{ui} = \text{# of times user }\mathtt{u}\text{ interacted with item }\mathtt{i}.$$&lt;/p&gt;
+&lt;p&gt;How do we go about finding the vectors $x_u$ and $y_i$ given some implicit feedback $\{r_{ui}\}$? If a user has interacted with an item, we have reason to believe that $p_{ui}=1$, and the more they have interected with that item, the stronger our belief in their preference.&lt;/p&gt;
+&lt;p&gt;To define our model, set
+$$ p_{ui} = \begin{cases} 1 &amp; \text{if }r_{ui}&gt;0\\ 0 &amp; \text{if }r_{ui}=0.\end{cases}$$
+We try to minimize the following cost function:
+$$ C_\text{implicit} := \sum_{u,i\in\text{observed interactions}} c_{ui}\left(p_{ui} - x^T_u y_i \right)^2 + \lambda \left(\sum_u \|x_u\|^2 + \sum_i \|y_i\|^2\right),$$
+where $c_{ui}$ is our &lt;strong&gt;confidence&lt;/strong&gt; in $p_{ui}.$ That is, the more a user has interacted with an item, the more we penalize our model for incorrectly predicting $p_{ui}.$&lt;/p&gt;
+&lt;p&gt;If a user has never interacted with an item, it is possible that $p_{ui}=1$ and the user has just never encountered the item. It is also possible they are actively avoiding the item. To deal with this ambiguity, it is common to define the confidence by
+$$c_{ui}:=1 + \alpha r_{ui},$$
+where $\alpha$ is a parameter of the model that needs to be tuned to the dataset (there is some heuristic evidence that setting it to XXX works well). Another possibility that works well (and makes the model more robust agains power users), which is also mentioned in &lt;a href=&quot;&quot;&gt;Hu et al.&lt;/a&gt;, is to set $c_{ui} = 1 + \alpha\log(1+r_{ui}/\epsilon),$ where $\epsilon$ is yet another data-dependent parameter of the model.&lt;/p&gt;
 
-&lt;p&gt;The blog is based on the &lt;a href=&quot;https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll&quot;&gt;Jekyll version of Clean Blog Theme by Start Bootstrap&lt;/a&gt;. The archive and category generating code is from &lt;a href=&quot;https://github.com/plusjade/jekyll-bootstrap/&quot;&gt;Jekyll-Bootstrap&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;ALS-for-Implicit-Feedback&quot;&gt;ALS for Implicit Feedback&lt;a class=&quot;anchor-link&quot; href=&quot;#ALS-for-Implicit-Feedback&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The basic idea of the ALS algorithm for matrix factorization applies to minimizing $C_\text{implicit}$: if we hold the user (resp. item) vectors fixed, then $C_\text{implicit}$ depends quadratically on the item (resp. user) vectors. That means we can do the same thing: hold the user vectors fixed and solve for the minimum in the item variables, then hold the item vectors fixed and solve for the minimum in the user variables, and repeat...&lt;/p&gt;
+&lt;p&gt;Of course, our cost function $C_\text{implicit}$ is slightly different, so the actual steps involving solving for the minimum look a bit different. The algorithm is as follows.&lt;/p&gt;
+&lt;h3 id=&quot;Implicit-ALS&quot;&gt;Implicit ALS&lt;a class=&quot;anchor-link&quot; href=&quot;#Implicit-ALS&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Initialize user vectors.&lt;/li&gt;
+&lt;li&gt;For each item &lt;code&gt;i&lt;/code&gt;, let $p_i$ be the vector whose components are $p_{ui}$ (for fixed &lt;code&gt;i&lt;/code&gt;, there will be &lt;code&gt;n_users&lt;/code&gt; components), let $c_{i}$ be the vector whose components are $c_{ui}$, and let $C^i$ be the diagonal matrix with $c_i$ along the diagonal. Compute
+$$y_i = \left(X^TC^iX+\lambda I\right)^{-1}X^Tc_i.$$&lt;/li&gt;
+&lt;li&gt;For each user &lt;code&gt;u&lt;/code&gt;, let $p_u$ be the vector whose components are $p_{ui}$ (for fixed &lt;code&gt;u&lt;/code&gt;; there will be &lt;code&gt;n_items&lt;/code&gt; components), let $c_{u}$ be the vector whose components are $c_{ui}$, and let $C^u$ be the diagonal matrix with $c_u$ along the diagonal. Compute
+$$x_u = \left(Y^TC^uY + \lambda I\right)^{-1}Y^Tc_u.$$&lt;/li&gt;
+&lt;li&gt;Repeat 2), 3) until convergance.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Remarks&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;As for standard (explicit) matrix factorization models, it is (almost) always better to solve $\left(X^TC^iX+\lambda I\right) y_i = X^Tc_i$ than to invert the matrix $\left(X^TC^iX+\lambda I\right)$ and multiply.&lt;/li&gt;
+&lt;li&gt;Since $c_{ui} = 1 + \alpha r_{ui}$, which we can write in terms of matrices $C:=(c_{ui})$ and $R:=(r_{ui})$ as $C = 1 + \alpha R$, the computation in step two can be rewritten as
+$$y_i = \left(X^TX + \lambda I + \alpha X^TR^iX\right)^{-1}X^Tc_i.$$
+The term $X^TX+\lambda I$ is independent of &lt;code&gt;i&lt;/code&gt;, and can be computed once and reused at each step of the algorithm (similarly for $Y^TY+\lambda I$ in step 3).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;A-numpy-Implementation-of-ALS-for-Implicit-Feedback&quot;&gt;A &lt;code&gt;numpy&lt;/code&gt; Implementation of ALS for Implicit Feedback&lt;a class=&quot;anchor-link&quot; href=&quot;#A-numpy-Implementation-of-ALS-for-Implicit-Feedback&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;It turns out that the matrix multiplication $X^TC^iX$ and the matrix-vector product $X^Tc_i$ are both easier to implement in &lt;code&gt;numpy&lt;/code&gt; than to express in standard linear algebra notation. A direct implementation of the algorithm is of course possible, but a (very very small) bit of thought improves performance vastly.&lt;/p&gt;
+&lt;h4 id=&quot;numpy-Implementation-Notes&quot;&gt;&lt;code&gt;numpy&lt;/code&gt; Implementation Notes&lt;a class=&quot;anchor-link&quot; href=&quot;#numpy-Implementation-Notes&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;A direct implementation of the matrix product $X^TC^iX$ would be something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Ci = np.diag(c[i])
+XTCiX = np.dot(X, np.dot(Ci, np.dot(X.T)).
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But the matrix product &lt;code&gt;np.dot(X, Ci)&lt;/code&gt; is just multiplying the rows of $X$, in order, by the diagonal elements of $C^i$, which is achieved very efficiently by simple &lt;code&gt;numpy&lt;/code&gt; broadcasting. So we can achieve the same matrix product via&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;XTCiX = np.dot(c[i] * X.T, X).
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Moreover, we can rewrite the algorithm in terms of just the scaled raw counts $\alpha R$ and the preference $p$ as
+$$y_i = \left(X^TX+\lambda I + \alpha X^TR^iX\right)^{-1}X^T(p_i + \alpha r_i).$$&lt;/p&gt;
+&lt;p&gt;Finally, when &lt;code&gt;n_users&lt;/code&gt; and &lt;code&gt;n_items&lt;/code&gt; are large, $R$ (and hence $p$) will generally be sparse matrices. The matrix $\left(X^TX+\lambda I + \alpha X^TR^iX\right)$ is, however, $N\times N$ and since the number of factors is generally small (on the order of 10), there is no great savings by using a sparse implementation of this matrix. On the other hand, only the user vectors corresponding to nonzero entries of $r_i$ (and $p_i$) are needed in the computation of $X^TR^iX$ and of $X^T(p_i + \alpha r_i)$, so if the algorithm is parallelized, it is &lt;em&gt;very&lt;/em&gt; useful to only ship those vectors to the workers doing the computation for $y_i$ (this is, for example, how the Spark implementation works). Our implementation is not parallelized (for the sake of clarity), so we don't need to worry about shipping data to workers.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;ALS-with-Biases-for-Implicit-Feedback&quot;&gt;ALS with Biases for Implicit Feedback&lt;a class=&quot;anchor-link&quot; href=&quot;#ALS-with-Biases-for-Implicit-Feedback&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;As with the standard matrix factorization model, matrix factorization models for implicit feedback tend to work better if user and item biases are accounted for; we introduce parameters $\beta_u$ and $\gamma_i$ as before, and try to fit a model
+$$p_{ui} \sim \hat{p}_{ui} = \beta_u + \gamma_i + x^T_u y_i$$
+by minimizing the cost function
+$$C_{implicit}^{biased} := \sum_{u,i\in\text{observed interactions}} c_{ui}\left(p_{ui} - \beta_u - \gamma_i - x^T_u y_i \right)^2 + \lambda \left(\sum_u (\|x_u\|^2 + \beta_u^2) + \sum_i (\|y_i\|^2 + \gamma_i^2)\right).$$&lt;/p&gt;
+&lt;p&gt;The interpretation of the biases in this case is slightly different.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;User Bias $\beta_u$: A higher bias $\beta_u$ pushes the values of all preferences $p_{ui}$ up &lt;em&gt;for all items&lt;/em&gt;; that is, a user with a high bias likes a large variety of items; conversely, a low user bias means the user only likes a small selection of items.&lt;/li&gt;
+&lt;li&gt;Item Bias $\gamma_i$: A higher item biase $\gamma_i$ pushes the preferences $p_{ui}$ up &lt;em&gt;for all users&lt;/em&gt;; that is, the item is more universally beloved (or mainstream); conversely, a low item bias might indicate a niche item.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Again, the principle of the ALS algorithm applies here, with appropriate modifications for the new cost function $C^\text{biased}_\text{implicit}$. (Anyone who's made it this far can probably guess the algorithm, but for sake of completeness, here it is:)&lt;/p&gt;
+&lt;h3 id=&quot;Implict-ALS-with-Biases&quot;&gt;Implict ALS with Biases&lt;a class=&quot;anchor-link&quot; href=&quot;#Implict-ALS-with-Biases&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Initialize user vectors and biases.&lt;/li&gt;
+&lt;li&gt;Define vectors
+$$p^\beta_i:=p_i - \beta,$$
+$$\tilde{x}_u^T = (1, x_u),$$
+and
+$$\tilde{y}_i^T = (\gamma_i, y_i).$$
+Then compute
+$$\tilde{y}_i = \left(\tilde{X}^TC^i\tilde{X} + \lambda I\right)^{-1}\tilde{X}^TC^ip^\beta_i.$$&lt;/li&gt;
+&lt;li&gt;Define vectors
+$$p^\gamma_u:=p_u - \gamma,$$
+$$\tilde{y}_i^T = (1, y_i),$$
+and
+$$\tilde{x}_u^T = (\gamma_i, x_u).$$
+Then compute
+$$\tilde{x}_u = \left(\tilde{Y}^TC^u\tilde{Y} + \lambda I\right)^{-1}\tilde{Y}^TC^up^\gamma_u.$$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The same remarks apply as for biased ALS and implicit ALS (without biases) apply.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;h2 id=&quot;Conclusions&quot;&gt;Conclusions&lt;a class=&quot;anchor-link&quot; href=&quot;#Conclusions&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
+&lt;p&gt;As we mentioned in the beginning, one can measure the effectiveness of various models. In a future post, we will compare the matrix factorization algorithms we discussed here on real-world data and see that indeed, accounting for user and item biases is worth the extra effort.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
 </description>
-        <pubDate>Fri, 09 Oct 2015 09:39:37 -0700</pubDate>
-        <link>http://activisiongamescience.github.io/2015/10/09/README/</link>
-        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/09/README/</guid>
+        <pubDate>Thu, 15 Oct 2015 00:00:00 +0000</pubDate>
+        <link>http://activisiongamescience.github.io/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/</guid>
+        
+        <category>Machine Learning</category>
+        
+        <category>Recommender Systems</category>
         
         
       </item>
@@ -1898,7 +2225,7 @@ ZjOzinFhNjOrGBdmM7OKcWE2M6sYF2Yzs4pxYTYzq5j/D8EIqKC0676SAAAAAElFTkSuQmCC
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;h3 id=&quot;Discussion&quot;&gt;Discussion&lt;a class=&quot;anchor-link&quot; href=&quot;#Discussion&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;From the above graphs it is clear that the quality of SOD depends on the choice of $\text{snn}$.  Interestingly, the optimal setting for $\text{snn}$ appears to be approximately the same as the number of anomalies in the dataset (or slightly larger).&lt;/p&gt;
-&lt;p&gt;Since in practice we won&#39;t know the number of anomalies to expect, we won&#39;t be able to tune $\text{snn}$ effectively.  It is important to notice that the quality drops especially quickly if $\text{snn}$ is chosen too small.&lt;/p&gt;
+&lt;p&gt;Since in practice we won't know the number of anomalies to expect, we won't be able to tune $\text{snn}$ effectively.  It is important to notice that the quality drops especially quickly if $\text{snn}$ is chosen too small.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -9950,7 +10277,7 @@ Lec. Notes in Comp. Sci. Vol. 5476, 2009, pp 831-38&lt;/p&gt;
 Neural Computation 13(7), 2001, pp 1443-71&lt;/p&gt;
 &lt;h3 id=&quot;amer2013&quot;&gt;amer2013&lt;a class=&quot;anchor-link&quot; href=&quot;#amer2013&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://outlier-analytics.org/odd13kdd/papers/amer,goldstein,abdennadher.pdf&quot;&gt;Amer, Goldstein, Abdennadher&lt;/a&gt;,
 &lt;em&gt;Enhancing One-class Support Vector Machines for Unsupervised Anomaly Detection&lt;/em&gt;,
-ODD &#39;13, 2013, pp 8-15&lt;/p&gt;
+ODD '13, 2013, pp 8-15&lt;/p&gt;
 &lt;h3 id=&quot;davis2006&quot;&gt;davis2006&lt;a class=&quot;anchor-link&quot; href=&quot;#davis2006&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://www.autonlab.org/icml_documents/camera-ready/030_The_Relationship_Bet.pdf&quot;&gt;Davis, Goadrich&lt;/a&gt;,
 &lt;em&gt;The Relationship Between Precision-Recall and ROC Curves&lt;/em&gt;,
 Intl. Proc. on Mach. Learn., 2006&lt;/p&gt;
@@ -9978,13 +10305,100 @@ ICANN’07, pages 269–278. Springer, 2007&lt;/p&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 </description>
-        <pubDate>Fri, 02 Oct 2015 12:32:34 -0700</pubDate>
-        <link>http://activisiongamescience.github.io/2015/10/02/SOD%20vs%20One-class%20SVM/</link>
-        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/02/SOD%20vs%20One-class%20SVM/</guid>
+        <pubDate>Tue, 25 Aug 2015 00:00:00 +0000</pubDate>
+        <link>http://activisiongamescience.github.io/2015/08/25/SOD%20vs%20One-class%20SVM/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/08/25/SOD%20vs%20One-class%20SVM/</guid>
         
         <category>Classification</category>
         
         <category>Machine Learning</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Blog README (Internal)</title>
+        <description>&lt;h1 id=&quot;analytic-services-blog&quot;&gt;Analytic Services Blog&lt;/h1&gt;
+
+&lt;h2 id=&quot;jupyter-ipython-notebooks&quot;&gt;Jupyter (IPython) Notebooks&lt;/h2&gt;
+
+&lt;p&gt;To convert a Jupyter (IPython) notebook to a post, but &lt;code&gt;&amp;lt;post-name&amp;gt;.ipynb&lt;/code&gt; into &lt;code&gt;/_notebooks&lt;/code&gt;and run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ipython nbconvert &amp;lt;post-name&amp;gt;.ipynb --template jekyll-html
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Edit the first few lines of the resulting &lt;code&gt;.html&lt;/code&gt; (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in &lt;code&gt;&quot; &quot;&lt;/code&gt;, but a list of tags needs &lt;code&gt;[ ]&lt;/code&gt;; for example, &lt;code&gt;[Classification, Machine Learning]&lt;/code&gt; works well.&lt;/p&gt;
+
+&lt;p&gt;To view the post first as a draft, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; into &lt;code&gt;/_drafts&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: the name of the post will be the file name. So make stupid filenames like &lt;code&gt;SOD\ vs\ One-class\ SVM.html&lt;/code&gt; and not normal filenames like &lt;code&gt;sod-vs-one-class-svm.html&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: Spencer’s hide-input-cells trick is automatically included (it’s in the jekyll template and blog layouts). So &lt;strong&gt;&lt;em&gt;don’t&lt;/em&gt;&lt;/strong&gt; use it in your notebook.&lt;/p&gt;
+
+&lt;p&gt;Once you’re happy, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; to &lt;code&gt;/_posts&lt;/code&gt; and rename it to &lt;code&gt;&amp;lt;YR&amp;gt;-&amp;lt;MO&amp;gt;-&amp;lt;DY&amp;gt;-&amp;lt;post-name&amp;gt;.html&lt;/code&gt;. The naming convention is important for indexing.&lt;/p&gt;
+
+&lt;h2 id=&quot;installing-jekyll&quot;&gt;Installing Jekyll&lt;/h2&gt;
+
+&lt;p&gt;The following seems to work on Ubuntu 14.04. YMMV.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sudo apt-get install ruby-dev zlib1g-dev nodejs
+sudo gem install jekyll
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;serving-the-blog&quot;&gt;Serving the Blog&lt;/h2&gt;
+
+&lt;p&gt;To serve the blog locally, run&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;jekyll serve
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add &lt;code&gt;--host 0.0.0.0&lt;/code&gt; if you serve from a VM or an internal server. The site should be available on port 4000.&lt;/p&gt;
+
+&lt;p&gt;Add &lt;code&gt;--drafts&lt;/code&gt; if you want to see draft posts.&lt;/p&gt;
+
+&lt;p&gt;For development, add &lt;code&gt;--watch&lt;/code&gt; if you want to automatically update the site whenever jekyll detects filechanges. This doesn’t always work, though; sometimes you need to run &lt;code&gt;jekyll build&lt;/code&gt; or &lt;code&gt;jekyll build --drafts&lt;/code&gt; explicitly.&lt;/p&gt;
+
+&lt;h2 id=&quot;some-general-jekyll-stuff&quot;&gt;Some general Jekyll stuff&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;All the HTML for generating posts and other “dynamic” content is in &lt;code&gt;/_layouts&lt;/code&gt; and &lt;code&gt;/_includes&lt;/code&gt;. There are also a few important HTML files in the base directory (&lt;code&gt;index.html&lt;/code&gt;, &lt;code&gt;category.html&lt;/code&gt;, &lt;code&gt;archive.html&lt;/code&gt;, and &lt;code&gt;about.html&lt;/code&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Jekyll will inlude any subdirectories verbatim in the generated site. (E.g. &lt;code&gt;/css&lt;/code&gt; and &lt;code&gt;/img&lt;/code&gt; are not jekyll specific.)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;IPython CSS is kind of a nightmare. The standard &lt;code&gt;ipython nbconvert&lt;/code&gt; inlines a bunch of CSS that they hand cut from Bootstrap, etc… (they are aware that that is a shitty thing to do, but it’s what they did). That makes the generated .html files play badly with anything else. Hence the custom &lt;code&gt;jekyll-html.tpl&lt;/code&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Jekyll reads the yaml frontmatter from any .html files in the base directory and generates pages for them (e.g. &lt;code&gt;about.html&lt;/code&gt;, &lt;code&gt;category.html&lt;/code&gt;, &lt;code&gt;archive.html&lt;/code&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;For more info:&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;http://jekyllbootstrap.com/lessons/jekyll-introduction.html&quot;&gt;Jekyll Introduction&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;http://jekyllrb.com/docs/quickstart/&quot;&gt;Quick Start&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;to-do&quot;&gt;To Do&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Find better background images for About/Categories/Archive (Will took the current one with his phone).&lt;/li&gt;
+  &lt;li&gt;Write some “About” text.&lt;/li&gt;
+  &lt;li&gt;Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).&lt;/li&gt;
+  &lt;li&gt;Make more awesome posts.&lt;/li&gt;
+  &lt;li&gt;Publish to GitHub pages.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;credits&quot;&gt;Credits&lt;/h3&gt;
+
+&lt;p&gt;The blog is based on the &lt;a href=&quot;https://github.com/IronSummitMedia/startbootstrap-clean-blog-jekyll&quot;&gt;Jekyll version of Clean Blog Theme by Start Bootstrap&lt;/a&gt;. The archive and category generating code is from &lt;a href=&quot;https://github.com/plusjade/jekyll-bootstrap/&quot;&gt;Jekyll-Bootstrap&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 15 Aug 2015 00:00:00 +0000</pubDate>
+        <link>http://activisiongamescience.github.io/2015/08/15/README/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/08/15/README/</guid>
         
         
       </item>

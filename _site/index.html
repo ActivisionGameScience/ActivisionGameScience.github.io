@@ -83,7 +83,7 @@
 
 
     <!-- Page Header -->
-<header class="intro-header index-header" style="background-image: url('/img/analytic_services_logo(pv2)-small.png')">
+<header class="intro-header index-header" style="background-image: url('/img/analytic_services_logo(pv2d).png')">
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -109,46 +109,76 @@
 
 <div class="post-preview">
     <a href="/2015/10/25/Comparing%20Matrix%20Factorization%20Models%20for%20Implicit%20Feedback/">
-        <h2 class="post-title">            Comparing Matrix Factorization Models for Implicit Feedback
+        <h2 class="post-title">
+            Comparing Matrix Factorization Models for Implicit Feedback
         </h2>
-        
     </a>
     <p class="post-meta">Posted by Will Kirwin on October 25, 2015</p>
+
+    
+        
+<p>We compare various implicit factorization models for recommender systems on the Taste Profile dataset. It turns out that the supposed advantage of )<a href="http://stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf">Logistic Matrix Factorization Models</a> can be almost entirely attributed to the inclusion of user and item biases, and when the standard <a href="http://yifanhu.net/PUB/cf.pdf">implicit matrix factorization model</a> of Hu, et al., is modified to include user and item biases, it outperforms Logistic MF.</p>
+
+    
+
 </div>
 <hr>
 
 <div class="post-preview">
     <a href="/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/">
-        <h2 class="post-title">            Implicit Recommender Systems - Biased Matrix Factorization
+        <h2 class="post-title">
+            Implicit Recommender Systems - Biased Matrix Factorization
         </h2>
-        
     </a>
     <p class="post-meta">Posted by Will Kirwin on October 15, 2015</p>
+
+    
+        
+<p>In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name <em>Alternating Least Squares</em> (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.</p>
+<p>We will also go through the ALS algorithm for implicit feedback, and then explain how to modify <em>that</em> to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren't aware of any good source for <em>implicit ALS with biases</em>... hence, this post.</p>
+
+    
+
 </div>
 <hr>
 
 <div class="post-preview">
     <a href="/2015/08/25/SOD%20vs%20One-class%20SVM/">
-        <h2 class="post-title">            SOD vs One-class SVM
+        <h2 class="post-title">
+            SOD vs One-class SVM
         </h2>
-        
     </a>
     <p class="post-meta">Posted by Spencer Stirling on August 25, 2015</p>
+
+    
+        
+<p>In this article we test two algorithms that detect anomalies in high-dimensional data.  For our purposes, "high-dimensional" means tens to hundreds of dimensions.  Our results might generalize to "very high-dimensional" (100,000 dimensions is commonly seen in NLP and image processing), but we have not carefully experimented there.</p>
+<p>Since we rarely have training data (nor even know what we are looking for), we are only interested in <em>unsupervised</em> algorithms.</p>
+<p>The first algorithm, <strong>Subspace Outlier Degree (SOD)</strong> <a href="#kriegel2009">kriegel2009</a>, is an unsupervised <em>local</em> anomaly detector.  "Local" means that points are compared against their nearest neighbors (<em>not</em> against the entire dataset).  The appeal of SOD is that it overcomes the curse of dimensionality that plagues distance and density-based algorithms such as <a href="http://www.dbs.ifi.lmu.de/Publikationen/Papers/LOF.pdf">Local Outlier Factor</a>.  For our experiments we use the implementation found in the <a href="http://elki.dbs.ifi.lmu.de/"><code>ELKI</code></a> framework.</p>
+<p>The second algorithm, <strong>One-Class Support Vector Machine</strong> <a href="#scholkopf2001">scholkopf2001</a>, is a semi-supervised global anomaly detector (i.e. we need a training set that contains only the "normal" class).  However, since SVM decision boundaries are soft, it can be used unsupervised as well.</p>
+<p>We experiment with this, as well as two variants ("eta" and "robust") that were recently proposed <a href="#amer2013">amer2013</a> explicitly for unsupervised applications.  We use the implementation in <a href="https://github.com/Markus-Go/rapidminer-anomalydetection"><code>RapidMiner</code></a> (which leverages a modified version of <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/"><code>libsvm</code></a> underneath).</p>
+
+    
+
 </div>
 <hr>
 
 <div class="post-preview">
     <a href="/2015/08/15/README/">
-        <h2 class="post-title">            Blog README (Internal)
+        <h2 class="post-title">
+            Blog README (Internal)
         </h2>
-        
     </a>
     <p class="post-meta">Posted by Activision Analytic Services on August 15, 2015</p>
+
+    
+
 </div>
 <hr>
 
 
 <!-- Pager -->
+
 
 
         </div>

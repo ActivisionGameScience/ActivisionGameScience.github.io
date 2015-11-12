@@ -203,10 +203,30 @@
 </nav>
 
 
-    <div class="cell border-box-sizing text_cell rendered">
+    <!--put these separators somewhere appropriate:-->
+
+
+
+<!--this is just hacky filler-->
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div></div>
+<p>
+<hr>
+</p>
+</div>
+</div>
+</div>
+<!--back to the good stuff-->
+
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>
 NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
 </p>
@@ -214,23 +234,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 </div>
 </div>
 
-  <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
 
-        <div class="cell border-box-sizing text_cell rendered">
-            <div>
-            </div>
-            <div class="inner_cell">
-                <div class="text_cell_render border-box-sizing rendered_html">
-                    <p>
-                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-     
-
-        
 <div class="cell border-box-sizing text_cell rendered">
 <div>
 </div>
@@ -246,8 +250,10 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>TL;DR</strong> In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name <em>Alternating Least Squares</em> (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.</p>
+<!--excerpt.start-->
+<p>In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name <em>Alternating Least Squares</em> (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.</p>
 <p>We will also go through the ALS algorithm for implicit feedback, and then explain how to modify <em>that</em> to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren't aware of any good source for <em>implicit ALS with biases</em>... hence, this post.</p>
+<!--excerpt.end-->
 
 </div>
 </div>
@@ -601,8 +607,8 @@ $$\tilde{x}_u = \left(\tilde{Y}^TC^u\tilde{Y} + \lambda I\right)^{-1}\tilde{Y}^T
 </div>
 </div>
 </div>
-    </div>
-  </div>
+</div>
+</div>
 
 
     <!-- Footer -->

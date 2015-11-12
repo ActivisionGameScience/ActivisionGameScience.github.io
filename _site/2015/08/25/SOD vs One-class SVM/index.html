@@ -203,10 +203,30 @@
 </nav>
 
 
-    <div class="cell border-box-sizing text_cell rendered">
+    <!--put these separators somewhere appropriate:-->
+
+
+
+<!--this is just hacky filler-->
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div></div>
+<p>
+<hr>
+</p>
+</div>
+</div>
+</div>
+<!--back to the good stuff-->
+
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>
 NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
 </p>
@@ -214,34 +234,21 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 </div>
 </div>
 
-  <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
 
-        <div class="cell border-box-sizing text_cell rendered">
-            <div>
-            </div>
-            <div class="inner_cell">
-                <div class="text_cell_render border-box-sizing rendered_html">
-                    <p>
-                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-     
-
-        
 <div class="cell border-box-sizing text_cell rendered">
 <div>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Unsupervised-Anomaly-Detection-in-High-Dimensions:-SOD-vs-One-Class-SVM">Unsupervised Anomaly Detection in High Dimensions: SOD vs One-Class SVM<a class="anchor-link" href="#Unsupervised-Anomaly-Detection-in-High-Dimensions:-SOD-vs-One-Class-SVM">&#182;</a></h1><h3 id="Spencer-Stirling"><a href="https://github.com/sstirlin">Spencer Stirling</a><a class="anchor-link" href="#Spencer-Stirling">&#182;</a></h3><p>August 25, 2015</p>
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>In this article we test two algorithms that detect anomalies in high-dimensional data.  For our purposes, "high-dimensional" means tens to hundreds of dimensions.  Our results might generalize to "very high-dimensional" ($100\text{,}000$ dimensions is commonly seen in NLP and image processing), but we have not carefully experimented there.</p>
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2>
+<!--excerpt.start-->
+<p>In this article we test two algorithms that detect anomalies in high-dimensional data.  For our purposes, "high-dimensional" means tens to hundreds of dimensions.  Our results might generalize to "very high-dimensional" (100,000 dimensions is commonly seen in NLP and image processing), but we have not carefully experimented there.</p>
 <p>Since we rarely have training data (nor even know what we are looking for), we are only interested in <em>unsupervised</em> algorithms.</p>
 <p>The first algorithm, <strong>Subspace Outlier Degree (SOD)</strong> <a href="#kriegel2009">kriegel2009</a>, is an unsupervised <em>local</em> anomaly detector.  "Local" means that points are compared against their nearest neighbors (<em>not</em> against the entire dataset).  The appeal of SOD is that it overcomes the curse of dimensionality that plagues distance and density-based algorithms such as <a href="http://www.dbs.ifi.lmu.de/Publikationen/Papers/LOF.pdf">Local Outlier Factor</a>.  For our experiments we use the implementation found in the <a href="http://elki.dbs.ifi.lmu.de/"><code>ELKI</code></a> framework.</p>
 <p>The second algorithm, <strong>One-Class Support Vector Machine</strong> <a href="#scholkopf2001">scholkopf2001</a>, is a semi-supervised global anomaly detector (i.e. we need a training set that contains only the "normal" class).  However, since SVM decision boundaries are soft, it can be used unsupervised as well.</p>
 <p>We experiment with this, as well as two variants ("eta" and "robust") that were recently proposed <a href="#amer2013">amer2013</a> explicitly for unsupervised applications.  We use the implementation in <a href="https://github.com/Markus-Go/rapidminer-anomalydetection"><code>RapidMiner</code></a> (which leverages a modified version of <a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/"><code>libsvm</code></a> underneath).</p>
+<!--excerpt.end-->
 <p>All scripts and datasets can be obtained from the <a href="https://github.com/ActivisionGameScience/unsupervised_anomaly_detection_sod_vs_one_class_svm.git">github repo</a>.</p>
 
 </div>
@@ -10080,8 +10087,8 @@ ICANN’07, pages 269–278. Springer, 2007</p>
 </div>
 
 </div>
-    </div>
-  </div>
+</div>
+</div>
 
 
     <!-- Footer -->

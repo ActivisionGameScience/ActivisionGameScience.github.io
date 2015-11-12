@@ -11,13 +11,32 @@ tags:
 ---
 {%- endblock header -%}
 
-
 {% block body %}
 
+<!--put these separators somewhere appropriate:-->
+<!--excerpt.start-->
+<!--excerpt.end-->
+
+<!--this is just hacky filler-->
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div></div>
+<p>
+<hr>
+</p>
+</div>
+</div>
+</div>
+<!--back to the good stuff-->
+
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>
 NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
 </p>
@@ -25,25 +44,9 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 </div>
 </div>
 
-  <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
-
-        <div class="cell border-box-sizing text_cell rendered">
-            <div>
-            </div>
-            <div class="inner_cell">
-                <div class="text_cell_render border-box-sizing rendered_html">
-                    <p>
-                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-     
-
-        {{ super() }}
-    </div>
-  </div>
+{{ super() }}
+</div>
+</div>
 {%- endblock body %}
 
 {% block codecell %}

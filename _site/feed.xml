@@ -5,16 +5,36 @@
     <description>We are awesome.</description>
     <link>http://activisiongamescience.github.io/</link>
     <atom:link href="http://activisiongamescience.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 04 Nov 2015 19:04:21 +0000</pubDate>
-    <lastBuildDate>Wed, 04 Nov 2015 19:04:21 +0000</lastBuildDate>
+    <pubDate>Thu, 12 Nov 2015 00:49:16 +0000</pubDate>
+    <lastBuildDate>Thu, 12 Nov 2015 00:49:16 +0000</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>Comparing Matrix Factorization Models for Implicit Feedback</title>
-        <description>&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+        <description>&lt;!--put these separators somewhere appropriate:--&gt;
+
+
+
+&lt;!--this is just hacky filler--&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;div&gt;&lt;/div&gt;
+&lt;p&gt;
+&lt;hr&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!--back to the good stuff--&gt;
+
+&lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
+&lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
+
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;p&gt;
 NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
 &lt;/p&gt;
@@ -22,23 +42,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;/div&gt;
 
-  &lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
-    &lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
 
-        &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
-            &lt;div&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;inner_cell&quot;&gt;
-                &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-                    &lt;p&gt;
-                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
-                    &lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-     
-
-        
 &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
 &lt;div&gt;
 &lt;/div&gt;
@@ -54,8 +58,9 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; We compare various implicit factorization models for recommender systems on the Taste Profile dataset. It turns out that the supposed advantage of &lt;a href=&quot;http://stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf&quot;&gt;Logistic Matrix Factorization Models&lt;/a&gt; can be almost entirely attributed to the inclusion of user and item biases, and when the standard &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;implicit matrix factorization model&lt;/a&gt; of Hu, et al., is modified to include user and item biases, it outperforms Logistic MF.&lt;/p&gt;
-
+&lt;!--excerpt.start--&gt;
+&lt;p&gt;We compare various implicit factorization models for recommender systems on the Taste Profile dataset. It turns out that the supposed advantage of )&lt;a href=&quot;http://stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf&quot;&gt;Logistic Matrix Factorization Models&lt;/a&gt; can be almost entirely attributed to the inclusion of user and item biases, and when the standard &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;implicit matrix factorization model&lt;/a&gt; of Hu, et al., is modified to include user and item biases, it outperforms Logistic MF.&lt;/p&gt;
+&lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2918,8 +2923,8 @@ SUVORK5CYII=
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 </description>
         <pubDate>Sun, 25 Oct 2015 00:00:00 +0000</pubDate>
         <link>http://activisiongamescience.github.io/2015/10/25/Comparing%20Matrix%20Factorization%20Models%20for%20Implicit%20Feedback/</link>
@@ -2934,10 +2939,30 @@ SUVORK5CYII=
     
       <item>
         <title>Implicit Recommender Systems - Biased Matrix Factorization</title>
-        <description>&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+        <description>&lt;!--put these separators somewhere appropriate:--&gt;
+
+
+
+&lt;!--this is just hacky filler--&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;div&gt;&lt;/div&gt;
+&lt;p&gt;
+&lt;hr&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!--back to the good stuff--&gt;
+
+&lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
+&lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
+
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;p&gt;
 NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
 &lt;/p&gt;
@@ -2945,23 +2970,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;/div&gt;
 
-  &lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
-    &lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
 
-        &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
-            &lt;div&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;inner_cell&quot;&gt;
-                &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-                    &lt;p&gt;
-                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
-                    &lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-     
-
-        
 &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
 &lt;div&gt;
 &lt;/div&gt;
@@ -2977,8 +2986,10 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name &lt;em&gt;Alternating Least Squares&lt;/em&gt; (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.&lt;/p&gt;
+&lt;!--excerpt.start--&gt;
+&lt;p&gt;In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name &lt;em&gt;Alternating Least Squares&lt;/em&gt; (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.&lt;/p&gt;
 &lt;p&gt;We will also go through the ALS algorithm for implicit feedback, and then explain how to modify &lt;em&gt;that&lt;/em&gt; to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren't aware of any good source for &lt;em&gt;implicit ALS with biases&lt;/em&gt;... hence, this post.&lt;/p&gt;
+&lt;!--excerpt.end--&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -3332,26 +3343,46 @@ $$\tilde{x}_u = \left(\tilde{Y}^TC^u\tilde{Y} + \lambda I\right)^{-1}\tilde{Y}^T
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 </description>
         <pubDate>Thu, 15 Oct 2015 00:00:00 +0000</pubDate>
         <link>http://activisiongamescience.github.io/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/</link>
         <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/</guid>
         
-        <category>Machine Learning</category>
-        
         <category>Recommender Systems</category>
+        
+        <category>Machine Learning</category>
         
         
       </item>
     
       <item>
         <title>SOD vs One-class SVM</title>
-        <description>&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+        <description>&lt;!--put these separators somewhere appropriate:--&gt;
+
+
+
+&lt;!--this is just hacky filler--&gt;
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;div&gt;&lt;/div&gt;
+&lt;p&gt;
+&lt;hr&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;!--back to the good stuff--&gt;
+
+&lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
+&lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
+
+&lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
+&lt;div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;inner_cell&quot;&gt;
+&lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;p&gt;
 NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
 &lt;/p&gt;
@@ -3359,34 +3390,21 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;/div&gt;
 
-  &lt;div tabindex=&quot;-1&quot; id=&quot;notebook&quot; class=&quot;border-box-sizing&quot;&gt;
-    &lt;div class=&quot;container&quot; id=&quot;notebook-container&quot;&gt;
 
-        &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
-            &lt;div&gt;
-            &lt;/div&gt;
-            &lt;div class=&quot;inner_cell&quot;&gt;
-                &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-                    &lt;p&gt;
-                    NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click &lt;a href=&quot;javascript:code_toggle()&quot;&gt;here&lt;/a&gt;.
-                    &lt;/p&gt;
-                &lt;/div&gt;
-            &lt;/div&gt;
-        &lt;/div&gt;
-     
-
-        
 &lt;div class=&quot;cell border-box-sizing text_cell rendered&quot;&gt;
 &lt;div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;h1 id=&quot;Unsupervised-Anomaly-Detection-in-High-Dimensions:-SOD-vs-One-Class-SVM&quot;&gt;Unsupervised Anomaly Detection in High Dimensions: SOD vs One-Class SVM&lt;a class=&quot;anchor-link&quot; href=&quot;#Unsupervised-Anomaly-Detection-in-High-Dimensions:-SOD-vs-One-Class-SVM&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h1&gt;&lt;h3 id=&quot;Spencer-Stirling&quot;&gt;&lt;a href=&quot;https://github.com/sstirlin&quot;&gt;Spencer Stirling&lt;/a&gt;&lt;a class=&quot;anchor-link&quot; href=&quot;#Spencer-Stirling&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;August 25, 2015&lt;/p&gt;
-&lt;h2 id=&quot;Introduction&quot;&gt;Introduction&lt;a class=&quot;anchor-link&quot; href=&quot;#Introduction&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In this article we test two algorithms that detect anomalies in high-dimensional data.  For our purposes, &quot;high-dimensional&quot; means tens to hundreds of dimensions.  Our results might generalize to &quot;very high-dimensional&quot; ($100\text{,}000$ dimensions is commonly seen in NLP and image processing), but we have not carefully experimented there.&lt;/p&gt;
+&lt;h2 id=&quot;Introduction&quot;&gt;Introduction&lt;a class=&quot;anchor-link&quot; href=&quot;#Introduction&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
+&lt;!--excerpt.start--&gt;
+&lt;p&gt;In this article we test two algorithms that detect anomalies in high-dimensional data.  For our purposes, &quot;high-dimensional&quot; means tens to hundreds of dimensions.  Our results might generalize to &quot;very high-dimensional&quot; (100,000 dimensions is commonly seen in NLP and image processing), but we have not carefully experimented there.&lt;/p&gt;
 &lt;p&gt;Since we rarely have training data (nor even know what we are looking for), we are only interested in &lt;em&gt;unsupervised&lt;/em&gt; algorithms.&lt;/p&gt;
 &lt;p&gt;The first algorithm, &lt;strong&gt;Subspace Outlier Degree (SOD)&lt;/strong&gt; &lt;a href=&quot;#kriegel2009&quot;&gt;kriegel2009&lt;/a&gt;, is an unsupervised &lt;em&gt;local&lt;/em&gt; anomaly detector.  &quot;Local&quot; means that points are compared against their nearest neighbors (&lt;em&gt;not&lt;/em&gt; against the entire dataset).  The appeal of SOD is that it overcomes the curse of dimensionality that plagues distance and density-based algorithms such as &lt;a href=&quot;http://www.dbs.ifi.lmu.de/Publikationen/Papers/LOF.pdf&quot;&gt;Local Outlier Factor&lt;/a&gt;.  For our experiments we use the implementation found in the &lt;a href=&quot;http://elki.dbs.ifi.lmu.de/&quot;&gt;&lt;code&gt;ELKI&lt;/code&gt;&lt;/a&gt; framework.&lt;/p&gt;
 &lt;p&gt;The second algorithm, &lt;strong&gt;One-Class Support Vector Machine&lt;/strong&gt; &lt;a href=&quot;#scholkopf2001&quot;&gt;scholkopf2001&lt;/a&gt;, is a semi-supervised global anomaly detector (i.e. we need a training set that contains only the &quot;normal&quot; class).  However, since SVM decision boundaries are soft, it can be used unsupervised as well.&lt;/p&gt;
 &lt;p&gt;We experiment with this, as well as two variants (&quot;eta&quot; and &quot;robust&quot;) that were recently proposed &lt;a href=&quot;#amer2013&quot;&gt;amer2013&lt;/a&gt; explicitly for unsupervised applications.  We use the implementation in &lt;a href=&quot;https://github.com/Markus-Go/rapidminer-anomalydetection&quot;&gt;&lt;code&gt;RapidMiner&lt;/code&gt;&lt;/a&gt; (which leverages a modified version of &lt;a href=&quot;https://www.csie.ntu.edu.tw/~cjlin/libsvm/&quot;&gt;&lt;code&gt;libsvm&lt;/code&gt;&lt;/a&gt; underneath).&lt;/p&gt;
+&lt;!--excerpt.end--&gt;
 &lt;p&gt;All scripts and datasets can be obtained from the &lt;a href=&quot;https://github.com/ActivisionGameScience/unsupervised_anomaly_detection_sod_vs_one_class_svm.git&quot;&gt;github repo&lt;/a&gt;.&lt;/p&gt;
 
 &lt;/div&gt;
@@ -13225,8 +13243,8 @@ ICANN’07, pages 269–278. Springer, 2007&lt;/p&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 </description>
         <pubDate>Tue, 25 Aug 2015 00:00:00 +0000</pubDate>
         <link>http://activisiongamescience.github.io/2015/08/25/SOD%20vs%20One-class%20SVM/</link>
@@ -13251,6 +13269,8 @@ ICANN’07, pages 269–278. Springer, 2007&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Edit the first few lines of the resulting &lt;code&gt;.html&lt;/code&gt; (the yaml header) with appropriate info (probably at least the author). Tags do not need to be in &lt;code&gt;&quot; &quot;&lt;/code&gt;, but a list of tags needs &lt;code&gt;[ ]&lt;/code&gt;; for example, &lt;code&gt;[Classification, Machine Learning]&lt;/code&gt; works well.&lt;/p&gt;
+
+&lt;p&gt;Move &lt;code&gt;&amp;lt;!--excerpt.start--&amp;gt;&lt;/code&gt; and &lt;code&gt;&amp;lt;!--excerpt.end--&amp;gt;&lt;/code&gt; to appropriate places in the &lt;code&gt;.html&lt;/code&gt;. They should encapsulate what you want shown on the front page. HTML is OK, but I haven’t enabled MathJax on the landing page (yet), so no LaTeX.&lt;/p&gt;
 
 &lt;p&gt;To view the post first as a draft, move &lt;code&gt;&amp;lt;post-name&amp;gt;.html&lt;/code&gt; into &lt;code&gt;/_drafts&lt;/code&gt;.&lt;/p&gt;
 

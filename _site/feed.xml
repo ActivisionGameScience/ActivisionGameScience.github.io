@@ -5,9 +5,9 @@
     <description>We are awesome.</description>
     <link>http://activisiongamescience.github.io/</link>
     <atom:link href="http://activisiongamescience.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 12 Nov 2015 00:49:16 +0000</pubDate>
-    <lastBuildDate>Thu, 12 Nov 2015 00:49:16 +0000</lastBuildDate>
-    <generator>Jekyll v2.5.3</generator>
+    <pubDate>Fri, 11 Dec 2015 20:21:34 +0000</pubDate>
+    <lastBuildDate>Fri, 11 Dec 2015 20:21:34 +0000</lastBuildDate>
+    <generator>Jekyll v3.0.1</generator>
     
       <item>
         <title>Comparing Matrix Factorization Models for Implicit Feedback</title>
@@ -59,7 +59,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;!--excerpt.start--&gt;
-&lt;p&gt;We compare various implicit factorization models for recommender systems on the Taste Profile dataset. It turns out that the supposed advantage of )&lt;a href=&quot;http://stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf&quot;&gt;Logistic Matrix Factorization Models&lt;/a&gt; can be almost entirely attributed to the inclusion of user and item biases, and when the standard &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;implicit matrix factorization model&lt;/a&gt; of Hu, et al., is modified to include user and item biases, it outperforms Logistic MF.&lt;/p&gt;
+&lt;p&gt;We compare various implicit factorization models for recommender systems on the Taste Profile dataset. It turns out that the supposed advantage of &lt;a href=&quot;http://stanford.edu/~rezab/nips2014workshop/submits/logmat.pdf&quot;&gt;Logistic Matrix Factorization Models&lt;/a&gt; can be almost entirely attributed to the inclusion of user and item biases, and when the standard &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;implicit matrix factorization model&lt;/a&gt; of Hu, et al., is modified to include user and item biases, it outperforms Logistic MF.&lt;/p&gt;
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -75,14 +75,14 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;p&gt;We will refer to an implicit matrix factorization model as an IMF, and a logistic matrix factorization model as a LogMF.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;Remarks&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;The name &quot;Logistic Matrix Factorization&quot; is a bit misleading. One downside to the interpretability of IMF models is that although the model is trying to predict a user's preference for an item, which should be a number between 0 and 1 (simply because of the way we define &quot;preference&quot;), the output of an IMF model is just a real number which can be, and often is, (slightly) outside of the interval [0, 1]. There are indeed implicit matrix factorization models which essentially pass the output of the model through a logistic function to ensure that the output is between 0 and 1. That is &lt;em&gt;not&lt;/em&gt; what Johnson calls a Logistic Matrix Factorization Model. His model has different mathematical underpinnings (see equation (2) of the paper for the exact difference), but does involve both matrix factorization--with biases--as well as the logistic function.&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;The name &quot;Logistic Matrix Factorization&quot; is a bit misleading. One downside to the interpretability of IMF models is that although the model is trying to predict a user&#39;s preference for an item, which should be a number between 0 and 1 (simply because of the way we define &quot;preference&quot;), the output of an IMF model is just a real number which can be, and often is, (slightly) outside of the interval [0, 1]. There are indeed implicit matrix factorization models which essentially pass the output of the model through a logistic function to ensure that the output is between 0 and 1. That is &lt;em&gt;not&lt;/em&gt; what Johnson calls a Logistic Matrix Factorization Model. His model has different mathematical underpinnings (see equation (2) of the paper for the exact difference), but does involve both matrix factorization--with biases--as well as the logistic function.&lt;/p&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;p&gt;In Johnson's paper, he compares LogMF to the IMF model of Hu, et al, which does not account for biases. As the LogMF model does account for biases, the comparison is a little bit apples to oranges. Part of the motivation for the current post is to compare &lt;em&gt;biased&lt;/em&gt; IMF to LogMF. Johnson uses proprietary Spotify data to compare his model to the IMF model of Hu, et al, so is not directly reproducible, and finds that his model gives superior results. After reading his paper, we wondered if the difference could be explained by the inclusion of biases, rather than the slightly different underlying statistical model.&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;In Johnson&#39;s paper, he compares LogMF to the IMF model of Hu, et al, which does not account for biases. As the LogMF model does account for biases, the comparison is a little bit apples to oranges. Part of the motivation for the current post is to compare &lt;em&gt;biased&lt;/em&gt; IMF to LogMF. Johnson uses proprietary Spotify data to compare his model to the IMF model of Hu, et al, so is not directly reproducible, and finds that his model gives superior results. After reading his paper, we wondered if the difference could be explained by the inclusion of biases, rather than the slightly different underlying statistical model.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;h3 id=&quot;The-Data:-Taste-Profile&quot;&gt;The Data: Taste Profile&lt;a class=&quot;anchor-link&quot; href=&quot;#The-Data:-Taste-Profile&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;As we do not have access (and presumably, neither do you) to Spotify's proprietary internal listener data, we turned to publicly available datasets. We are aware of only a precious few implicit feedback datasets: the &lt;a href=&quot;http://labrosa.ee.columbia.edu/millionsong/tasteprofile&quot;&gt;Taste Profile&lt;/a&gt; data set, which contains (among other things) a large set of &lt;code&gt;(user, song, song_listened_count)&lt;/code&gt; triplets (about 48 million of them). Another implicit feedback dataset is the [Last.fm Dataset - 1K users], which consists of &lt;code&gt;(timestamp, user, song)&lt;/code&gt; triplets.&lt;/p&gt;
+&lt;h3 id=&quot;The-Data:-Taste-Profile&quot;&gt;The Data: Taste Profile&lt;a class=&quot;anchor-link&quot; href=&quot;#The-Data:-Taste-Profile&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;As we do not have access (and presumably, neither do you) to Spotify&#39;s proprietary internal listener data, we turned to publicly available datasets. We are aware of only a precious few implicit feedback datasets: the &lt;a href=&quot;http://labrosa.ee.columbia.edu/millionsong/tasteprofile&quot;&gt;Taste Profile&lt;/a&gt; data set, which contains (among other things) a large set of &lt;code&gt;(user, song, song_listened_count)&lt;/code&gt; triplets (about 48 million of them). Another implicit feedback dataset is the [Last.fm Dataset - 1K users], which consists of &lt;code&gt;(timestamp, user, song)&lt;/code&gt; triplets.&lt;/p&gt;
 &lt;p&gt;Since we are interested in aggregate song-play counts, we will use the Taste Profile dataset. There were apparently some problems with the ETL and we need to throw out entries for &quot;untrusted&quot; songs (see the Taste Profile description for details).&lt;/p&gt;
-&lt;p&gt;After removing the bad triplets, we converted the user and song id's to integers, and saved the results in a &lt;code&gt;csv&lt;/code&gt; file. The script for accomplishing all this is &lt;a href=&quot;https://github.com/wkirwin&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;After removing the bad triplets, we converted the user and song id&#39;s to integers, and saved the results in a &lt;code&gt;csv&lt;/code&gt; file. The script for accomplishing all this is &lt;a href=&quot;https://github.com/wkirwin&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -140,7 +140,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;h2 id=&quot;Data-Preparation&quot;&gt;Data Preparation&lt;a class=&quot;anchor-link&quot; href=&quot;#Data-Preparation&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Our IMF and LogMF models both take user-item matrices (that is, an &lt;code&gt;(num_users, num_songs)&lt;/code&gt; matrix whose entries are the song play counts), so we need to load the Taste Profile data into matrix form. We also need to make a train/test split; we've chosen an 80/20 split. We could also do cross-validation, but we don't want to make things too complicated all at once.&lt;/p&gt;
+&lt;h2 id=&quot;Data-Preparation&quot;&gt;Data Preparation&lt;a class=&quot;anchor-link&quot; href=&quot;#Data-Preparation&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Our IMF and LogMF models both take user-item matrices (that is, an &lt;code&gt;(num_users, num_songs)&lt;/code&gt; matrix whose entries are the song play counts), so we need to load the Taste Profile data into matrix form. We also need to make a train/test split; we&#39;ve chosen an 80/20 split. We could also do cross-validation, but we don&#39;t want to make things too complicated all at once.&lt;/p&gt;
 &lt;p&gt;In this post, we will just use the first 2 million samples of the Taste Profile data set (so that our models can all be trained in a reasonable amount of time and we can all get back to work; if this were an official publication, we would use all the data). We have also decided to look only at the top 1000 songs. (Again, more for convenience than anything else).&lt;/p&gt;
 &lt;p&gt;The results are:&lt;/p&gt;
 
@@ -254,13 +254,13 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;h3 id=&quot;Model-Evaluation&quot;&gt;Model Evaluation&lt;a class=&quot;anchor-link&quot; href=&quot;#Model-Evaluation&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Code to compute the various metrics we discuss here (as well as some others) can be found &lt;a href=&quot;https://github.com/wkirwin&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Evaluating implicit recommendation engines is tricky, since the output of the model, the user &quot;preferences&quot;, isn't something we can measure directly and compute, for example, a RMSE.&lt;/p&gt;
+&lt;p&gt;Evaluating implicit recommendation engines is tricky, since the output of the model, the user &quot;preferences&quot;, isn&#39;t something we can measure directly and compute, for example, a RMSE.&lt;/p&gt;
 &lt;p&gt;The metric Johnson uses in his paper is the Mean Percentile Ranking. Basically, it is supposed to measure how good the recommendations are as compared to observed play counts.&lt;/p&gt;
-&lt;p&gt;Before we give the formula, we need to explain what a &lt;em&gt;percentile ranking&lt;/em&gt; is. Suppose we have 5 items, and a model which predicts a certain user's preferences for those 5 items, for example &lt;code&gt;[0.2, 0.1, 0.8, 0.7, 0.9]&lt;/code&gt;. We could rank the items by preference, in this case  &lt;code&gt;[4, 5, 2, 3, 1]&lt;/code&gt; (&lt;code&gt;1&lt;/code&gt; being &quot;most preferred&quot; and &lt;code&gt;5&lt;/code&gt; being &quot;least preferred&quot;).&lt;/p&gt;
+&lt;p&gt;Before we give the formula, we need to explain what a &lt;em&gt;percentile ranking&lt;/em&gt; is. Suppose we have 5 items, and a model which predicts a certain user&#39;s preferences for those 5 items, for example &lt;code&gt;[0.2, 0.1, 0.8, 0.7, 0.9]&lt;/code&gt;. We could rank the items by preference, in this case  &lt;code&gt;[4, 5, 2, 3, 1]&lt;/code&gt; (&lt;code&gt;1&lt;/code&gt; being &quot;most preferred&quot; and &lt;code&gt;5&lt;/code&gt; being &quot;least preferred&quot;).&lt;/p&gt;
 &lt;p&gt;The &lt;strong&gt;percentile ranking&lt;/strong&gt; is just this ranking, scaled so that &quot;most preferred&quot; is &lt;code&gt;0&lt;/code&gt;, and &quot;least preferred&quot; is &lt;code&gt;0&lt;/code&gt;; in this case, &lt;code&gt;[0.75, 1.0, 0.25, 0.5, 0.0]&lt;/code&gt;. If we have &lt;code&gt;n&lt;/code&gt; items, the numbers which appear are the &lt;code&gt;n&lt;/code&gt;-th percentiles. Hence the name.&lt;/p&gt;
-&lt;p&gt;The idea of mean percentile ranking is that since it is very difficult to predict actual play counts, and we probably don't actually care if a user listened to a song 50 or 51 times, a better idea is to measure the &lt;em&gt;relative&lt;/em&gt; ordering (or ranking) of the predicted preferences and observed play counts. That is, if our model predicts a higher preference for song 1 than song 2, did the user actually listen to song 1 more than song 2?&lt;/p&gt;
+&lt;p&gt;The idea of mean percentile ranking is that since it is very difficult to predict actual play counts, and we probably don&#39;t actually care if a user listened to a song 50 or 51 times, a better idea is to measure the &lt;em&gt;relative&lt;/em&gt; ordering (or ranking) of the predicted preferences and observed play counts. That is, if our model predicts a higher preference for song 1 than song 2, did the user actually listen to song 1 more than song 2?&lt;/p&gt;
 &lt;p&gt;Suppose we actually observed the following song play counts for this user: &lt;code&gt;[3, 4, 9, 5, 11]&lt;/code&gt;. Comparing to our model ranking, we see that we got the last 3 songs &quot;right&quot;, but the first 2 songs are backwards. How might we encode that fact into a single &quot;score&quot;?&lt;/p&gt;
-&lt;p&gt;There are various ways of comparing rankings, for example Pearson correlation, Spearman's rho, discounted cumulative gain, to mention a few, but we will use (a slight variant) of mean percentile ranking since it is what Johnson originally used. To compute the mean percentile ranking, we simply take the weighted average of the predicted percentile rankings, where the weights are the observed song play counts. In our example, the user's MPR would be&lt;/p&gt;
+&lt;p&gt;There are various ways of comparing rankings, for example Pearson correlation, Spearman&#39;s rho, discounted cumulative gain, to mention a few, but we will use (a slight variant) of mean percentile ranking since it is what Johnson originally used. To compute the mean percentile ranking, we simply take the weighted average of the predicted percentile rankings, where the weights are the observed song play counts. In our example, the user&#39;s MPR would be&lt;/p&gt;
 $$\frac{3\cdot0.75 + 4\cdot1.0 + 9\cdot0.25 + 11\cdot0.0}{3 + 4 + 9 + 5 + 11} = 0.34$$&lt;p&gt;The better we do, the closer the MPR should be to 0. Remember, 0 is good, so high song counts get killed off by low percentile rankings.&lt;/p&gt;
 &lt;p&gt;To compute the MPR for a model, we do the same thing: take the weighted average of all of the predicted percentile preferences of the observered counts, where the weights are the counts:&lt;/p&gt;
 $$MPR = \frac{\sum_{(u,i)\in\text{Test Set}} rank_{ui} \cdot count_{ui}}{\sum_{(u,i)\in\text{Test Set}} count_{ui}}.$$
@@ -272,11 +272,11 @@ $$MPR = \frac{\sum_{(u,i)\in\text{Test Set}} rank_{ui} \cdot count_{ui}}{\sum_{(
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;h4 id=&quot;uMPR&quot;&gt;uMPR&lt;a class=&quot;anchor-link&quot; href=&quot;#uMPR&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;One slight problem with the basic MPR described above is that it can be dominated by power users. For example, suppose we have two users and 3 songs. If the first user's song play counts are &lt;code&gt;[10e6, 5, 1]&lt;/code&gt; and the second user's song play counts are (slightly more &quot;normal&quot;) &lt;code&gt;[20, 10, 35]&lt;/code&gt;, the MPR will be dominated by the first user's predicted percentile preference for the first song, since&lt;/p&gt;
+&lt;h4 id=&quot;uMPR&quot;&gt;uMPR&lt;a class=&quot;anchor-link&quot; href=&quot;#uMPR&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;One slight problem with the basic MPR described above is that it can be dominated by power users. For example, suppose we have two users and 3 songs. If the first user&#39;s song play counts are &lt;code&gt;[10e6, 5, 1]&lt;/code&gt; and the second user&#39;s song play counts are (slightly more &quot;normal&quot;) &lt;code&gt;[20, 10, 35]&lt;/code&gt;, the MPR will be dominated by the first user&#39;s predicted percentile preference for the first song, since&lt;/p&gt;
 $$MPR = \frac{10^6\cdot {rank}_{11} + 5\cdot {rank}_{12} + 1\cdot{rank}_{13} + 20\cdot{rank}_{21} + 10\cdot{rank}_{22} + 35\cdot{rank}_{23}}{10^6 + 5 + 1 + 20 + 10 + 35} = {rank}_{11} + \frac{\text{small numbers}}{10^6 + \text{small stuff}}.$$&lt;p&gt;The second term is basically a small number (on the order of 10s) divided by something slightly bigger than a million.&lt;/p&gt;
 &lt;p&gt;To correct for this problem, we define uMPR (the user-wise MPR): it is just the average of the individual user MPRs (as computed above). Thus, in our example,&lt;/p&gt;
-$$uMPR = \frac{10^6\cdot {rank}_{11} + 5\cdot {rank}_{12} + 1\cdot{rank}_{13}}{10^6 + 5 + 1} + \frac{20\cdot{rank}_{21} + 10\cdot{rank}_{22} + 35\cdot{rank}_{23}}{20 + 10 + 35}.$$&lt;p&gt;This puts the first user's MPR on equal footing with the second user's MPR.&lt;/p&gt;
-&lt;p&gt;We have found this to be a useful modification because it is generally not terribly difficult to predict power users' preferences, so rather than swamping our score with easy-to-predict ratings, we put them on equal footing with the harder-to-predict &quot;normal&quot; users.&lt;/p&gt;
+$$uMPR = \frac{10^6\cdot {rank}_{11} + 5\cdot {rank}_{12} + 1\cdot{rank}_{13}}{10^6 + 5 + 1} + \frac{20\cdot{rank}_{21} + 10\cdot{rank}_{22} + 35\cdot{rank}_{23}}{20 + 10 + 35}.$$&lt;p&gt;This puts the first user&#39;s MPR on equal footing with the second user&#39;s MPR.&lt;/p&gt;
+&lt;p&gt;We have found this to be a useful modification because it is generally not terribly difficult to predict power users&#39; preferences, so rather than swamping our score with easy-to-predict ratings, we put them on equal footing with the harder-to-predict &quot;normal&quot; users.&lt;/p&gt;
 &lt;p&gt;An even more fine-grained MPR-type metric is the distribution of user-MPRs over all users in the test set. The more &quot;piled up&quot; this distribution is near zero, the better the recommendations.&lt;/p&gt;
 
 &lt;/div&gt;
@@ -298,7 +298,7 @@ $$uMPR = \frac{10^6\cdot {rank}_{11} + 5\cdot {rank}_{12} + 1\cdot{rank}_{13}}{1
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;p&gt;As mentioned above, we will evaluate our models by looking at the distribution of user-MPRs.&lt;/p&gt;
 &lt;p&gt;We want some baselines to compare our models to. The obvious baselines are purely random recommendations and just recommending the most popular songs, in that order, to everyone. We call these the Random Model and the Most-Popular Model (resp.).&lt;/p&gt;
-&lt;p&gt;Let's set up the model evaluation and the two baseline models.&lt;/p&gt;
+&lt;p&gt;Let&#39;s set up the model evaluation and the two baseline models.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -797,7 +797,7 @@ klQYg1FJkiQVxmBUkiRJhTEYlSRJUmH+HzGDqJDhQskCAAAAAElFTkSuQmCC
 &lt;p&gt;We can clearly see that recommending the most popular songs is better than recommending random songs.&lt;/p&gt;
 &lt;p&gt;One problem we will have, though, is that it is difficult to compare probability densities (ovelapping histograms gets messy). So we will make one final modification to our evaluation procedure: we will compare &lt;em&gt;cumulative&lt;/em&gt; density functions. The cumulative density function of a historgram (probability density function) at a point $x$ is the number of users whose user-MPR is less than or equal to $x$. (To put it another way, it is the cumsum of the histogram).&lt;/p&gt;
 &lt;p&gt;So a &lt;em&gt;very&lt;/em&gt; good model will look almost like a step function, going from zero to 1, very quickly, as x increases from 0 to 1. To put it another way: the graph of a &quot;good&quot; cdf will be close to the upper left corner.&lt;/p&gt;
-&lt;p&gt;The cdf's of the above distributions are below, for comparison:&lt;/p&gt;
+&lt;p&gt;The cdf&#39;s of the above distributions are below, for comparison:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1438,7 +1438,7 @@ sKC5mNwAAAAASUVORK5CYII=
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;Let's train some implicit matrix factorization models. There are various hyperparameters involved in both the biased IMF model and the LogMF model. We have gridsearched for reasonable optimal hyperparameters elsewhere (that would be another post). Using these reasonable hyperparametrs, let's define and train the two models.&lt;/p&gt;
+&lt;p&gt;Let&#39;s train some implicit matrix factorization models. There are various hyperparameters involved in both the biased IMF model and the LogMF model. We have gridsearched for reasonable optimal hyperparameters elsewhere (that would be another post). Using these reasonable hyperparametrs, let&#39;s define and train the two models.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1502,7 +1502,7 @@ sKC5mNwAAAAASUVORK5CYII=
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;Finally, let's look at the user-MPR distributions (and their associated cdf's, which will be easier to distinguish).&lt;/p&gt;
+&lt;p&gt;Finally, let&#39;s look at the user-MPR distributions (and their associated cdf&#39;s, which will be easier to distinguish).&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2006,7 +2006,7 @@ DolUIYQQQggxdEikCiGEEEKIoeP/AxR4rOYSB9pFAAAAAElFTkSuQmCC
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;p&gt;As expected, it is getting hard to distinguish overlapping histograms. Let's look at the corresponding cdf's.&lt;/p&gt;
+&lt;p&gt;As expected, it is getting hard to distinguish overlapping histograms. Let&#39;s look at the corresponding cdf&#39;s.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2918,7 +2918,7 @@ SUVORK5CYII=
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;h2 id=&quot;Conclusions&quot;&gt;Conclusions&lt;a class=&quot;anchor-link&quot; href=&quot;#Conclusions&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It seems that, at least when looking at Taste Profile data, the advantages of Johnson's logistic matrix factorization model vs. a vanilla implicit matrix factorization model can almost entirely be attributed to his inclusion of user and item biases.&lt;/p&gt;
+&lt;h2 id=&quot;Conclusions&quot;&gt;Conclusions&lt;a class=&quot;anchor-link&quot; href=&quot;#Conclusions&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It seems that, at least when looking at Taste Profile data, the advantages of Johnson&#39;s logistic matrix factorization model vs. a vanilla implicit matrix factorization model can almost entirely be attributed to his inclusion of user and item biases.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2927,8 +2927,8 @@ SUVORK5CYII=
 &lt;/div&gt;
 </description>
         <pubDate>Sun, 25 Oct 2015 00:00:00 +0000</pubDate>
-        <link>http://activisiongamescience.github.io/2015/10/25/Comparing%20Matrix%20Factorization%20Models%20for%20Implicit%20Feedback/</link>
-        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/25/Comparing%20Matrix%20Factorization%20Models%20for%20Implicit%20Feedback/</guid>
+        <link>http://activisiongamescience.github.io/2015/10/25/Comparing-Matrix-Factorization-Models-for-Implicit-Feedback/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/25/Comparing-Matrix-Factorization-Models-for-Implicit-Feedback/</guid>
         
         <category>Recommender Systems</category>
         
@@ -2987,8 +2987,8 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;!--excerpt.start--&gt;
-&lt;p&gt;In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name &lt;em&gt;Alternating Least Squares&lt;/em&gt; (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.&lt;/p&gt;
-&lt;p&gt;We will also go through the ALS algorithm for implicit feedback, and then explain how to modify &lt;em&gt;that&lt;/em&gt; to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren't aware of any good source for &lt;em&gt;implicit ALS with biases&lt;/em&gt;... hence, this post.&lt;/p&gt;
+&lt;p&gt;In today&#39;s post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name &lt;em&gt;Alternating Least Squares&lt;/em&gt; (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.&lt;/p&gt;
+&lt;p&gt;We will also go through the ALS algorithm for implicit feedback, and then explain how to modify &lt;em&gt;that&lt;/em&gt; to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren&#39;t aware of any good source for &lt;em&gt;implicit ALS with biases&lt;/em&gt;... hence, this post.&lt;/p&gt;
 &lt;!--excerpt.end--&gt;
 
 &lt;/div&gt;
@@ -2999,10 +2999,10 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;/div&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
-&lt;h2 id=&quot;Introduction&quot;&gt;Introduction&lt;a class=&quot;anchor-link&quot; href=&quot;#Introduction&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Recommendation engines are becoming ubiquitous in the modern consumer landscape. From Netflix's personalized movie recommendations to Amazon's raft of suggested items (New For Your, Recommendations for You in the Kindle Store, etc...), to Spotify's wildly popular personalized Discover Weekly Playlist, recommendation engines have become an essential tool for promoting content discovery and extending consumer engagement.&lt;/p&gt;
+&lt;h2 id=&quot;Introduction&quot;&gt;Introduction&lt;a class=&quot;anchor-link&quot; href=&quot;#Introduction&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Recommendation engines are becoming ubiquitous in the modern consumer landscape. From Netflix&#39;s personalized movie recommendations to Amazon&#39;s raft of suggested items (New For Your, Recommendations for You in the Kindle Store, etc...), to Spotify&#39;s wildly popular personalized Discover Weekly Playlist, recommendation engines have become an essential tool for promoting content discovery and extending consumer engagement.&lt;/p&gt;
 &lt;p&gt;There has been a proliferation of algorithms in the data science community upon which recommender systems are built, but they all follow the basic central dogma that similar users like similar items. The hard part, of course, is deciding exactly what &quot;similar&quot; means and how to measure it. For Netflix, similar users are users who rate movies similarly. For Spotify, similar users are users who listen to the same kinds of music (a little thought will convince you that these two ideas, while similar, are not really the same).&lt;/p&gt;
 &lt;p&gt;The simplest type of recommender system, called a &lt;em&gt;collaborative filter&lt;/em&gt;, is essentially a literal interpretation of &quot;similar users like similar things&quot;. Once a metric for similarity is decided on, one just looks at the top rated items of the $k$ nearest neighbors (with respect to the similarity metric), filters out those items which the user of interest has already seen/consumed, and &lt;em&gt;voila&lt;/em&gt;, personalized recommendations.&lt;/p&gt;
-&lt;p&gt;Collaborative filters have the advantages of being relatively easy to implement and relatively easy to interpret (e.g. we recommended movie A to user 1 because users 2, 3, and 4 all rated it highly and have similar ratings profiles to user 1). This being the age of data science, though, it is no longer enough to have a reasonable explanation. We can actually measure how effectively a recommender system predicts the ratings of users on unseen items. Thus began Netflix's famous quest for better recommender systems, leading to the famous million dollar prize and eventual solution (by a team of experts working for several years).&lt;/p&gt;
+&lt;p&gt;Collaborative filters have the advantages of being relatively easy to implement and relatively easy to interpret (e.g. we recommended movie A to user 1 because users 2, 3, and 4 all rated it highly and have similar ratings profiles to user 1). This being the age of data science, though, it is no longer enough to have a reasonable explanation. We can actually measure how effectively a recommender system predicts the ratings of users on unseen items. Thus began Netflix&#39;s famous quest for better recommender systems, leading to the famous million dollar prize and eventual solution (by a team of experts working for several years).&lt;/p&gt;
 &lt;p&gt;Although the recommender system that won the Netflix prize was never put into production (it was a carefully tuned mix of many, many, many statistical models, and the marginal gain obtained by implementing all of the models was not worth the technical price compared to simply implementing a few of the best ones), the data science community, and the wider commercial world, learned without a doubt that while collaborative filters are explainable and easily implementable, one can do significantly better if one is willing to flex a bit of mathematical muscle.&lt;/p&gt;
 &lt;p&gt;There were essentially two types of recommender systems in the final solution to the Netflix prize, and they have become the bread and butter of the current state of the art: matrix factorization models and restricted Bolzmann machines (RBMs). We will discuss matrix factorization models in this post.&lt;/p&gt;
 &lt;p&gt;We will be interested in two refinements of the basic matrix factorization model for recommendations: using implicit feedback, and using user and item biases.&lt;/p&gt;
@@ -3039,10 +3039,10 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;h2 id=&quot;Implicit-Feedback&quot;&gt;Implicit Feedback&lt;a class=&quot;anchor-link&quot; href=&quot;#Implicit-Feedback&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;One of the challenges of recommender systems in the wider commercial world is that one rarely has explicit ratings data (Netflix push their users quite hard to rate movies and leverage a lot of the tech on those ratings).&lt;/p&gt;
-&lt;p&gt;Instead, things like clicks, purchases, song listens (or fast-forwards), etc... are available; user-item interactions that somehow, possibly very weekly, indicate a preference or distaste for a particular item. If a user listens to a song only once, maybe it indicates that they didn't like the song, or maybe they were busy and weren't paying attention and actually would like it if they heard it again. If a user listens to a song 100 times, it is a safe bet that they like the song. But it is hard to draw a line between unknown preference and known preference.&lt;/p&gt;
-&lt;p&gt;This kind of indirect information about user-item preferences is known as &lt;em&gt;implicit feedback&lt;/em&gt;, and many smart people have thought long and hard about how to deal with it. We won't delve much into the modeling of implicit feedback in today's post except to say that it turns out to be relatively effective to try to model a user's preference, as measured on a scale of 0 (bad) to 1 (good), instead of the user's actual number of interactions (or whatever number is actually being meausured).&lt;/p&gt;
-&lt;p&gt;We can interpret the number of user-item interations (song listens, for example) as a measure of our confidence in our model's prediction for the user's preference of the item.&lt;/p&gt;
-&lt;p&gt;Below, we'll step through the details of how a matrix factorization model can be used to deal with implicit feedback. The basic algorithm we discuss is from the seminal paper &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;Hu, et al. Collaborative Filtering for Implicit Feedback Datasets&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Instead, things like clicks, purchases, song listens (or fast-forwards), etc... are available; user-item interactions that somehow, possibly very weekly, indicate a preference or distaste for a particular item. If a user listens to a song only once, maybe it indicates that they didn&#39;t like the song, or maybe they were busy and weren&#39;t paying attention and actually would like it if they heard it again. If a user listens to a song 100 times, it is a safe bet that they like the song. But it is hard to draw a line between unknown preference and known preference.&lt;/p&gt;
+&lt;p&gt;This kind of indirect information about user-item preferences is known as &lt;em&gt;implicit feedback&lt;/em&gt;, and many smart people have thought long and hard about how to deal with it. We won&#39;t delve much into the modeling of implicit feedback in today&#39;s post except to say that it turns out to be relatively effective to try to model a user&#39;s preference, as measured on a scale of 0 (bad) to 1 (good), instead of the user&#39;s actual number of interactions (or whatever number is actually being meausured).&lt;/p&gt;
+&lt;p&gt;We can interpret the number of user-item interations (song listens, for example) as a measure of our confidence in our model&#39;s prediction for the user&#39;s preference of the item.&lt;/p&gt;
+&lt;p&gt;Below, we&#39;ll step through the details of how a matrix factorization model can be used to deal with implicit feedback. The basic algorithm we discuss is from the seminal paper &lt;a href=&quot;http://yifanhu.net/PUB/cf.pdf&quot;&gt;Hu, et al. Collaborative Filtering for Implicit Feedback Datasets&lt;/a&gt;.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -3065,7 +3065,7 @@ $$Y = \left(\begin{matrix} \cdots &amp; y_{i_1} &amp; \cdots \\
                               &amp;  \vdots &amp; \\
                            \cdots &amp; y_{i_{n_\text{items}}} &amp; \cdots \end{matrix}\right),$$
 then we can express the above model as&lt;/p&gt;
-$$ R = X^TY.$$&lt;p&gt;Of course, there is no reason that the true user-item matrix $R$ should have rank $N$, and indeed, we won't even know the &quot;true&quot; user-item matrix $R$. But we try to approximate the true $R$ by a rank $N$ factorization:&lt;/p&gt;
+$$ R = X^TY.$$&lt;p&gt;Of course, there is no reason that the true user-item matrix $R$ should have rank $N$, and indeed, we won&#39;t even know the &quot;true&quot; user-item matrix $R$. But we try to approximate the true $R$ by a rank $N$ factorization:&lt;/p&gt;
 $$ R \sim \widehat{R} = X^TY.$$&lt;p&gt;That is, we want to find an $n_\text{users}\times N$ matrix $X$ and an $n_\text{items}\times N$ matrix $Y$ such that $\widehat{R}:=X^TY$ approximates $R$.&lt;/p&gt;
 
 &lt;/div&gt;
@@ -3081,14 +3081,14 @@ $$ C = \sum_{u,i\in\text{observed ratings}} (r_{ui} - x_u^T y_i)^2 + \lambda \le
 &lt;p&gt;&lt;strong&gt;Fundamental Observation&lt;/strong&gt;: If we hold the item vectors $Y$ fixed, $C$ is a &lt;em&gt;quadratic&lt;/em&gt; function of the components of $X$. Similarly, if we hold the user vectors $X$ fixed, $C$ is a quadratic function of the components of $Y$.&lt;/p&gt;
 &lt;p&gt;So in order to minimize $C$, one could try the following:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;Hold the user vectors fixed and &lt;em&gt;solve&lt;/em&gt; the quadratic equation for the $y^j_{i_k}$'s. This will (probably) not be the global minimum of $C$ since we haven't touched half of the variables (the $x^j_{u_k}$'s), but we have at least decreased $C$.&lt;/li&gt;
-&lt;li&gt;Hold the item vectors fixed and &lt;em&gt;solve&lt;/em&gt; the quadratic equation for the $x^j_{u_k}$'s.&lt;/li&gt;
+&lt;li&gt;Hold the user vectors fixed and &lt;em&gt;solve&lt;/em&gt; the quadratic equation for the $y^j_{i_k}$&#39;s. This will (probably) not be the global minimum of $C$ since we haven&#39;t touched half of the variables (the $x^j_{u_k}$&#39;s), but we have at least decreased $C$.&lt;/li&gt;
+&lt;li&gt;Hold the item vectors fixed and &lt;em&gt;solve&lt;/em&gt; the quadratic equation for the $x^j_{u_k}$&#39;s.&lt;/li&gt;
 &lt;li&gt;Repeat.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Some remarks are in order.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Since $C$ is a convex function, and each step of the above algorithm is a minimization, the process must converge at some point. &lt;/li&gt;
-&lt;li&gt;There are other methods for minimizing such a convex cost function, for example, gradient descent (or stochastic gradient descent, or batch SGD, etc...). One important difference here is that at each step of our algorithm, we find the &lt;em&gt;exact&lt;/em&gt; minimum; we don't take small steps in a downward direction. So if we do step 1), a second application of step 1) will have no effect: we're already at the absolute minimum of $C$ with $Y$ held fixed. It also means that single iteration of the above algorithm generally moves much further than an iteration of a gradient descent algorithm; i.e. we need fewer iterations for convergence.&lt;/li&gt;
+&lt;li&gt;There are other methods for minimizing such a convex cost function, for example, gradient descent (or stochastic gradient descent, or batch SGD, etc...). One important difference here is that at each step of our algorithm, we find the &lt;em&gt;exact&lt;/em&gt; minimum; we don&#39;t take small steps in a downward direction. So if we do step 1), a second application of step 1) will have no effect: we&#39;re already at the absolute minimum of $C$ with $Y$ held fixed. It also means that single iteration of the above algorithm generally moves much further than an iteration of a gradient descent algorithm; i.e. we need fewer iterations for convergence.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The above algorithm is called (for obvious reasons) &lt;em&gt;alternating least squares&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;A bit of linear algebra yields the following algorithm.&lt;/p&gt;
@@ -3123,11 +3123,11 @@ for each user &lt;code&gt;u&lt;/code&gt;.&lt;/li&gt;
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;p&gt;As we mentioned above, it turns out that most recommenders systems perform better if user and item biases are taken into account.&lt;/p&gt;
-&lt;p&gt;Suppose we have a ratings system which allows each user to rate each item on a scale of 1 to 5 stars. Suppose we have two users &lt;code&gt;Alice&lt;/code&gt;, who rates items with an average of &lt;code&gt;4&lt;/code&gt; stars, and &lt;code&gt;Bob&lt;/code&gt;, whose average rating is &lt;code&gt;1.5&lt;/code&gt; stars. If &lt;code&gt;Bob&lt;/code&gt; rates some new item with &lt;code&gt;3&lt;/code&gt; stars, it means something &lt;em&gt;very&lt;/em&gt; different than if &lt;code&gt;Alice&lt;/code&gt; rates the same item with &lt;code&gt;3&lt;/code&gt; stars (&lt;code&gt;Bob&lt;/code&gt; &lt;em&gt;really&lt;/em&gt; liked the new item, &lt;code&gt;Alice&lt;/code&gt; didn't). The difference is what we call &lt;em&gt;user bias&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Suppose we have a ratings system which allows each user to rate each item on a scale of 1 to 5 stars. Suppose we have two users &lt;code&gt;Alice&lt;/code&gt;, who rates items with an average of &lt;code&gt;4&lt;/code&gt; stars, and &lt;code&gt;Bob&lt;/code&gt;, whose average rating is &lt;code&gt;1.5&lt;/code&gt; stars. If &lt;code&gt;Bob&lt;/code&gt; rates some new item with &lt;code&gt;3&lt;/code&gt; stars, it means something &lt;em&gt;very&lt;/em&gt; different than if &lt;code&gt;Alice&lt;/code&gt; rates the same item with &lt;code&gt;3&lt;/code&gt; stars (&lt;code&gt;Bob&lt;/code&gt; &lt;em&gt;really&lt;/em&gt; liked the new item, &lt;code&gt;Alice&lt;/code&gt; didn&#39;t). The difference is what we call &lt;em&gt;user bias&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;For an explicit-ratings model (as discussed above, when we have explicit ratings for user-item pairs), one way to account for user bias is to model the actual user-item ratings as&lt;/p&gt;
 $$r_{ui} \sim \beta_u + \hat{r}_{ui},$$&lt;p&gt;where $\beta_u$ is the &lt;em&gt;user bias&lt;/em&gt; of user &lt;code&gt;u&lt;/code&gt; (and $\hat{r}_{ui}$ is some model for the remainder). We can account for item bias in a similar way:&lt;/p&gt;
 $$r_{ui} \sim \beta_u + \gamma_i + \hat{r}_{ui};$$&lt;p&gt;here, $\gamma_i$ is the &lt;em&gt;item bias&lt;/em&gt; of item &lt;code&gt;i&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;For a collaborative filter, one could could define $\hat{r}_{ui}$ via $k$-nearest neighbors using some similarity metric (Pearson is a standard choice), an $\beta_u$ is the average rating of user &lt;code&gt;u&lt;/code&gt; over all of that user's observed ratings and $\gamma_i$ is the average rating of item &lt;code&gt;i&lt;/code&gt; over all users.&lt;/p&gt;
+&lt;p&gt;For a collaborative filter, one could could define $\hat{r}_{ui}$ via $k$-nearest neighbors using some similarity metric (Pearson is a standard choice), an $\beta_u$ is the average rating of user &lt;code&gt;u&lt;/code&gt; over all of that user&#39;s observed ratings and $\gamma_i$ is the average rating of item &lt;code&gt;i&lt;/code&gt; over all users.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -3150,10 +3150,10 @@ $$r_{ui} \sim \beta_u + \gamma_i + \hat{r}_{ui};$$&lt;p&gt;here, $\gamma_i$ is t
 $$r_{ui} \sim \beta_u + \gamma_i + y^T_i x_u$$&lt;p&gt;and minimize the cost function&lt;/p&gt;
 $$ C^\text{biased} = \sum_{u,i\in\text{observed ratings}} (r_{ui} - x_u^T y_i)^2 + \lambda \left( \sum_{u} \left( \|x_u\|^2 + \beta_u^2\right) + \sum_{i} \left(\|y_i\|^2 + \gamma_i^2\right) \right).$$&lt;p&gt;Again, because of the regularization, we can hold the user variables fixed, solve for the minimum in the item variables. Then hold the item variables fixed and solve for the minimum in the user variables.&lt;/p&gt;
 &lt;p&gt;The biases $\beta_u$ and $\gamma_i$ appear in $C^\text{biased}$ without any coefficients, whereas all the other parameters appear at least once with some coefficient. So one approach would be to solve for the biases separately from the other parameters in each step.&lt;/p&gt;
-&lt;p&gt;It is easier, though, to leverage the work we've already done. We can rewrite our cost function at each step so that it looks like an unbiased model, and then just use the same formulas we found above for the unbiased ALS. The &quot;trick&quot; (if it is even worthy of being called such) is to define new vectors that include the biases as components in the &quot;right&quot; way.&lt;/p&gt;
+&lt;p&gt;It is easier, though, to leverage the work we&#39;ve already done. We can rewrite our cost function at each step so that it looks like an unbiased model, and then just use the same formulas we found above for the unbiased ALS. The &quot;trick&quot; (if it is even worthy of being called such) is to define new vectors that include the biases as components in the &quot;right&quot; way.&lt;/p&gt;
 &lt;p&gt;Let $\beta$ be the vector of user biases (with &lt;code&gt;n_users&lt;/code&gt; components) and $\gamma$ the vector of item biases (with &lt;code&gt;n_items&lt;/code&gt; components). Here is the algorithm:&lt;/p&gt;
 &lt;h3 id=&quot;ALS-with-Biases&quot;&gt;ALS with Biases&lt;a class=&quot;anchor-link&quot; href=&quot;#ALS-with-Biases&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;Initial user vectors randomly and set all biases to zero (or initialize them randomly, it doesn't matter very much).&lt;/li&gt;
+&lt;li&gt;Initial user vectors randomly and set all biases to zero (or initialize them randomly, it doesn&#39;t matter very much).&lt;/li&gt;
 &lt;li&gt;For each item &lt;code&gt;i&lt;/code&gt;, define three new vectors :
 $$r^\beta_i := r_i - \beta$$
 with components $r^\beta_{ui}:= r_{ui}-\beta_u$ (notice that both vectors have &lt;code&gt;n_users&lt;/code&gt; components), 
@@ -3195,7 +3195,7 @@ $$ \widetilde{x}_u := \left(\begin{matrix} \beta_u \\ x_u\end{matrix}\right) = \
 &lt;p&gt;Following the fundamental idea of matrix factorization models, we try to find a user vector $x_u$ to each user &lt;code&gt;u&lt;/code&gt; and an item vector $y_i$ to each item &lt;code&gt;i&lt;/code&gt; so that 
 $$p_{ui} \sim x^T_u y_i.$$
 It is important to note, here, that we never actually observe $p_{ui}$! (This is a very different situation that for explicit feedack models, as discussed above, where $r_{ui}$ is the observer rating.)&lt;/p&gt;
-&lt;p&gt;Let's assume the our implicit feedback is a positive integer (number of clicks, number of views, number of listens, etc...). That is, 
+&lt;p&gt;Let&#39;s assume the our implicit feedback is a positive integer (number of clicks, number of views, number of listens, etc...). That is, 
 $$r_{ui} = \text{# of times user }\mathtt{u}\text{ interacted with item }\mathtt{i}.$$&lt;/p&gt;
 &lt;p&gt;How do we go about finding the vectors $x_u$ and $y_i$ given some implicit feedback $\{r_{ui}\}$? If a user has interacted with an item, we have reason to believe that $p_{ui}=1$, and the more they have interected with that item, the stronger our belief in their preference.&lt;/p&gt;
 &lt;p&gt;To define our model, set
@@ -3273,7 +3273,7 @@ XTCiX = np.dot(X, np.dot(Ci, np.dot(X.T)).
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Moreover, we can rewrite the algorithm in terms of just the scaled raw counts $\alpha R$ and the preference $p$ as
 $$y_i = \left(X^TX+\lambda I + \alpha X^TR^iX\right)^{-1}X^T(p_i + \alpha r_i).$$&lt;/p&gt;
-&lt;p&gt;Finally, when &lt;code&gt;n_users&lt;/code&gt; and &lt;code&gt;n_items&lt;/code&gt; are large, $R$ (and hence $p$) will generally be sparse matrices. The matrix $\left(X^TX+\lambda I + \alpha X^TR^iX\right)$ is, however, $N\times N$ and since the number of factors is generally small (on the order of 10), there is no great savings by using a sparse implementation of this matrix. On the other hand, only the user vectors corresponding to nonzero entries of $r_i$ (and $p_i$) are needed in the computation of $X^TR^iX$ and of $X^T(p_i + \alpha r_i)$, so if the algorithm is parallelized, it is &lt;em&gt;very&lt;/em&gt; useful to only ship those vectors to the workers doing the computation for $y_i$ (this is, for example, how the Spark implementation works). Our implementation is not parallelized (for the sake of clarity), so we don't need to worry about shipping data to workers.&lt;/p&gt;
+&lt;p&gt;Finally, when &lt;code&gt;n_users&lt;/code&gt; and &lt;code&gt;n_items&lt;/code&gt; are large, $R$ (and hence $p$) will generally be sparse matrices. The matrix $\left(X^TX+\lambda I + \alpha X^TR^iX\right)$ is, however, $N\times N$ and since the number of factors is generally small (on the order of 10), there is no great savings by using a sparse implementation of this matrix. On the other hand, only the user vectors corresponding to nonzero entries of $r_i$ (and $p_i$) are needed in the computation of $X^TR^iX$ and of $X^T(p_i + \alpha r_i)$, so if the algorithm is parallelized, it is &lt;em&gt;very&lt;/em&gt; useful to only ship those vectors to the workers doing the computation for $y_i$ (this is, for example, how the Spark implementation works). Our implementation is not parallelized (for the sake of clarity), so we don&#39;t need to worry about shipping data to workers.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -3301,7 +3301,7 @@ $$C_{implicit}^{biased} := \sum_{u,i\in\text{observed interactions}} c_{ui}\left
 &lt;li&gt;User Bias $\beta_u$: A higher bias $\beta_u$ pushes the values of all preferences $p_{ui}$ up &lt;em&gt;for all items&lt;/em&gt;; that is, a user with a high bias likes a large variety of items; conversely, a low user bias means the user only likes a small selection of items.&lt;/li&gt;
 &lt;li&gt;Item Bias $\gamma_i$: A higher item biase $\gamma_i$ pushes the preferences $p_{ui}$ up &lt;em&gt;for all users&lt;/em&gt;; that is, the item is more universally beloved (or mainstream); conversely, a low item bias might indicate a niche item.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Again, the principle of the ALS algorithm applies here, with appropriate modifications for the new cost function $C^\text{biased}_\text{implicit}$. (Anyone who's made it this far can probably guess the algorithm, but for sake of completeness, here it is:)&lt;/p&gt;
+&lt;p&gt;Again, the principle of the ALS algorithm applies here, with appropriate modifications for the new cost function $C^\text{biased}_\text{implicit}$. (Anyone who&#39;s made it this far can probably guess the algorithm, but for sake of completeness, here it is:)&lt;/p&gt;
 &lt;h3 id=&quot;Implict-ALS-with-Biases&quot;&gt;Implict ALS with Biases&lt;a class=&quot;anchor-link&quot; href=&quot;#Implict-ALS-with-Biases&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;Initialize user vectors and biases.&lt;/li&gt;
 &lt;li&gt;Define vectors
@@ -3347,8 +3347,8 @@ $$\tilde{x}_u = \left(\tilde{Y}^TC^u\tilde{Y} + \lambda I\right)^{-1}\tilde{Y}^T
 &lt;/div&gt;
 </description>
         <pubDate>Thu, 15 Oct 2015 00:00:00 +0000</pubDate>
-        <link>http://activisiongamescience.github.io/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/</link>
-        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/15/Implicit%20Recommender%20Systems%20-%20Biased%20Matrix%20Factorization/</guid>
+        <link>http://activisiongamescience.github.io/2015/10/15/Implicit-Recommender-Systems-Biased-Matrix-Factorization/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/10/15/Implicit-Recommender-Systems-Biased-Matrix-Factorization/</guid>
         
         <category>Recommender Systems</category>
         
@@ -3358,7 +3358,7 @@ $$\tilde{x}_u = \left(\tilde{Y}^TC^u\tilde{Y} + \lambda I\right)^{-1}\tilde{Y}^T
       </item>
     
       <item>
-        <title>SOD vs One-class SVM</title>
+        <title>Unsupervised Anomaly Detection: SOD vs One-class SVM</title>
         <description>&lt;!--put these separators somewhere appropriate:--&gt;
 
 
@@ -5166,7 +5166,7 @@ ZjOzinFhNjOrGBdmM7OKcWE2M6sYF2Yzs4pxYTYzq5j/D8EIqKC0676SAAAAAElFTkSuQmCC
 &lt;div class=&quot;inner_cell&quot;&gt;
 &lt;div class=&quot;text_cell_render border-box-sizing rendered_html&quot;&gt;
 &lt;h3 id=&quot;Discussion&quot;&gt;Discussion&lt;a class=&quot;anchor-link&quot; href=&quot;#Discussion&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;From the above graphs it is clear that the quality of SOD depends on the choice of $\text{snn}$.  Interestingly, the optimal setting for $\text{snn}$ appears to be approximately the same as the number of anomalies in the dataset (or slightly larger).&lt;/p&gt;
-&lt;p&gt;Since in practice we won't know the number of anomalies to expect, we won't be able to tune $\text{snn}$ effectively.  It is important to notice that the quality drops especially quickly if $\text{snn}$ is chosen too small.&lt;/p&gt;
+&lt;p&gt;Since in practice we won&#39;t know the number of anomalies to expect, we won&#39;t be able to tune $\text{snn}$ effectively.  It is important to notice that the quality drops especially quickly if $\text{snn}$ is chosen too small.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -13218,7 +13218,7 @@ Lec. Notes in Comp. Sci. Vol. 5476, 2009, pp 831-38&lt;/p&gt;
 Neural Computation 13(7), 2001, pp 1443-71&lt;/p&gt;
 &lt;h3 id=&quot;amer2013&quot;&gt;amer2013&lt;a class=&quot;anchor-link&quot; href=&quot;#amer2013&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://outlier-analytics.org/odd13kdd/papers/amer,goldstein,abdennadher.pdf&quot;&gt;Amer, Goldstein, Abdennadher&lt;/a&gt;,
 &lt;em&gt;Enhancing One-class Support Vector Machines for Unsupervised Anomaly Detection&lt;/em&gt;,
-ODD '13, 2013, pp 8-15&lt;/p&gt;
+ODD &#39;13, 2013, pp 8-15&lt;/p&gt;
 &lt;h3 id=&quot;davis2006&quot;&gt;davis2006&lt;a class=&quot;anchor-link&quot; href=&quot;#davis2006&quot;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://www.autonlab.org/icml_documents/camera-ready/030_The_Relationship_Bet.pdf&quot;&gt;Davis, Goadrich&lt;/a&gt;,
 &lt;em&gt;The Relationship Between Precision-Recall and ROC Curves&lt;/em&gt;,
 Intl. Proc. on Mach. Learn., 2006&lt;/p&gt;
@@ -13247,8 +13247,8 @@ ICANN’07, pages 269–278. Springer, 2007&lt;/p&gt;
 &lt;/div&gt;
 </description>
         <pubDate>Tue, 25 Aug 2015 00:00:00 +0000</pubDate>
-        <link>http://activisiongamescience.github.io/2015/08/25/SOD%20vs%20One-class%20SVM/</link>
-        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/08/25/SOD%20vs%20One-class%20SVM/</guid>
+        <link>http://activisiongamescience.github.io/2015/08/25/Unsupervised-Anomaly-Detection-SOD-vs-One-class-SVM/</link>
+        <guid isPermaLink="true">http://activisiongamescience.github.io/2015/08/25/Unsupervised-Anomaly-Detection-SOD-vs-One-class-SVM/</guid>
         
         <category>Classification</category>
         

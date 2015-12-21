@@ -10,7 +10,7 @@ header-img: "img/analytic_services_logo(pv2d2).png"
 <div class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
         <h2 class="post-title">
-            {{ post.title }}
+            {% if post.tags contains 'Draft' %}<i>(Draft) </i>{% endif %}{{ post.title }}
         </h2>
     </a>
     <p class="post-meta">Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}</p>

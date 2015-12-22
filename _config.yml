@@ -1,7 +1,6 @@
 # Site settings
-title: Activision Analytic Services
-header-img: img/analytic_services_logo(pv2d2).png
-# header-img: img/home-bg.jpg
+title: Activision Game Science
+header-img: img/activision_game_science.png
 email: william.kirwin@activision.com
 description: "We are awesome."
 baseurl: ""

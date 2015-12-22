@@ -2,11 +2,11 @@
 layout: page
 title: "Archive"
 description: "Past Awesomeness"
-header-img: "img/boulder.jpg"
+header-img: "img/santa_monica.jpg"
 ---
 
 <section id="archive">
-  <h3>This year's posts</h3>
+  <h3>{{ 'now' | date: '%Y' }}</h3>
   {%for post in site.posts %}
     {% unless post.next %}
       <ul class="this">
@@ -19,7 +19,7 @@ header-img: "img/boulder.jpg"
         <ul class="past">
       {% endif %}
     {% endunless %}
-      <li><i><time>{{ post.date | date:"%d %b" }}</time></i> <a href="{{ post.url }}">{{ post.title }}</a></li>
+      <li><i><time>{{ post.date | date:"%d-%b-%Y" }}</time></i> &mdash; <a href="{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
   </ul>
 </section>

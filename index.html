@@ -1,10 +1,8 @@
 ---
 layout: index-page
 description: "Game Science"
-header-img: "img/analytic_services_logo(pv2d2).png"
+header-img: "img/activision_game_science.png"
 ---
-
-<hr>
 
 {% for post in paginator.posts %}
 <div class="post-preview">
@@ -13,7 +11,7 @@ header-img: "img/analytic_services_logo(pv2d2).png"
             {% if post.tags contains 'Draft' %}<i>(Draft) </i>{% endif %}{{ post.title }}
         </h2>
     </a>
-    <p class="post-meta">Posted by {% if post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%B %-d, %Y" }}</p>
+    <p class="post-meta">by {% if post.github %}<a href="http://github.com/{{ post.github }}">{{ post.github }}</a>{% elsif post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%d-%b-%Y" }}</p>
 
     {% if post.content contains '<!--excerpt.start-->' and post.content contains '<!--excerpt.end-->' %}
         {{ ((post.content | split:'<!--excerpt.start-->' | last) | split: '<!--excerpt.end-->' | first) }}

@@ -5,8 +5,7 @@ email: william.kirwin@activision.com
 description: "We are awesome."
 baseurl: ""
 url: "http://activisiongamescience.github.io"
-# twitter_username: ActivisionGameScience
-github_username:  activisiongamescience
+github_username: ActivisionGameScience
 
 # Build settings
 markdown: kramdown

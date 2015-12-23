@@ -15,7 +15,7 @@ header-img: "img/activision_game_science.png"
 
     {% if post.content contains '<!--excerpt.start-->' and post.content contains '<!--excerpt.end-->' %}
         {{ ((post.content | split:'<!--excerpt.start-->' | last) | split: '<!--excerpt.end-->' | first) }}
-        {% if post.content contains '<!--more-->' %}<div class="more"><a href="{{ post.url | prepend: site.baseurl }}">... (more)</a></div>{% endif %}
+        {% if post.content contains '<!--more-->' %}<div class="more"><a href="{{ post.url | prepend: site.baseurl }}" class="btn btn-primary btn-sm">read more <span class="glyphicon glyphicon-arrow-right"></span></a></div>{% endif %}
     {% endif %}
 
 </div>

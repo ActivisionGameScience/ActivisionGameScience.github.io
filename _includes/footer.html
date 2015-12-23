@@ -14,26 +14,6 @@
                         </a>
                     </li>
                     -->
-                    {% if site.twitter_username %}
-                    <li>
-                        <a href="https://twitter.com/{{ site.twitter_username }}">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% if site.facebook_username %}
-                    <li>
-                        <a href="https://www.facebook.com/{{ site.facebook_username }}">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                    {% endif %}
                     {% if site.github_username %}
                     <li>
                         <a href="https://github.com/{{ site.github_username }}">
@@ -45,7 +25,7 @@
                     </li>
                     {% endif %}
                 </ul>
-                <p class="copyright text-muted">Copyright &copy; {{ site.title }} {{ site.time | date: '%Y' }}</p>
+                <p class="copyright text-muted"><small><span class="glyphicon glyphicon-copyright-mark"></span></small> {{ site.time | date: '%Y' }} <small>&bull;</small> {{ site.title }}</p>
             </div>
         </div>
     </div>
@@ -73,3 +53,5 @@
     } 
     $( document ).ready(code_toggle);
 </script>
+
+{% include google-analytics.html %}

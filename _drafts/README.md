@@ -2,7 +2,7 @@
 layout: post
 title: Blog README (Internal)
 header-img: ""
-tags: Draft
+tags:
 ---
 
 

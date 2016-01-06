@@ -21,7 +21,7 @@ To view the post first as a draft, move `<post-name>.html` into `/_drafts`.
 
 **Note**: the name of the post will be the file name. So make stupid filenames like `SOD\ vs\ One-class\ SVM.html` and not normal filenames like `sod-vs-one-class-svm.html`.
 
-**Note**: Spencer's hide-input-cells trick is automatically included (it's in the jekyll template and blog layouts). So ***don't*** use it in your notebook.
+**Note**: The hide-input-cells trick (thank you, Spencer) is automatically included (it's in the jekyll template and blog layouts). So ***don't*** use it in your notebook.
 
 Once you're happy, move `<post-name>.html` to `/_posts` and rename it to `<YR>-<MO>-<DY>-<post-name>.html`. The naming convention is important for indexing.
 
@@ -63,11 +63,7 @@ For development, add `--watch` if you want to automatically update the site when
 
 ## To Do
 
-1. Find better background images for About/Categories/Archive (Will took the current one with his phone).
-2. Write some "About" text.
-3. Unify the styling (btwn. Jupyter notebook posts and the rest of the blog).
-4. Make more awesome posts.
-5. Publish to GitHub pages.
+1. Make more awesome posts.
 
 ### Credits
 

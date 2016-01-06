@@ -2,11 +2,11 @@
 layout: nb-post
 title: "Implicit Recommender Systems - Biased Matrix Factorization"
 author: Will Kirwin
-tags: [Draft, Recommender Systems, Machine Learning]
+github: wkirwin
+tags: [Machine Learning, Recommender Systems]
 ---
 
 <!--put these separators somewhere appropriate:-->
-
 
 
 <!--this is just hacky filler-->
@@ -30,7 +30,7 @@ tags: [Draft, Recommender Systems, Machine Learning]
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>
-NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
+ 
 </p>
 </div>
 </div>
@@ -56,7 +56,6 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 <p>In today's post, we will explain a certain algorithm for matrix factorization models for recommender systems which goes by the name <em>Alternating Least Squares</em> (there are others, for example based on stochastic gradient descent). We will go through the basic ALS algorithm, as well as how one can modify it to incorporate user and item biases.</p>
 <p>We will also go through the ALS algorithm for implicit feedback, and then explain how to modify <em>that</em> to incorporate user and item biases. The basic ALS model and the version from implicit feedback are discusses in many places (both online and in freely available research papers), but we aren't aware of any good source for <em>implicit ALS with biases</em>... hence, this post.</p>
 <!--excerpt.end--><!--more-->
-
 </div>
 </div>
 </div>
@@ -67,8 +66,8 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>Recommendation engines are becoming ubiquitous in the modern consumer landscape. From Netflix's personalized movie recommendations to Amazon's raft of suggested items (New For Your, Recommendations for You in the Kindle Store, etc...), to Spotify's wildly popular personalized Discover Weekly Playlist, recommendation engines have become an essential tool for promoting content discovery and extending consumer engagement.</p>
 <p>There has been a proliferation of algorithms in the data science community upon which recommender systems are built, but they all follow the basic central dogma that similar users like similar items. The hard part, of course, is deciding exactly what "similar" means and how to measure it. For Netflix, similar users are users who rate movies similarly. For Spotify, similar users are users who listen to the same kinds of music (a little thought will convince you that these two ideas, while similar, are not really the same).</p>
-<p>The simplest type of recommender system, called a <em>collaborative filter</em>, is essentially a literal interpretation of "similar users like similar things". Once a metric for similarity is decided on, one just looks at the top rated items of the $k$ nearest neighbors (with respect to the similarity metric), filters out those items which the user of interest has already seen/consumed, and <em>voila</em>, personalized recommendations.</p>
-<p>Collaborative filters have the advantages of being relatively easy to implement and relatively easy to interpret (e.g. we recommended movie A to user 1 because users 2, 3, and 4 all rated it highly and have similar ratings profiles to user 1). This being the age of data science, though, it is no longer enough to have a reasonable explanation. We can actually measure how effectively a recommender system predicts the ratings of users on unseen items. Thus began Netflix's famous quest for better recommender systems, leading to the famous million dollar prize and eventual solution (by a team of experts working for several years).</p>
+<p>The simplest type of recommender system, called a <em>collaborative filter</em>, is essentially a literal interpretation of "similar users like similar things" <a href="#Goldberg1992">Goldberg1992</a> Once a metric for similarity is decided on, one just looks at the top rated items of the $k$ nearest neighbors (with respect to the similarity metric), filters out those items which the user of interest has already seen/consumed, and <em>voila</em>, personalized recommendations.</p>
+<p>Collaborative filters have the advantages of being relatively easy to implement and relatively easy to interpret (e.g. we recommended movie A to user 1 because users 2, 3, and 4 all rated it highly and have similar ratings profiles to user 1). This being the age of data science, though, it is no longer enough to have a reasonable explanation. We can actually measure how effectively a recommender system predicts the ratings of users on unseen items. Thus began Netflix's famous quest for better recommender systems, leading to the famous <a href="http://www.netflixprize.com/">million dollar prize</a> and <a href="http://www.netflixprize.com/community/viewtopic.php?id=1537">eventual solution</a> <a href="#Bell2008">Bell2008</a> (by a team of experts working for several years).</p>
 <p>Although the recommender system that won the Netflix prize was never put into production (it was a carefully tuned mix of many, many, many statistical models, and the marginal gain obtained by implementing all of the models was not worth the technical price compared to simply implementing a few of the best ones), the data science community, and the wider commercial world, learned without a doubt that while collaborative filters are explainable and easily implementable, one can do significantly better if one is willing to flex a bit of mathematical muscle.</p>
 <p>There were essentially two types of recommender systems in the final solution to the Netflix prize, and they have become the bread and butter of the current state of the art: matrix factorization models and restricted Bolzmann machines (RBMs). We will discuss matrix factorization models in this post.</p>
 <p>We will be interested in two refinements of the basic matrix factorization model for recommendations: using implicit feedback, and using user and item biases.</p>
@@ -108,7 +107,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 <p>Instead, things like clicks, purchases, song listens (or fast-forwards), etc... are available; user-item interactions that somehow, possibly very weekly, indicate a preference or distaste for a particular item. If a user listens to a song only once, maybe it indicates that they didn't like the song, or maybe they were busy and weren't paying attention and actually would like it if they heard it again. If a user listens to a song 100 times, it is a safe bet that they like the song. But it is hard to draw a line between unknown preference and known preference.</p>
 <p>This kind of indirect information about user-item preferences is known as <em>implicit feedback</em>, and many smart people have thought long and hard about how to deal with it. We won't delve much into the modeling of implicit feedback in today's post except to say that it turns out to be relatively effective to try to model a user's preference, as measured on a scale of 0 (bad) to 1 (good), instead of the user's actual number of interactions (or whatever number is actually being meausured).</p>
 <p>We can interpret the number of user-item interations (song listens, for example) as a measure of our confidence in our model's prediction for the user's preference of the item.</p>
-<p>Below, we'll step through the details of how a matrix factorization model can be used to deal with implicit feedback. The basic algorithm we discuss is from the seminal paper <a href="http://yifanhu.net/PUB/cf.pdf">Hu, et al. Collaborative Filtering for Implicit Feedback Datasets</a>.</p>
+<p>Below, we'll step through the details of how a matrix factorization model can be used to deal with implicit feedback. The basic algorithm we discuss is from the seminal paper <a href="#Hu2008">Hu2008</a>.</p>
 
 </div>
 </div>
@@ -121,15 +120,13 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 <h2 id="Basic-Matrix-Factorization-for-Recommendations">Basic Matrix Factorization for Recommendations<a class="anchor-link" href="#Basic-Matrix-Factorization-for-Recommendations">&#182;</a></h2><p>The most basic matrix factorization model for recommender systems models the rating a user <code>u</code> would give to an item <code>i</code> by</p>
 $$r_{ui} = x_u^T y_i,$$<p>where $x_u^T = (x_u^1, x_u^2, \dots, x_u^N)$ is a vector associated to the user, and $y_i^T = (y_i^1, y_i^2, \dots, y_i^N)$ is a vector associated to the item. The dimension of the vectors is the <em>rank</em> of the model, and the dimensions are called <em>factors</em>.</p>
 <p>If we collect the user-item ratings into a matrix $R=(r_{ui})$, collect the user vectors into a matrix
-$$X = \left(\begin{matrix} \cdots & x_{u_1} & \cdots \\ 
-                           \cdots & x_{u_2} & \cdots \\
-                              &  \vdots & \\
-                           \cdots & x_{u_{n_\text{users}}} & \cdots \end{matrix}\right),$$<br>
+$$X = \left(\begin{matrix} \vdots & \vdots & \cdots & \vdots \\
+                           x_{u_1} & x_{u_2} & \cdots & x_{u_{n_\text{users}}} \\
+                           \vdots & \vdots & \cdots & \vdots \end{matrix}\right),$$<br>
 and the item vectors into a matrix
-$$Y = \left(\begin{matrix} \cdots & y_{i_1} & \cdots \\ 
-                           \cdots & y_{i_2} & \cdots \\
-                              &  \vdots & \\
-                           \cdots & y_{i_{n_\text{items}}} & \cdots \end{matrix}\right),$$
+$$Y = \left(\begin{matrix} \vdots & \vdots & \cdots & \vdots \\
+                           y_{i_1} & y_{i_2} & \cdots & y_{i_{n_\text{items}}} \\
+                           \vdots & \vdots & \cdots & \vdots \end{matrix}\right),$$<br>
 then we can express the above model as</p>
 $$ R = X^TY.$$<p>Of course, there is no reason that the true user-item matrix $R$ should have rank $N$, and indeed, we won't even know the "true" user-item matrix $R$. But we try to approximate the true $R$ by a rank $N$ factorization:</p>
 $$ R \sim \widehat{R} = X^TY.$$<p>That is, we want to find an $n_\text{users}\times N$ matrix $X$ and an $n_\text{items}\times N$ matrix $Y$ such that $\widehat{R}:=X^TY$ approximates $R$.</p>
@@ -157,7 +154,7 @@ $$ C = \sum_{u,i\in\text{observed ratings}} (r_{ui} - x_u^T y_i)^2 + \lambda \le
 <li>There are other methods for minimizing such a convex cost function, for example, gradient descent (or stochastic gradient descent, or batch SGD, etc...). One important difference here is that at each step of our algorithm, we find the <em>exact</em> minimum; we don't take small steps in a downward direction. So if we do step 1), a second application of step 1) will have no effect: we're already at the absolute minimum of $C$ with $Y$ held fixed. It also means that single iteration of the above algorithm generally moves much further than an iteration of a gradient descent algorithm; i.e. we need fewer iterations for convergence.</li>
 </ul>
 <p>The above algorithm is called (for obvious reasons) <em>alternating least squares</em>.</p>
-<p>A bit of linear algebra yields the following algorithm.</p>
+<p>A bit of linear algebra yields the following algorithm. (See <a href="http://math.stackexchange.com/questions/1072451/analytic-solution-for-matrix-factorization-using-alternating-least-squares">here</a>, for example.)</p>
 <h3 id="Alternating-Least-Squares-(ALS)">Alternating Least Squares (ALS)<a class="anchor-link" href="#Alternating-Least-Squares-(ALS)">&#182;</a></h3><ol>
 <li>Initialize the user vectors $X$ somehow (e.g. randomly).</li>
 <li>For each item <code>i</code>, let $r_i$ be the vector of ratings of that item (it will have <code>n_users</code> components; one for each user). Compute 
@@ -256,7 +253,7 @@ $$ \widetilde{x}_u := \left(\begin{matrix} \beta_u \\ x_u\end{matrix}\right) = \
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For many real-world user-item interactions, no explicit ratings data are available, but there is nonetheless nontrivial information about the interactions, for example, clicks, listens/watches, purchases, etc... Such indirect "ratings" information about user-item interactions is known as <strong>implicit feedback</strong>. Modeling implicit feedback is a difficult but important problem. There are several ways to use our ALS matrix factorization to approach such a model. We present here a standard solution, presented (without bias corrections) in <a href="http://">Hu et al.</a>.</p>
+<p>For many real-world user-item interactions, no explicit ratings data are available, but there is nonetheless nontrivial information about the interactions, for example, clicks, listens/watches, purchases, etc... Such indirect "ratings" information about user-item interactions is known as <strong>implicit feedback</strong>. Modeling implicit feedback is a difficult but important problem. There are several ways to use our ALS matrix factorization to approach such a model. We present here a standard solution, presented (without bias corrections) in <a href="#Hu2008">Hu2008</a>.</p>
 <p>The basic approach is to forget about modeling the implicit feedback directly. Rather, we want to understand whether user <code>u</code> has a preference for item <code>i</code> or not; a simple boolean variable which we denote by $p_{ui}.$ The number of clicks, listens, views, etc... will be interpreted as our confidence in our model.</p>
 <p>Following the fundamental idea of matrix factorization models, we try to find a user vector $x_u$ to each user <code>u</code> and an item vector $y_i$ to each item <code>i</code> so that 
 $$p_{ui} \sim x^T_u y_i.$$
@@ -271,7 +268,7 @@ $$ C_\text{implicit} := \sum_{u,i\in\text{observed interactions}} c_{ui}\left(p_
 where $c_{ui}$ is our <strong>confidence</strong> in $p_{ui}.$ That is, the more a user has interacted with an item, the more we penalize our model for incorrectly predicting $p_{ui}.$</p>
 <p>If a user has never interacted with an item, it is possible that $p_{ui}=1$ and the user has just never encountered the item. It is also possible they are actively avoiding the item. To deal with this ambiguity, it is common to define the confidence by
 $$c_{ui}:=1 + \alpha r_{ui},$$
-where $\alpha$ is a parameter of the model that needs to be tuned to the dataset (there is some heuristic evidence that setting it to XXX works well). Another possibility that works well (and makes the model more robust agains power users), which is also mentioned in <a href="">Hu et al.</a>, is to set $c_{ui} = 1 + \alpha\log(1+r_{ui}/\epsilon),$ where $\epsilon$ is yet another data-dependent parameter of the model.</p>
+where $\alpha$ is a parameter of the model that needs to be tuned to the dataset (there is some heuristic evidence that setting it to XXX works well). Another possibility that works well (and makes the model more robust agains power users), which is also mentioned in <a href="#Hu2008">Hu2008</a>, is to set $c_{ui} = 1 + \alpha\log(1+r_{ui}/\epsilon),$ where $\epsilon$ is yet another data-dependent parameter of the model.</p>
 
 </div>
 </div>
@@ -316,7 +313,7 @@ The term $X^TX+\lambda I$ is independent of <code>i</code>, and can be computed 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="A-numpy-Implementation-of-ALS-for-Implicit-Feedback">A <code>numpy</code> Implementation of ALS for Implicit Feedback<a class="anchor-link" href="#A-numpy-Implementation-of-ALS-for-Implicit-Feedback">&#182;</a></h2>
+<h2 id="A-Python-numpy-Implementation-of-ALS-for-Implicit-Feedback">A Python <code>numpy</code> Implementation of ALS for Implicit Feedback<a class="anchor-link" href="#A-Python-numpy-Implementation-of-ALS-for-Implicit-Feedback">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -405,6 +402,23 @@ $$\tilde{x}_u = \left(\tilde{Y}^TC^u\tilde{Y} + \lambda I\right)^{-1}\tilde{Y}^T
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>As we mentioned in the beginning, one can measure the effectiveness of various models. In a future post, we will compare the matrix factorization algorithms we discussed here on real-world data and see that indeed, accounting for user and item biases is worth the extra effort.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bibliography">Bibliography<a class="anchor-link" href="#Bibliography">&#182;</a></h1><h4 id="Goldberg1992">Goldberg1992<a class="anchor-link" href="#Goldberg1992">&#182;</a></h4><p><a href="">D. Goldberg, D. Nichols, B. M. Oki, D. Terry</a>,
+<em>Using Collaborative Filtering to Weave an Information Tapestry</em>, 
+Comm. ACM <strong>35</strong> (1992) pp 61 -- 70.</p>
+<h4 id="Bell2008">Bell2008<a class="anchor-link" href="#Bell2008">&#182;</a></h4><p><a href="http://www.netflixprize.com/assets/ProgressPrize2008_BellKor.pdf">R. M. Bell, Y. Koren, C. Volinsky</a>,
+<em>The BellKor 2008 Solution to the Netflix Prize</em></p>
+<h4 id="Hu2008">Hu2008<a class="anchor-link" href="#Hu2008">&#182;</a></h4><p><a href="http://yifanhu.net/PUB/cf.pdf">Y. Hu, Y. Koren, C. Volinsky</a>
+<em>Collaborative Filtering for Implicit Feedback Datasets</em>
+8th IEEE International Conference on Data Mining, pp. 263 -- 272.</p>
 
 </div>
 </div>

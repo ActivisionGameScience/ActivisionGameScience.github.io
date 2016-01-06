@@ -6,7 +6,8 @@
 ---
 layout: nb-post
 title: "{{resources['metadata']['name']}}"
-author: 
+author:
+github:
 tags: 
 ---
 {%- endblock header -%}
@@ -15,7 +16,7 @@ tags:
 
 <!--put these separators somewhere appropriate:-->
 <!--excerpt.start-->
-<!--excerpt.end-->
+<!--excerpt.end--><!--more-->
 
 <!--this is just hacky filler-->
 <div class="cell border-box-sizing text_cell rendered">

@@ -8,10 +8,10 @@ header-img: "img/activision_game_science.png"
 <div class="post-preview" xmlns="http://www.w3.org/1999/html">
     <a href="{{ post.url | prepend: site.baseurl }}">
         <h2 class="post-title">
-            {% if post.tags contains 'Draft' %}<i>(Draft) </i>{% endif %}{{ post.title }}
+            {% if post.path contains 'drafts' %}<i>(Draft) </i>{% endif %}{{ post.title }}
         </h2>
     </a>
-    <p class="post-meta">by {% if post.github %}<a href="http://github.com/{{ post.github }}">{{ post.github }}</a>{% elsif post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%d-%b-%Y" }}</p>
+    <p class="post-meta">by {% if post.github %}<a href="http://github.com/{{ post.github }}">{{ post.author }}</a>{% elsif post.author %}{{ post.author }}{% else %}{{ site.title }}{% endif %} on {{ post.date | date: "%d-%b-%Y" }}</p>
 
     {% if post.content contains '<!--excerpt.start-->' and post.content contains '<!--excerpt.end-->' %}
         {{ ((post.content | split:'<!--excerpt.start-->' | last) | split: '<!--excerpt.end-->' | first) }}

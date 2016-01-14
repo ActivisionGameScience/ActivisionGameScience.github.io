@@ -465,7 +465,7 @@ tags: [Machine Learning, Recommender Systems]
                             fixed <code>i</code>, there will be <code>n_users</code> components), let $c_{i}$ be the
                             vector whose components are $c_{ui}$, let $C^i$ be the diagonal matrix with $c_i$ along
                             the diagonal, and let $d_{i} = C^i p_{i}$ (the reason for defining $d_i$ separately
-                            is explained in the remarks about the <code>numpy</code> implementation below). Compute
+                            will be explained in the remarks about the <code>numpy</code> implementation below). Compute
                             $$y_i = \left(X^TC^iX+\lambda I\right)^{-1}X^Td_i.$$
                         </li>
                         <li>For each user <code>u</code>, let $p_u$ be the vector whose components are $p_{ui}$ (for
@@ -517,7 +517,7 @@ tags: [Machine Learning, Recommender Systems]
             </div>
             <div class="inner_cell">
                 <div class="text_cell_render border-box-sizing rendered_html">
-                    <p>It turns out that the matrix multiplication $X^TC^iX$ and the matrix-vector product $X^Tc_i$ are
+                    <p>It turns out that the matrix multiplication $X^TC^iX$ and the matrix-vector product $X^Td_i$ are
                         both easier to implement in <code>numpy</code> than to express in standard linear algebra
                         notation. A direct implementation of the algorithm is of course possible, but a small bit of
                         thought improves performance vastly.</p>

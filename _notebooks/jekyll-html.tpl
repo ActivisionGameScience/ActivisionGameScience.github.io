@@ -18,6 +18,11 @@ tags:
 <!--excerpt.start-->
 <!--excerpt.end--><!--more-->
 
+<!--you can set this to false if you want code displayed by default-->
+<script>
+hide_code=true;
+</script>
+
 <!--this is just hacky filler-->
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
@@ -33,6 +38,7 @@ tags:
 <div tabindex="-1" id="notebook" class="border-box-sizing">
 <div class="container" id="notebook-container">
 
+<!--if you've decided to show code by default, please reword the following-->
 <div class="cell border-box-sizing text_cell rendered">
 <div>
 </div>

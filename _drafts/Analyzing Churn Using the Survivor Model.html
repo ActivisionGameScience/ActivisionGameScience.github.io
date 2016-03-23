@@ -8,7 +8,6 @@ tags: [Churn, Survivor Models]
 
 <!--put these separators somewhere appropriate:-->
 
-
 <!--you can set this to false if you want code displayed by default-->
 <script>
 hide_code=false;
@@ -132,72 +131,84 @@ lrtest<span class="p">(</span>churn.survexp<span class="p">,</span>churn.survWei
 
 </div>
 </div>
-</div>survfit(formula = Surv(DaysPlayed, Churned) ~ 1, conf.type = "none")
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre>survfit<span class="p">(</span>formula <span class="o">=</span> Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> <span class="m">1</span><span class="p">,</span> conf.type <span class="o">=</span> <span class="s">&quot;none&quot;</span><span class="p">)</span>
 
  time n.risk n.event survival  std.err
-    1 104856      98    0.999 9.44e-05
-    2  99529     846    0.991 3.05e-04
-    3  89208    1854    0.970 5.60e-04
-    4  78741    3382    0.928 8.82e-04
-    5  68210    5222    0.857 1.25e-03
-    6  57770    7564    0.745 1.62e-03
-    7  47249   10480    0.580 1.90e-03
-    8  36573   10386    0.415 1.93e-03
-    9  26187   10372    0.251 1.71e-03
-   10  15815   10514    0.084 1.10e-03
-   11   5301    5301    0.000      NaN
+    <span class="m">1</span> <span class="m">104856</span>      <span class="m">98</span>    <span class="m">0.999</span> <span class="m">9.44e-05</span>
+    <span class="m">2</span>  <span class="m">99529</span>     <span class="m">846</span>    <span class="m">0.991</span> <span class="m">3.05e-04</span>
+    <span class="m">3</span>  <span class="m">89208</span>    <span class="m">1854</span>    <span class="m">0.970</span> <span class="m">5.60e-04</span>
+    <span class="m">4</span>  <span class="m">78741</span>    <span class="m">3382</span>    <span class="m">0.928</span> <span class="m">8.82e-04</span>
+    <span class="m">5</span>  <span class="m">68210</span>    <span class="m">5222</span>    <span class="m">0.857</span> <span class="m">1.25e-03</span>
+    <span class="m">6</span>  <span class="m">57770</span>    <span class="m">7564</span>    <span class="m">0.745</span> <span class="m">1.62e-03</span>
+    <span class="m">7</span>  <span class="m">47249</span>   <span class="m">10480</span>    <span class="m">0.580</span> <span class="m">1.90e-03</span>
+    <span class="m">8</span>  <span class="m">36573</span>   <span class="m">10386</span>    <span class="m">0.415</span> <span class="m">1.93e-03</span>
+    <span class="m">9</span>  <span class="m">26187</span>   <span class="m">10372</span>    <span class="m">0.251</span> <span class="m">1.71e-03</span>
+   <span class="m">10</span>  <span class="m">15815</span>   <span class="m">10514</span>    <span class="m">0.084</span> <span class="m">1.10e-03</span>
+   <span class="m">11</span>   <span class="m">5301</span>    <span class="m">5301</span>    <span class="m">0.000</span>      <span class="kc">NaN</span>
    
 
-survreg(formula = Surv(DaysPlayed, Churned) ~ Amazon + Google + 
-    FirstSessionLength + PurchasePrice, dist = "exponential")
+survreg<span class="p">(</span>formula <span class="o">=</span> Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> Amazon <span class="o">+</span> Google <span class="o">+</span> 
+    FirstSessionLength <span class="o">+</span> PurchasePrice<span class="p">,</span> dist <span class="o">=</span> <span class="s">&quot;exponential&quot;</span><span class="p">)</span>
                      Value Std. Error    z         p
-(Intercept)        1.18025   0.017063 69.2  0.00e+00
-Amazon             0.40787   0.010726 38.0  0.00e+00
-Google             0.11250   0.008739 12.9  6.32e-38
-FirstSessionLength 0.00272   0.000105 25.9 1.44e-147
-PurchasePrice      0.01661   0.000351 47.3  0.00e+00
+<span class="p">(</span>Intercept<span class="p">)</span>        <span class="m">1.18025</span>   <span class="m">0.017063</span> <span class="m">69.2</span>  <span class="m">0.00e+00</span>
+Amazon             <span class="m">0.40787</span>   <span class="m">0.010726</span> <span class="m">38.0</span>  <span class="m">0.00e+00</span>
+Google             <span class="m">0.11250</span>   <span class="m">0.008739</span> <span class="m">12.9</span>  <span class="m">6.32e-38</span>
+FirstSessionLength <span class="m">0.00272</span>   <span class="m">0.000105</span> <span class="m">25.9</span> <span class="m">1.44e-147</span>
+PurchasePrice      <span class="m">0.01661</span>   <span class="m">0.000351</span> <span class="m">47.3</span>  <span class="m">0.00e+00</span>
 
-Scale fixed at 1 
+Scale fixed at <span class="m">1</span> 
 
 Exponential distribution
-Loglik(model)= -212158.6   Loglik(intercept only)= -214884.3
-	Chisq= 5451.41 on 4 degrees of freedom, p= 0 
-Number of Newton-Raphson Iterations: 4 
-n= 104856 
+Loglik<span class="p">(</span>model<span class="p">)</span><span class="o">=</span> <span class="m">-212158.6</span>   Loglik<span class="p">(</span>intercept only<span class="p">)</span><span class="o">=</span> <span class="m">-214884.3</span>
+	Chisq<span class="o">=</span> <span class="m">5451.41</span> on <span class="m">4</span> degrees of freedom<span class="p">,</span> p<span class="o">=</span> <span class="m">0</span> 
+Number of Newton<span class="o">-</span>Raphson Iterations<span class="o">:</span> <span class="m">4</span> 
+n<span class="o">=</span> <span class="m">104856</span> 
 
 
-survreg(formula = Surv(DaysPlayed, Churned) ~ Amazon + Google + 
-    FirstSessionLength + PurchasePrice, dist = "weibull")
+survreg<span class="p">(</span>formula <span class="o">=</span> Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> Amazon <span class="o">+</span> Google <span class="o">+</span> 
+    FirstSessionLength <span class="o">+</span> PurchasePrice<span class="p">,</span> dist <span class="o">=</span> <span class="s">&quot;weibull&quot;</span><span class="p">)</span>
                        Value Std. Error       z        p
-(Intercept)         2.098805   4.50e-03  466.85 0.00e+00
-Amazon              0.012933   2.48e-03    5.21 1.84e-07
-Google              0.003131   2.03e-03    1.54 1.24e-01
-FirstSessionLength  0.000143   2.54e-05    5.62 1.95e-08
-PurchasePrice       0.000690   9.01e-05    7.65 1.96e-14
-Log(scale)         -1.456626   3.02e-03 -482.26 0.00e+00
+<span class="p">(</span>Intercept<span class="p">)</span>         <span class="m">2.098805</span>   <span class="m">4.50e-03</span>  <span class="m">466.85</span> <span class="m">0.00e+00</span>
+Amazon              <span class="m">0.012933</span>   <span class="m">2.48e-03</span>    <span class="m">5.21</span> <span class="m">1.84e-07</span>
+Google              <span class="m">0.003131</span>   <span class="m">2.03e-03</span>    <span class="m">1.54</span> <span class="m">1.24e-01</span>
+FirstSessionLength  <span class="m">0.000143</span>   <span class="m">2.54e-05</span>    <span class="m">5.62</span> <span class="m">1.95e-08</span>
+PurchasePrice       <span class="m">0.000690</span>   <span class="m">9.01e-05</span>    <span class="m">7.65</span> <span class="m">1.96e-14</span>
+Log<span class="p">(</span><span class="kp">scale</span><span class="p">)</span>         <span class="m">-1.456626</span>   <span class="m">3.02e-03</span> <span class="m">-482.26</span> <span class="m">0.00e+00</span>
 
-Scale= 0.233 
+Scale<span class="o">=</span> <span class="m">0.233</span> 
 
 Weibull distribution
-Loglik(model)= -146039.7   Loglik(intercept only)= -146101
-	Chisq= 122.62 on 4 degrees of freedom, p= 0 
-Number of Newton-Raphson Iterations: 15 
-n= 104856 
+Loglik<span class="p">(</span>model<span class="p">)</span><span class="o">=</span> <span class="m">-146039.7</span>   Loglik<span class="p">(</span>intercept only<span class="p">)</span><span class="o">=</span> <span class="m">-146101</span>
+	Chisq<span class="o">=</span> <span class="m">122.62</span> on <span class="m">4</span> degrees of freedom<span class="p">,</span> p<span class="o">=</span> <span class="m">0</span> 
+Number of Newton<span class="o">-</span>Raphson Iterations<span class="o">:</span> <span class="m">15</span> 
+n<span class="o">=</span> <span class="m">104856</span> 
 
 
-lrtest(churn.survexp,churn.survWeibull)
+lrtest<span class="p">(</span>churn.survexp<span class="p">,</span>churn.survWeibull<span class="p">)</span>
 
 Likelihood ratio test
-Model 1: Surv(DaysPlayed, Churned) ~ Amazon + Google + FirstSessionLength + 
+Model <span class="m">1</span><span class="o">:</span> Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> Amazon <span class="o">+</span> Google <span class="o">+</span> FirstSessionLength <span class="o">+</span> 
     PurchasePrice
-Model 2: Surv(DaysPlayed, Churned) ~ Amazon + Google + FirstSessionLength + 
+Model <span class="m">2</span><span class="o">:</span> Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> Amazon <span class="o">+</span> Google <span class="o">+</span> FirstSessionLength <span class="o">+</span> 
     PurchasePrice
-  #Df  LogLik Df  Chisq Pr(>Chisq)    
-1   5 -212159                         
-2   6 -146040  1 132238  < 2.2e-16 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+  <span class="c1">#Df  LogLik Df  Chisq Pr(&gt;Chisq)    </span>
+<span class="m">1</span>   <span class="m">5</span> <span class="m">-212159</span>                         
+<span class="m">2</span>   <span class="m">6</span> <span class="m">-146040</span>  <span class="m">1</span> <span class="m">132238</span>  <span class="o">&lt;</span> <span class="m">2.2e-16</span> <span class="o">***</span>
+<span class="o">---</span>
+Signif. codes<span class="o">:</span>  <span class="m">0</span> ‘<span class="o">***</span>’ <span class="m">0.001</span> ‘<span class="o">**</span>’ <span class="m">0.01</span> ‘<span class="o">*</span>’ <span class="m">0.05</span> ‘<span class="m">.</span>’ <span class="m">0.1</span> ‘ ’ <span class="m">1</span>
+</pre></div>
 
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div>
 </div>
@@ -432,19 +443,31 @@ patch_data <span class="o">=</span>  sqlQuery<span class="p">(</span>myconn<span
 
 </div>
 </div>
-</div>coxph(formula = Surv(start, stop, churn) ~ bug + is_wizard + 
-    patch + age_of_account + minutes_played + cluster(quit_seed), 
-    data = patch_data)
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre>coxph<span class="p">(</span>formula <span class="o">=</span> Surv<span class="p">(</span>start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> churn<span class="p">)</span> <span class="o">~</span> bug <span class="o">+</span> is_wizard <span class="o">+</span> 
+    patch <span class="o">+</span> age_of_account <span class="o">+</span> minutes_played <span class="o">+</span> cluster<span class="p">(</span>quit_seed<span class="p">),</span> 
+    data <span class="o">=</span> patch_data<span class="p">)</span>
 
-  n= 382440, number of events= 59227 
+  n<span class="o">=</span> <span class="m">382440</span><span class="p">,</span> number of events<span class="o">=</span> <span class="m">59227</span> 
 
-                     coef  exp(coef)   se(coef)  robust se       z Pr(>|z|)    
-bug             1.3921964  4.0236780  0.0112569  0.0110634 125.838   <2e-16 ***
-is_wizard       0.0830510  1.0865972  0.0086099  0.0092643   8.965   <2e-16 ***
-patch          -0.0828029  0.9205325  0.0089436  0.0094945  -8.721   <2e-16 ***
-age_of_account  0.1582036  1.1714047  0.0023148  0.0024072  65.720   <2e-16 ***
-minutes_played -0.0196435  0.9805482  0.0005978  0.0005983 -32.832   <2e-16 ***
+                     coef  <span class="kp">exp</span><span class="p">(</span>coef<span class="p">)</span>   se<span class="p">(</span>coef<span class="p">)</span>  robust se       z Pr<span class="p">(</span><span class="o">&gt;|</span>z<span class="o">|</span><span class="p">)</span>    
+bug             <span class="m">1.3921964</span>  <span class="m">4.0236780</span>  <span class="m">0.0112569</span>  <span class="m">0.0110634</span> <span class="m">125.838</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+is_wizard       <span class="m">0.0830510</span>  <span class="m">1.0865972</span>  <span class="m">0.0086099</span>  <span class="m">0.0092643</span>   <span class="m">8.965</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+patch          <span class="m">-0.0828029</span>  <span class="m">0.9205325</span>  <span class="m">0.0089436</span>  <span class="m">0.0094945</span>  <span class="m">-8.721</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+age_of_account  <span class="m">0.1582036</span>  <span class="m">1.1714047</span>  <span class="m">0.0023148</span>  <span class="m">0.0024072</span>  <span class="m">65.720</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+minutes_played <span class="m">-0.0196435</span>  <span class="m">0.9805482</span>  <span class="m">0.0005978</span>  <span class="m">0.0005983</span> <span class="m">-32.832</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+</pre></div>
 
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div>
 </div>
@@ -482,19 +505,32 @@ minutes_played -0.0196435  0.9805482  0.0005978  0.0005983 -32.832   <2e-16 ***
 
 </div>
 </div>
-</div>coxph(formula = Surv(start, stop, churn) ~ bug + is_wizard + 
-    patch + age_of_account + minutes_played + wizard_patch + 
-    cluster(quit_seed), data = patch_data)
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre>coxph<span class="p">(</span>formula <span class="o">=</span> Surv<span class="p">(</span>start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> churn<span class="p">)</span> <span class="o">~</span> bug <span class="o">+</span> is_wizard <span class="o">+</span> 
+    patch <span class="o">+</span> age_of_account <span class="o">+</span> minutes_played <span class="o">+</span> wizard_patch <span class="o">+</span> 
+    cluster<span class="p">(</span>quit_seed<span class="p">),</span> data <span class="o">=</span> patch_data<span class="p">)</span>
 
-  n= 382440, number of events= 59227 
+  n<span class="o">=</span> <span class="m">382440</span><span class="p">,</span> number of events<span class="o">=</span> <span class="m">59227</span> 
 
-                     coef  exp(coef)   se(coef)  robust se       z Pr(>|z|)    
-bug             1.3777800  3.9660871  0.0113080  0.0111103 124.009   <2e-16 ***
-is_wizard      -0.0054967  0.9945184  0.0109240  0.0115514  -0.476    0.634    
-patch          -0.1666453  0.8464998  0.0109573  0.0112832 -14.769   <2e-16 ***
-age_of_account  0.1560963  1.1689388  0.0023195  0.0024141  64.659   <2e-16 ***
-minutes_played -0.0196420  0.9805496  0.0005978  0.0005983 -32.830   <2e-16 ***
-wizard_patch    0.2353473  1.2653481  0.0176368  0.0188478  12.487   <2e-16 ***
+                     coef  <span class="kp">exp</span><span class="p">(</span>coef<span class="p">)</span>   se<span class="p">(</span>coef<span class="p">)</span>  robust se       z Pr<span class="p">(</span><span class="o">&gt;|</span>z<span class="o">|</span><span class="p">)</span>    
+bug             <span class="m">1.3777800</span>  <span class="m">3.9660871</span>  <span class="m">0.0113080</span>  <span class="m">0.0111103</span> <span class="m">124.009</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+is_wizard      <span class="m">-0.0054967</span>  <span class="m">0.9945184</span>  <span class="m">0.0109240</span>  <span class="m">0.0115514</span>  <span class="m">-0.476</span>    <span class="m">0.634</span>    
+patch          <span class="m">-0.1666453</span>  <span class="m">0.8464998</span>  <span class="m">0.0109573</span>  <span class="m">0.0112832</span> <span class="m">-14.769</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+age_of_account  <span class="m">0.1560963</span>  <span class="m">1.1689388</span>  <span class="m">0.0023195</span>  <span class="m">0.0024141</span>  <span class="m">64.659</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+minutes_played <span class="m">-0.0196420</span>  <span class="m">0.9805496</span>  <span class="m">0.0005978</span>  <span class="m">0.0005983</span> <span class="m">-32.830</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+wizard_patch    <span class="m">0.2353473</span>  <span class="m">1.2653481</span>  <span class="m">0.0176368</span>  <span class="m">0.0188478</span>  <span class="m">12.487</span>   <span class="o">&lt;</span><span class="m">2e-16</span> <span class="o">***</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div>
 </div>

@@ -2,8 +2,8 @@
 layout: nb-post
 title: "Analyzing Churn Using the Survivor Model"
 author: Alan Burke
-github: 
-tags: [Churn, Survivor Models]
+github:
+tags: [Churn, Survivor Analysis]
 ---
 
 <!--put these separators somewhere appropriate:-->
@@ -35,7 +35,7 @@ hide_code=false;
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>
-NOTE: the code in this notebook can be hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
+NOTE: the code in this notebook can be hidden. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
 </p>
 </div>
 </div>
@@ -49,10 +49,10 @@ NOTE: the code in this notebook can be hidden for better readability. To toggle 
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Analyzing-Churn-Using-the-Survivor-Model">Analyzing Churn Using the Survivor Model<a class="anchor-link" href="#Analyzing-Churn-Using-the-Survivor-Model">&#182;</a></h1><h2 id="Alan-Burke">Alan Burke<a class="anchor-link" href="#Alan-Burke">&#182;</a></h2><p>March 23, 2016</p>
 <!--excerpt.start-->
-<p>I recently gave a talk at GDC on using the survivor model to identify casual factors in churn.  This post is to present the code I used in that presentation and is useful for individuals who would like to practice creating a survivor model.  Survivor models are popular for modeling single incidence events such as player churn.  Another popular use of survivor model is to analyze a player's first MTX purchase.</p>
+<p>I recently gave a talk at GDC on using the survivor model to identify casual factors in churn.  This post is to publish the code I used in that presentation and is useful for individuals who would like to practice creating a survivor model.  Survivor models are popular for modeling single incidence events such as player churn.  Another popular use of survivor model is to analyze a player's first MTX purchase.</p>
 <!--excerpt.end--><!--more-->
-<h1 id="Scenario-1---New-Ad">Scenario 1 - New Ad<a class="anchor-link" href="#Scenario-1---New-Ad">&#182;</a></h1><p>Imagine a situation where your user acquisition team launched a new advertisement campaign.  They used a provocative ad that generates a lot of new users.  However, your game is free to play and you monetize steadily over the life of the player.  You want to use churn as a proxy for quality, since if the players don't stay in your game long enough, it is impossible to monetize on them.</p>
-<p>The code below, when pasted into Excel, will create some sample data for the first scenario.  PLease paste for formula in at least 1000 rows so you have enough data.</p>
+<h1 id="Scenario-1---New-Ad">Scenario 1 - New Ad<a class="anchor-link" href="#Scenario-1---New-Ad">&#182;</a></h1><p>Imagine a situation where your user acquisition team launched a new advertisement campaign.  They used a provocative ad that generates a lot of new users.  However, your game is free to play and you monetize steadily over the life of the player.  You want to use churn as a proxy for quality, since if the players do not stay in your game long enough, it is impossible to monetize on them.</p>
+<p>The code below, when pasted into Excel, will create some sample data for the first scenario.  Please paste the formula in at least 1000 rows so you have enough data.</p>
 
 </div>
 </div>
@@ -91,26 +91,32 @@ NOTE: the code in this notebook can be hidden for better readability. To toggle 
 churn <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&quot;path_to_your_data/Ad Data.csv&quot;</span><span class="p">)</span>
 <span class="c1"># Attaching allows you to refer to your data with shorthand</span>
 <span class="kn">attach</span><span class="p">(</span>churn<span class="p">)</span>
-<span class="c1"># Initialize the survival library.  This steps assumes you have already install the library</span>
+<span class="c1"># Initialize the survival library.  This steps assumes you have already installed the library</span>
 <span class="kn">library</span><span class="p">(</span><span class="s">&quot;survival&quot;</span><span class="p">)</span>
 
-<span class="c1"># Please see the survival library documentation for a full reference off all the survival functions</span>
-<span class="c1"># Here we calculate the incident of churn each day from the number of players that are still active</span>
+<span class="c1"># Please see the survival library documentation for a full reference of</span>
+<span class="c1"># all the survival functions.  </span>
+
+<span class="c1">#Here we calculate the incident of churn each day </span>
+<span class="c1"># from the number of players that are still active</span>
 churn.surv <span class="o">&lt;-</span> survfit<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span><span class="o">~</span> <span class="m">1</span><span class="p">,</span> conf.type<span class="o">=</span><span class="s">&quot;none&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>churn.surv<span class="p">)</span>
 <span class="c1"># Plotting survival probability</span>
 plot<span class="p">(</span>churn.surv<span class="p">,</span> xlab<span class="o">=</span><span class="s">&quot;DaysPlayed&quot;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&quot;Survival Probability&quot;</span><span class="p">)</span>
 
 <span class="c1"># The first churn model uses the exponential distribution</span>
-churn.survexp <span class="o">&lt;-</span> survreg<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> Amazon<span class="o">+</span>Google<span class="o">+</span>FirstSessionLength<span class="o">+</span>PurchasePrice<span class="p">,</span> dist<span class="o">=</span><span class="s">&quot;exponential&quot;</span><span class="p">)</span>
+churn.survexp <span class="o">&lt;-</span> survreg<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> 
+    Amazon<span class="o">+</span>Google<span class="o">+</span>FirstSessionLength<span class="o">+</span>PurchasePrice<span class="p">,</span> dist<span class="o">=</span><span class="s">&quot;exponential&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>churn.survexp<span class="p">)</span>
 
-<span class="c1"># The second churn model uses the weibull distribution</span>
-churn.survWeibull <span class="o">&lt;-</span> survreg<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> Amazon<span class="o">+</span>Google<span class="o">+</span>FirstSessionLength<span class="o">+</span>PurchasePrice<span class="p">,</span> dist<span class="o">=</span><span class="s">&quot;weibull&quot;</span><span class="p">)</span>
+<span class="c1"># The second churn model uses the Weibull distribution</span>
+churn.survWeibull <span class="o">&lt;-</span> survreg<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> 
+    Amazon<span class="o">+</span>Google<span class="o">+</span>FirstSessionLength<span class="o">+</span>PurchasePrice<span class="p">,</span> dist<span class="o">=</span><span class="s">&quot;weibull&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>churn.survWeibull<span class="p">)</span>
 
 <span class="kn">library</span><span class="p">(</span>lmtest<span class="p">)</span>
-<span class="c1"># The test results show that the models are stastically different and the weibull fits the data better</span>
+<span class="c1"># The test results show that the models are stastically different </span>
+<span class="c1"># and the Weibull fits the data better</span>
 lrtest<span class="p">(</span>churn.survexp<span class="p">,</span>churn.survWeibull<span class="p">)</span>
 
 <span class="c1"># clean up</span>
@@ -127,7 +133,7 @@ lrtest<span class="p">(</span>churn.survexp<span class="p">,</span>churn.survWei
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Here is the condensed output from the above code.</p>
+<p>Here is the condensed output from the above code:</p>
 
 </div>
 </div>
@@ -214,7 +220,7 @@ Signif. codes<span class="o">:</span>  <span class="m">0</span> ‘<span class="
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By comparing the two models, we can see that they are stastically different and the weibull distribution fits the data better.  Now that we have identified our game data as having a weibull distribution in churn, let's analyze the effect of the new ad.</p>
+<p>By comparing the two models, we can see that they are statistically different and the Weibull distribution fits the data better.  Now that we have identified our game data as having a Weibull distribution in churn, let us analyze the effect of the new ad.</p>
 
 </div>
 </div>
@@ -229,8 +235,9 @@ cyborg <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class=
 <span class="kn">attach</span><span class="p">(</span>cyborg<span class="p">)</span>
 <span class="kn">library</span><span class="p">(</span><span class="s">&quot;survival&quot;</span><span class="p">)</span>
 
-<span class="c1"># Run the weibull model again, but with the added CyborgAd variable</span>
-cyborg.survWeibull <span class="o">&lt;-</span> survreg<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> CyborgAd<span class="o">+</span> Amazon<span class="o">+</span>Google<span class="o">+</span>FirstSessionLength<span class="o">+</span>PurchasePrice<span class="p">,</span> dist<span class="o">=</span><span class="s">&quot;weibull&quot;</span><span class="p">)</span>
+<span class="c1"># Run the Weibull model again, but with the added CyborgAd variable</span>
+cyborg.survWeibull <span class="o">&lt;-</span> survreg<span class="p">(</span>Surv<span class="p">(</span>DaysPlayed<span class="p">,</span> Churned<span class="p">)</span> <span class="o">~</span> 
+    CyborgAd<span class="o">+</span> Amazon<span class="o">+</span>Google<span class="o">+</span>FirstSessionLength<span class="o">+</span>PurchasePrice<span class="p">,</span> dist<span class="o">=</span><span class="s">&quot;weibull&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>cyborg.survWeibull<span class="p">)</span>
 
 <span class="kn">detach</span><span class="p">(</span>cyborg<span class="p">)</span>
@@ -291,7 +298,7 @@ n<span class="o">=</span> <span class="m">104856</span>
 <ul>
 <li>the patch goes live on day 4 to 50% of the player base</li>
 <li>it includes a critical bug fix</li>
-<li>it has a UI change to make warriors more prominient</li>
+<li>it has a UI change to make warriors more prominent</li>
 <li>it includes an update to the graphics</li>
 </ul>
 
@@ -308,10 +315,12 @@ n<span class="o">=</span> <span class="m">104856</span>
     <div class="input_area">
 <div class=" highlight hl-r"><pre><span class="o">/*</span> A rough order of operations <span class="kr">for</span> how the code runs<span class="o">:</span>
 Create a table of random variables.
-Apply player specific qualitities based on those stats<span class="p">,</span> such as which class they choose.
-Create daily specific variables<span class="p">,</span> including some additional random variables such as whether they had a bug that day.
+Apply player specific qualities based on those stats<span class="p">,</span> such as which class they choose.
+Create daily specific variables<span class="p">,</span> including some additional 
+random variables such as whether they had a bug that day.
 Calculate when a player churns.  Since this is fake data<span class="p">,</span> a player can <span class="s">&quot;churn&quot;</span> multiple times.  
-To correct the fake data<span class="p">,</span> anyone marked as churned has all data truncated after their first churn flag using window functions
+To correct the fake data<span class="p">,</span> anyone marked as churned has all data truncated after their first 
+churn flag using window functions.
 <span class="o">*/</span>
 
 
@@ -319,82 +328,101 @@ drop table <span class="kr">if</span> exists schema_name_here.churn_test_model<s
 
 <span class="o">--</span> create a permanent <span class="kp">table</span>
 create table schema_name_here.churn_test_model as <span class="p">(</span>
-select start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> age_of_account<span class="p">,</span> patch<span class="p">,</span> bug<span class="p">,</span> minutes_played<span class="p">,</span> is_wizard<span class="p">,</span> churn<span class="p">,</span> patch_group<span class="p">,</span> quit_seed<span class="p">,</span> test<span class="p">,</span> bug_seed
-from
+with random_sequence as <span class="p">(</span>
+	<span class="o">--</span> create a set of random numbers to build the data set
+	select setseed<span class="p">(</span><span class="m">0</span><span class="p">)</span> as null_seed<span class="p">,</span> null as quit_seed<span class="p">,</span> null as start_date_seed
+		<span class="p">,</span> null as class_seed<span class="p">,</span> null as patch_seed
+	union <span class="kp">all</span>
+	select null
+		<span class="o">--</span> approximate a random normal variable
+		<span class="p">,</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> 
+			<span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span><span class="m">-6</span> 
+		<span class="p">,</span> random<span class="p">()</span>
+		<span class="p">,</span> random<span class="p">()</span> 
+		<span class="p">,</span> random<span class="p">()</span>
+	from generate_series<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">100000</span><span class="p">)</span>
+	offset <span class="m">1</span><span class="p">)</span> 
+<span class="p">,</span> seed_values as
+	<span class="o">--</span> create the player specific data
+	<span class="p">(</span>select <span class="o">*</span>
+		<span class="p">,</span> <span class="kp">trunc</span><span class="p">(</span>start_date_seed<span class="o">*</span><span class="m">8</span><span class="p">)</span> as start_date
+		<span class="p">,</span> case when start_date_seed<span class="o">*</span><span class="m">8</span><span class="o">&lt;</span><span class="m">3</span> and class_seed <span class="o">&lt;</span><span class="m">.6</span> then <span class="m">1</span> <span class="o">--</span> warrior<span class="p">,</span> pre patch
+			when start_date_seed<span class="o">*</span><span class="m">8</span><span class="o">&lt;</span><span class="m">3</span> then <span class="m">2</span> <span class="o">--</span> wizard<span class="p">,</span> pre patch 
+			when class_seed<span class="o">&lt;</span><span class="m">.6</span> and patch_seed<span class="o">&lt;</span><span class="m">.5</span> then <span class="m">1</span> <span class="o">--</span> warrior<span class="p">,</span> no patch
+			when patch_seed<span class="o">&lt;</span><span class="m">.5</span> then <span class="m">2</span> <span class="o">--</span> wizard<span class="p">,</span> no patch
+			when class_seed <span class="o">&lt;</span><span class="m">.8</span> then <span class="m">1</span>  <span class="o">--</span> warrior<span class="p">,</span> patch 
+			<span class="kr">else</span> <span class="m">2</span> <span class="o">--</span> wizard<span class="p">,</span> patch
+			end as <span class="kp">class</span>
+		<span class="p">,</span> case when patch_seed<span class="o">&gt;=</span><span class="m">.5</span> then <span class="m">1</span>
+		<span class="kr">else</span> <span class="m">0</span> end as patch_group
+	from random_sequence
+	<span class="p">)</span>
+<span class="p">,</span> random_day as 
+	<span class="o">--</span> start creating the daily variables
+	<span class="p">(</span>select <span class="o">*</span> 
+		<span class="p">,</span> start_date<span class="o">+</span>age_of_account as start
+		<span class="p">,</span> start_date<span class="o">+</span>age_of_account<span class="m">+1</span> as <span class="kp">stop</span>
+		<span class="p">,</span> random<span class="p">()</span> as bug_seed
+		<span class="p">,</span> random<span class="p">()</span><span class="o">+</span>random<span class="p">()</span><span class="o">*</span>random<span class="p">()</span><span class="m">-3</span> minutes_played_seed 
+		<span class="p">,</span> case when patch_seed<span class="o">&gt;=</span><span class="m">.5</span> and start_date<span class="o">+</span>age_of_account<span class="o">&gt;</span><span class="m">3</span> then <span class="m">1</span>
+			<span class="kr">else</span> <span class="m">0</span> end as patch
+        <span class="o">--</span> make the daily calculations have noise
+		<span class="p">,</span> <span class="p">(</span>random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> 
+			<span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span>
+			random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span> <span class="o">+</span> random<span class="p">()</span><span class="m">-6</span><span class="p">)</span><span class="o">/</span><span class="m">4</span> as random_noise  
+	from seed_values
+	cross join
+		<span class="p">(</span>select row_number<span class="p">()</span> over<span class="p">()</span> as age_of_account
+		from generate_series<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">10</span><span class="p">))</span> as study_days
+	<span class="p">)</span>
+<span class="p">,</span> day_event as
+	<span class="o">--</span> add <span class="kr">in</span> daily bugs
+	<span class="p">(</span>select <span class="o">*</span>
+		<span class="o">--</span> bugs vary depending on patch and <span class="kp">class</span>
+		<span class="p">,</span> case when class<span class="o">=</span><span class="m">2</span> then <span class="m">1</span> <span class="kr">else</span> <span class="m">0</span> end as is_wizard
+		<span class="p">,</span> case when bug_seed<span class="o">&gt;</span><span class="m">.9</span> and patch<span class="o">=</span><span class="m">0</span> then <span class="m">1</span> 
+			when bug_seed<span class="o">&gt;</span><span class="m">.85</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">2</span> then <span class="m">1</span>
+			when bug_seed<span class="o">&gt;</span><span class="m">.95</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">1</span> then <span class="m">1</span>
+			<span class="kr">else</span> <span class="m">0</span> end as bug
+		<span class="o">--</span> time played varies on bug chance
+		<span class="p">,</span> case when bug_seed<span class="o">&gt;</span><span class="m">.9</span> and patch<span class="o">=</span><span class="m">0</span> then <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">15</span>
+			when bug_seed<span class="o">&gt;</span><span class="m">.85</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">2</span> then <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">15</span>
+			when bug_seed<span class="o">&gt;</span><span class="m">.95</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">1</span> then <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">15</span>
+			<span class="kr">else</span> <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">20</span> end as minutes_played
+	from random_day
+	<span class="p">)</span> 
+<span class="p">,</span> input_variable as
+	<span class="o">--</span> calculate when the player churns
+	<span class="p">(</span>select <span class="o">*</span>
+	<span class="p">,</span> <span class="o">-</span><span class="kp">log</span><span class="p">(</span>age_of_account<span class="m">+1</span><span class="p">)</span><span class="o">*</span><span class="m">0.5</span><span class="o">+</span>ln<span class="p">(</span>minutes_played<span class="p">)</span><span class="o">/</span><span class="m">20</span>
+         <span class="o">+</span><span class="p">(</span><span class="o">@</span>quit_seed<span class="p">)</span><span class="o">/</span><span class="m">4</span><span class="o">+</span>patch<span class="o">*</span><span class="m">0.025</span><span class="o">+</span>random_noise<span class="o">/</span><span class="m">6</span>
+		<span class="o">-</span>bug<span class="o">*</span><span class="m">0.12</span><span class="o">-</span>is_wizard<span class="o">*</span>patch<span class="o">*</span><span class="m">0.04</span> as test
+	<span class="p">,</span> case when <span class="o">-</span><span class="kp">log</span><span class="p">(</span>age_of_account<span class="m">+1</span><span class="p">)</span><span class="o">*</span><span class="m">0.5</span><span class="o">+</span>ln<span class="p">(</span>minutes_played<span class="p">)</span><span class="o">/</span><span class="m">20</span>
+		<span class="o">+</span><span class="p">(</span><span class="o">@</span>quit_seed<span class="p">)</span><span class="o">/</span><span class="m">4</span><span class="o">+</span>patch<span class="o">*</span><span class="m">0.025</span>
+		<span class="o">+</span>random_noise<span class="o">/</span><span class="m">6</span><span class="o">-</span>bug<span class="o">*</span><span class="m">0.12</span><span class="o">-</span>is_wizard<span class="o">*</span>patch<span class="o">*</span><span class="m">0.04</span><span class="o">&lt;</span><span class="m">0</span> 
+		then <span class="m">1</span> <span class="kr">else</span> <span class="m">0</span> end as churn
+	 from day_event
+	<span class="p">)</span> 
+<span class="p">,</span> order_data as
+	<span class="o">--</span> ordering the data by individual player churn
+	<span class="p">(</span>select start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> age_of_account<span class="p">,</span> patch<span class="p">,</span> bug<span class="p">,</span> minutes_played<span class="p">,</span> quit_seed
+		<span class="p">,</span> patch_group<span class="p">,</span> is_wizard<span class="p">,</span> test<span class="p">,</span> bug_seed
+		<span class="p">,</span> <span class="kp">max</span><span class="p">(</span>churn<span class="p">)</span> over 
+			<span class="p">(</span>partition by quit_seed order by quit_seed
+			<span class="p">,</span> age_of_account desc range between current row and unbounded following<span class="p">)</span> as churn
+	from input_variable
+	<span class="p">)</span> 
+<span class="p">,</span> limiting as 
 	<span class="o">--</span> select the first time a player churns
     <span class="p">(</span>select <span class="o">*</span>
         <span class="p">,</span> lag<span class="p">(</span>churn<span class="p">)</span> over <span class="p">(</span>partition by quit_seed order by age_of_account<span class="p">)</span> as lag_churn
-    from
-		<span class="o">--</span> ordering the data by individual player churn
-        <span class="p">(</span>select start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> age_of_account<span class="p">,</span> patch<span class="p">,</span> bug<span class="p">,</span> minutes_played<span class="p">,</span> quit_seed<span class="p">,</span> patch_group<span class="p">,</span> is_wizard<span class="p">,</span> test<span class="p">,</span> bug_seed
-            <span class="p">,</span> <span class="kp">max</span><span class="p">(</span>churn<span class="p">)</span> over <span class="p">(</span>partition by quit_seed order by quit_seed<span class="p">,</span> age_of_account desc range between current row and unbounded following<span class="p">)</span> as churn
-        from
-			<span class="o">--</span> calculate when the player churns
-            <span class="p">(</span>select <span class="o">*</span>
-            <span class="p">,</span> <span class="o">-</span><span class="kp">log</span><span class="p">(</span>age_of_account<span class="m">+1</span><span class="p">)</span><span class="o">*</span><span class="m">0.5</span><span class="o">+</span>ln<span class="p">(</span>minutes_played<span class="p">)</span><span class="o">/</span><span class="m">20</span><span class="o">+</span><span class="p">(</span><span class="o">@</span>quit_seed<span class="p">)</span><span class="o">/</span><span class="m">4</span><span class="o">+</span>patch<span class="o">*</span><span class="m">0.025</span><span class="o">+</span>random_noise<span class="o">/</span><span class="m">6</span><span class="o">-</span>bug<span class="o">*</span><span class="m">0.12</span><span class="o">-</span>is_wizard<span class="o">*</span>patch<span class="o">*</span><span class="m">0.04</span> as test
-            <span class="p">,</span> case when <span class="o">-</span><span class="kp">log</span><span class="p">(</span>age_of_account<span class="m">+1</span><span class="p">)</span><span class="o">*</span><span class="m">0.5</span><span class="o">+</span>ln<span class="p">(</span>minutes_played<span class="p">)</span><span class="o">/</span><span class="m">20</span><span class="o">+</span><span class="p">(</span><span class="o">@</span>quit_seed<span class="p">)</span><span class="o">/</span><span class="m">4</span><span class="o">+</span>patch<span class="o">*</span><span class="m">0.025</span><span class="o">+</span>random_noise<span class="o">/</span><span class="m">6</span><span class="o">-</span>bug<span class="o">*</span><span class="m">0.12</span><span class="o">-</span>is_wizard<span class="o">*</span>patch<span class="o">*</span><span class="m">0.04</span><span class="o">&lt;</span><span class="m">0</span> then <span class="m">1</span> <span class="kr">else</span> <span class="m">0</span> end as churn
-             from
-				<span class="o">--</span> add <span class="kr">in</span> daily bugs
-                <span class="p">(</span>select <span class="o">*</span>
-                    <span class="o">--</span> bugs vary depending on patch and <span class="kp">class</span>
-                    <span class="p">,</span> case when class<span class="o">=</span><span class="m">2</span> then <span class="m">1</span> <span class="kr">else</span> <span class="m">0</span> end as is_wizard
-                    <span class="p">,</span> case when bug_seed<span class="o">&gt;</span><span class="m">.9</span> and patch<span class="o">=</span><span class="m">0</span> then <span class="m">1</span> 
-                        when bug_seed<span class="o">&gt;</span><span class="m">.85</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">2</span> then <span class="m">1</span>
-                        when bug_seed<span class="o">&gt;</span><span class="m">.95</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">1</span> then <span class="m">1</span>
-                        <span class="kr">else</span> <span class="m">0</span> end as bug
-                    <span class="o">--</span> time played varies on bug chance
-                    <span class="p">,</span> case when bug_seed<span class="o">&gt;</span><span class="m">.9</span> and patch<span class="o">=</span><span class="m">0</span> then <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">15</span>
-                        when bug_seed<span class="o">&gt;</span><span class="m">.85</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">2</span> then <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">15</span>
-                        when bug_seed<span class="o">&gt;</span><span class="m">.95</span> and patch<span class="o">=</span><span class="m">1</span> and class<span class="o">=</span><span class="m">1</span> then <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">15</span>
-                        <span class="kr">else</span> <span class="o">@</span>minutes_played_seed<span class="o">*</span><span class="m">20</span> end as minutes_played
-                from 
-					<span class="o">--</span> start creating the daily variables
-                    <span class="p">(</span>select <span class="o">*</span> 
-                        <span class="p">,</span> start_date<span class="o">+</span>age_of_account as start
-                        <span class="p">,</span> start_date<span class="o">+</span>age_of_account<span class="m">+1</span> as <span class="kp">stop</span>
-                        <span class="p">,</span> random<span class="p">()</span> as bug_seed
-                        <span class="p">,</span> random<span class="p">()</span><span class="o">+</span>random<span class="p">()</span><span class="o">*</span>random<span class="p">()</span><span class="m">-3</span> minutes_played_seed 
-                        <span class="p">,</span> case when patch_seed<span class="o">&gt;=</span><span class="m">.5</span> and start_date<span class="o">+</span>age_of_account<span class="o">&gt;</span><span class="m">3</span> then <span class="m">1</span>
-                            <span class="kr">else</span> <span class="m">0</span> end as patch
-                        <span class="p">,</span> <span class="p">(</span>random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>    random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>    random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>
-                                    random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span><span class="m">-6</span><span class="p">)</span><span class="o">/</span><span class="m">4</span> as random_noise  <span class="o">--</span> make the daily calculations have noise
-                    from
-						<span class="o">--</span> create the player specific data
-                        <span class="p">(</span>select <span class="o">*</span>
-                            <span class="p">,</span> <span class="kp">trunc</span><span class="p">(</span>start_date_seed<span class="o">*</span><span class="m">8</span><span class="p">)</span> as start_date
-                            <span class="p">,</span> case when start_date_seed<span class="o">*</span><span class="m">8</span><span class="o">&lt;</span><span class="m">3</span> and class_seed <span class="o">&lt;</span><span class="m">.6</span> then <span class="m">1</span> <span class="o">--</span> warrior<span class="p">,</span> pre patch
-                                when start_date_seed<span class="o">*</span><span class="m">8</span><span class="o">&lt;</span><span class="m">3</span> then <span class="m">2</span> <span class="o">--</span> wizard<span class="p">,</span> pre patch 
-                                when class_seed<span class="o">&lt;</span><span class="m">.6</span> and patch_seed<span class="o">&lt;</span><span class="m">.5</span> then <span class="m">1</span> <span class="o">--</span> warrior<span class="p">,</span> no patch
-                                when patch_seed<span class="o">&lt;</span><span class="m">.5</span> then <span class="m">2</span> <span class="o">--</span> wizard<span class="p">,</span> no patch
-                                when class_seed <span class="o">&lt;</span><span class="m">.8</span> then <span class="m">1</span>  <span class="o">--</span> warrior<span class="p">,</span> patch 
-                                <span class="kr">else</span> <span class="m">2</span> <span class="o">--</span> wizard<span class="p">,</span> patch
-                                end as <span class="kp">class</span>
-                            <span class="p">,</span> case when patch_seed<span class="o">&gt;=</span><span class="m">.5</span> then <span class="m">1</span>
-                            <span class="kr">else</span> <span class="m">0</span> end as patch_group
-                        from
-							<span class="o">--</span> create a set of random numbers to build the data set
-                            <span class="p">(</span>select setseed<span class="p">(</span><span class="m">0</span><span class="p">)</span> as null_seed<span class="p">,</span> null as quit_seed<span class="p">,</span> null as start_date_seed<span class="p">,</span> null as class_seed<span class="p">,</span> null as patch_seed
-                            union <span class="kp">all</span>
-                            select null
-                                <span class="p">,</span> random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>    random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>    random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>
-                                    random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span> <span class="o">+</span>     random<span class="p">()</span><span class="m">-6</span> 
-                                <span class="p">,</span> random<span class="p">()</span>
-                                <span class="p">,</span> random<span class="p">()</span> 
-                                <span class="p">,</span> random<span class="p">()</span>
-                            from generate_series<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">100000</span><span class="p">)</span>
-                            offset <span class="m">1</span><span class="p">)</span> as random_sequence
-                        <span class="p">)</span> as seed_values
-                    cross join
-                        <span class="p">(</span>select row_number<span class="p">()</span> over<span class="p">()</span> as age_of_account
-                        from generate_series<span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">10</span><span class="p">))</span> as study_days
-                    <span class="p">)</span> as random_day
-                <span class="p">)</span> as day_event
-            <span class="p">)</span> as input_variable
-        <span class="p">)</span> as done
-    <span class="p">)</span> as limiting
+    from order_data
+    <span class="p">)</span> 
+select start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> age_of_account<span class="p">,</span> patch<span class="p">,</span> bug<span class="p">,</span> minutes_played<span class="p">,</span> is_wizard<span class="p">,</span> churn
+	<span class="p">,</span> patch_group<span class="p">,</span> quit_seed<span class="p">,</span> test<span class="p">,</span> bug_seed
+from limiting
 where <span class="p">(</span>lag_churn<span class="o">&lt;&gt;</span><span class="m">1</span> or lag_churn is null<span class="p">)</span> and <span class="kp">stop</span><span class="o">&lt;=</span><span class="m">10</span>
 <span class="p">)</span>
-<span class="p">;</span>
 </pre></div>
 
 </div>
@@ -426,7 +454,8 @@ patch_data <span class="o">=</span>  sqlQuery<span class="p">(</span>myconn<span
 
 <span class="kn">attach</span><span class="p">(</span>patch_data<span class="p">)</span>
 
-<span class="kp">summary</span><span class="p">(</span>coxph<span class="p">(</span>Surv<span class="p">(</span>start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> churn<span class="p">)</span> <span class="o">~</span> bug<span class="o">+</span>is_wizard<span class="o">+</span>patch<span class="o">+</span>age_of_account<span class="o">+</span>minutes_played<span class="o">+</span>cluster<span class="p">(</span>quit_seed<span class="p">),</span> data<span class="o">=</span>patch_data<span class="p">))</span>
+<span class="kp">summary</span><span class="p">(</span>coxph<span class="p">(</span>Surv<span class="p">(</span>start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> churn<span class="p">)</span> <span class="o">~</span> 
+    bug<span class="o">+</span>is_wizard<span class="o">+</span>patch<span class="o">+</span>age_of_account<span class="o">+</span>minutes_played<span class="o">+</span>cluster<span class="p">(</span>quit_seed<span class="p">),</span> data<span class="o">=</span>patch_data<span class="p">))</span>
 </pre></div>
 
 </div>
@@ -473,7 +502,7 @@ minutes_played <span class="m">-0.0196435</span>  <span class="m">0.9805482</spa
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Here, positive coefficients indicate a higher likelihood to churn.  The initial results show that the patch reduces churn.  However, in the forums, customer service reports an increased number of complaints from wizards.  Forums are notoriously hard to extropolate to the entire player community, so instead, let's use the survivor model to see what is happening with wizards and the patch by creating an interaction variable.</p>
+<p>Here, positive coefficients indicate a higher likelihood to churn.  The initial results show that the patch reduces churn.  However, in the forums, customer service reports an increased number of complaints from wizards.  Forums are notoriously hard to extrapolate to the entire player community; so instead, let us use the survivor model to see what is happening with wizards and the patch by creating an interaction variable.</p>
 
 </div>
 </div>
@@ -486,7 +515,8 @@ minutes_played <span class="m">-0.0196435</span>  <span class="m">0.9805482</spa
 <div class=" highlight hl-r"><pre>patch_data<span class="o">$</span>wizard_bug <span class="o">&lt;-</span> is_wizard<span class="o">*</span>bug
 
 <span class="kp">summary</span><span class="p">(</span>coxph<span class="p">(</span>Surv<span class="p">(</span>start<span class="p">,</span> <span class="kp">stop</span><span class="p">,</span> churn<span class="p">)</span> <span class="o">~</span> 
-    bug<span class="o">+</span>is_wizard<span class="o">+</span>patch<span class="o">+</span>age_of_account<span class="o">+</span>minutes_played<span class="o">+</span>wizard_patch<span class="o">+</span>cluster<span class="p">(</span>quit_seed<span class="p">),</span> data<span class="o">=</span>patch_data<span class="p">))</span>
+    bug<span class="o">+</span>is_wizard<span class="o">+</span>patch<span class="o">+</span>age_of_account<span class="o">+</span>minutes_played<span class="o">+</span>
+    wizard_patch<span class="o">+</span>cluster<span class="p">(</span>quit_seed<span class="p">),</span> data<span class="o">=</span>patch_data<span class="p">))</span>
 
 <span class="kn">detach</span><span class="p">(</span>patch_data<span class="p">)</span>
 </pre></div>
@@ -537,7 +567,7 @@ wizard_patch    <span class="m">0.2353473</span>  <span class="m">1.2653481</spa
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>When you separate out wizards who receive the patch, you find that they had increased likelihood to churn due to the increased incidence in bugs.</p>
-<h1 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h1><p>While the examples used in this blog are trivial, they are useful for showing how the survival model can fit single incidence events with non-normal distributions such as churn quite well.  Feeding the data into the model is straight forward and in the modelling stage, you have a lot of flexibility in what variables you include.  Ideally, you'd have some sort of experiment running to give you clear causation, but even correlations can help you understand how different factors relate to each other.</p>
+<h1 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h1><p>While the examples used in this blog are trivial, they are useful for showing how the survival model can fit single incidence events with non-normal distributions such as churn quite well.  Feeding the data into the model is straightforward; and, in the modelling stage, you have a lot of flexibility in what variables you include.  Ideally, you would have some sort of experiment running to give you clear causation, but even correlations can help you understand how different factors relate to each other.</p>
 
 </div>
 </div>

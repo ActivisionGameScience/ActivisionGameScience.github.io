@@ -8,5 +8,5 @@ tags: [Churn, Survivor Analysis]
 ---
 
 <!--excerpt.start-->
-I recently gave a talk at GDC on analyzing churn using a survivor model.  If you attended my talk and would like to view the source code and data, please follow this [link](http://github.com/ActivisionGameScience).
+I recently gave a talk at GDC on analyzing churn using a survivor model.  If you attended my talk and would like to view the source code and data, please follow this [link](https://github.com/aburke99/gdc-analyzing-churn).
 <!--excerpt.end-->

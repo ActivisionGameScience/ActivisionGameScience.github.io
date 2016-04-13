@@ -1,0 +1,1113 @@
+---
+layout: nb-post
+title: "IPython Parallel Introduction"
+author: John Dennison
+github:
+tags: 
+---
+
+<!--put these separators somewhere appropriate:-->
+
+<!--you can set this to false if you want code displayed by default-->
+<script>
+hide_code=true;
+</script>
+
+<!--this is just hacky filler-->
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>
+<hr>
+</p>
+</div>
+</div>
+</div>
+<!--back to the good stuff-->
+
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<!--if you've decided to show code by default, please reword the following-->
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>
+NOTE: the code in this notebook is hidden for better readability. To toggle on/off, click <a href="javascript:code_toggle()">here</a>.
+</p>
+</div>
+</div>
+</div>
+
+
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction-to-ipyparallel-and-deploying-an-IPython-cluster-using-Mesos-and-Docker">Introduction to ipyparallel and deploying an IPython cluster using Mesos and Docker<a class="anchor-link" href="#Introduction-to-ipyparallel-and-deploying-an-IPython-cluster-using-Mesos-and-Docker">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<!--excerpt.start-->
+
+<p>The Analytics Services team here at Activision are heavy users of <a href="http://mesos.apache.org/">mesos</a> and <a href="https://github.com/mesosphere/marathon">marathon</a> to deploy and mangage services on our clusters. We are also huge fans of python and the jupyter project.</p>
+<p>The <a href="http://jupyter.org/">jupyter</a> project recently reogorganized from IPython, in a move refered to as "the split". One part that was orginally part of IPython (<code>IPython.parallel</code>) that was split off into a seperate project is <a href="https://github.com/ipython/ipyparallel">ipyparallel</a>. This powerful component of the IPython ecosystem is generally overlooked.</p>
+<p>In this post I will give a quick introduction to the ipyparallel project and then introduce a new launcher we have open sourced to deploy IPython clusters to into mesos clusters. While we have published this notebook in HTML, please feel free to download the original to help you follow you along.</p>
+<!--excerpt.end--><!--more-->
+<h2 id="Introduction-to-ipyparallel">Introduction to ipyparallel<a class="anchor-link" href="#Introduction-to-ipyparallel">&#182;</a></h2><p>The ipyparallel project is the new home of IPython.parallel module that was hosted within IPython core before 2014 [CHECK DATE]. The focus of the project is interactive cluster computing. I believe this focus on interactive computing and first class intergration with the IPython project is a distingishing feature. For a more complete dive into the internals of ipyparallel please visit the <a href="https://ipyparallel.readthedocs.org/en/latest/intro.html">docs</a>. I aim to give the bare minimum to get you started.</p>
+<p>At the most basic level an IPython cluster is a set of python intereters that can be accessed over tcp. Under the hood it works very similar to how Jupyter/IPython work today. When you open a new notebook in the browser a python process (called a kernel) is started to actually run the code you submit. ipyparallel does the same thing except instead of a single python kernel, you can start many distributed over many machines.</p>
+<p>There are three main components to the stack.</p>
+<ul>
+<li>Client: A python process which submits work, Usually this is an IPython session or a Jupyter notebook. </li>
+<li>Controller: The central coordinator. Accepts work from the client and passes it to engines, collects results and sends back to the client.</li>
+<li>Engine: Roughly equivalent to an IPython kernel. A python interpreter that communicates with the controller to accept work and submit results.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Starting-your-first-cluster">Starting your first cluster<a class="anchor-link" href="#Starting-your-first-cluster">&#182;</a></h2><p>The easiest way to get your hands dirty is to spin up a cluster locally. That is you will run a Client, Controller and Engines all on your local machine. The hardest part of provisioning distributed clusters is making sure all the pieces can talk to each other (as usual the easiest solution to a distributed problem is to make it local).</p>
+<p>While there are lower level commands to start and configure Controllers and Engines. The primary command you will use is <code>ipcluster</code>. This is a helpful utility to start all the components and configure your local client. By default it uses the <code>LocalControllerLauncher</code> and the <code>LocalEngineSetLauncher</code> which is exactly what we want to start.</p>
+<p>Open a terminal install <code>ipyparallel</code> and start a cluster.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="o">(</span>py3<span class="o">)</span>➜ pip install ipyparallel
+<span class="o">(</span>py3<span class="o">)</span>➜ ipcluster start --n<span class="o">=</span>4
+2016-04-11 22:24:15.514 <span class="o">[</span>IPClusterStart<span class="o">]</span> Starting ipcluster with <span class="o">[</span><span class="nv">daemon</span><span class="o">=</span>False<span class="o">]</span>
+2016-04-11 22:24:15.515 <span class="o">[</span>IPClusterStart<span class="o">]</span> Creating pid file: /home/vagrant/.ipython/profile_default/pid/ipcluster.pid
+2016-04-11 22:24:15.515 <span class="o">[</span>IPClusterStart<span class="o">]</span> Starting Controller with LocalControllerLauncher
+2016-04-11 22:24:16.519 <span class="o">[</span>IPClusterStart<span class="o">]</span> Starting <span class="m">2</span> Engines with LocalEngineSetLauncher
+2016-04-11 22:24:46.633 <span class="o">[</span>IPClusterStart<span class="o">]</span> Engines appear to have started successfully
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># You can also use the ipython magic shell command. but errors are harder to see and stopping the cluster can be janky.</span>
+<span class="o">!</span>ipcluster start -n <span class="m">4</span> --daemon
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If started correctly we should now have four engines running on our local machine. Now to actually interact with them. First we need to import the client.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ipyparallel</span> <span class="k">as</span> <span class="nn">ipp</span>
+<span class="n">rc</span> <span class="o">=</span> <span class="n">ipp</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rc</span><span class="o">.</span><span class="n">ids</span> <span class="c1"># list the ids of the engine the client can communicate with</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[0, 1, 2, 3]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The client has two primary way to farm out work to the engines. First is a direct view. This is used to apply the same work to all engines. To create a <code>DirectView</code> just slice the client.</p>
+<p>The second way is a <code>LoadBalancedView</code> which we will cover later in the post.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dv</span> <span class="o">=</span> <span class="n">rc</span><span class="p">[:]</span>
+<span class="n">dv</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;DirectView [0, 1, 2, 3]&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With a direct view you can issue a function to execute within the context of that engine's python process.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_engine_pid</span><span class="p">():</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+    
+<span class="n">dv</span><span class="o">.</span><span class="n">apply_sync</span><span class="p">(</span><span class="n">get_engine_pid</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[10209, 10211, 10216, 10213]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This pattern is so common that ipyparallel provides a IPython magic function to execute a code cell to all engines: <code>%%px</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span>
+import os
+os.getpid()
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[0:2]: </span>10209</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[1:2]: </span>10211</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[2:2]: </span>10216</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[3:2]: </span>10213</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>It is key to notice that the engines are fully running stateful python interpreters. If you set a varible within <code>%%px</code> code block, it will remain there.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span>
+foo = &#39;bar on pid {}&#39;.format(os.getpid())
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span>
+foo
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[0:12]: </span>&apos;bar on pid 10209&apos;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[1:12]: </span>&apos;bar on pid 10211&apos;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[2:12]: </span>&apos;bar on pid 10216&apos;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea ">
+<pre><span class="ansired">Out[3:12]: </span>&apos;bar on pid 10213&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>DirectView</code> object provides some syntaxic sugar to help distributing data to each engine. First is dictionary style retreival and assignment. First lets retieve the value of <code>foo</code> from each engine.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dv</span><span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&apos;bar on pid 10209&apos;,
+ &apos;bar on pid 10211&apos;,
+ &apos;bar on pid 10216&apos;,
+ &apos;bar on pid 10213&apos;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can overwrite it's its value.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dv</span><span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span>
+<span class="n">dv</span><span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&apos;bar&apos;, &apos;bar&apos;, &apos;bar&apos;, &apos;bar&apos;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are many cases where you don't want the same data on each machine, but rather you want to chuck an list and distribute each chunk to an engine. The <code>DirectView</code> provides the <code>.scatter</code> and the <code>.gather</code> methods for this.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># start with a list of ids to work on</span>
+<span class="n">user_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+<span class="n">dv</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;user_id_chunk&#39;</span><span class="p">,</span> <span class="n">user_ids</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;AsyncResult: scatter&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice that this method completed almost immediately and returned an <code>AsyncResult</code>. All the methods we have used up to now have be blocking and syncronous. The <code>scatter</code> method is aysnc. To turn this scatter into a blocking call we can chain a <code>.get()</code> to the call.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dv</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;user_id_chunk&#39;</span><span class="p">,</span> <span class="n">user_ids</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[None, None, None, None]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we have a variable on each engine that holds an equal amount of the original list.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span>
+print(&quot;Len&quot;, len(user_id_chunk))
+print(&quot;Max&quot;, max(user_id_chunk))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[stdout:0] 
+Len 250
+Max 249
+[stdout:1] 
+Len 250
+Max 499
+[stdout:2] 
+Len 250
+Max 749
+[stdout:3] 
+Len 250
+Max 999
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lets apply a simple function to each list. First declare a function within each engine. The <code>--local</code> flag also executes the code block in your local client. This is very useful to help debug you code.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span> --local
+def the_most_interesting_transformation_ever(user_id):
+    &quot;&quot;&quot;
+    This function is really interesting
+    &quot;&quot;&quot;
+    return &quot;ID:{}&quot;.format(user_id * 3)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">the_most_interesting_transformation_ever</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;ID:3&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span>
+transformed_user_ids = list(map(the_most_interesting_transformation_ever, user_id_chunk))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we have 4 seperate list of transformed ids. We want to stich the disperate lists into one list on our local notebook. <code>gather</code> is used for that.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_transformed_user_ids</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="s1">&#39;transformed_user_ids&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_transformed_user_ids</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">all_transformed_user_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1000
+[&apos;ID:0&apos;, &apos;ID:3&apos;, &apos;ID:6&apos;, &apos;ID:9&apos;, &apos;ID:12&apos;, &apos;ID:15&apos;, &apos;ID:18&apos;, &apos;ID:21&apos;, &apos;ID:24&apos;, &apos;ID:27&apos;]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Obviously this example is contrived. The serialization cost of shipping python objects over the wire to each engine is more expensive than the calculation we preformed. This tradeoff between serialization/transport vs computation cost is central to any decision to use distributed processing. However, there are many highly parallellizable problems where this project can be extremely useful. Some of the main usecases we use ipyparallel for are hyperparamater searches and bulk loading/writing from storage systems.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="LoadBalancedView">LoadBalancedView<a class="anchor-link" href="#LoadBalancedView">&#182;</a></h3><p>The previous example where you scatter a list, preform a calculation and then gather a result works for lots of problems. One issue that this approach is that each engine has does an identical ammount of work. If the complexity of the process each engine is preforming is variable, this naive scheduling approach can waste processing power and time. Take for example this function:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">px</span> --local
+import random
+import time
+def fake_external_io(url):
+    # Simulate variable complexity/latency
+    time.sleep(random.random())
+    return &quot;HTML for URL: {}&quot;.format(url)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">time</span> fake_external_io(1)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 890 µs, sys: 472 µs, total: 1.36 ms
+Wall time: 909 ms
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;HTML for URL: 1&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">time</span> fake_external_io(1)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 972 µs, sys: 514 µs, total: 1.49 ms
+Wall time: 375 ms
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&apos;HTML for URL: 1&apos;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you had a list of urls to scrape and gave each worker an equal share, some workers would finish early and have to sit around doing nothing. A better approach is to assign work to each engine as it finishes. This way the work will be load balanced over the cluster and you will complete your process earlier. ipyparallel provides the <code>LoadBalancedView</code> for this exact use case. For this specific problem threading or an async event loop would likely be a better approach to speeding up or scalling out, but suspend your disbelief for this exercise.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lview</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">load_balanced_view</span><span class="p">()</span>
+<span class="n">lview</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;LoadBalancedView None&gt;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nd">@lview</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span>
+<span class="nd">@ipp</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;random&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">p_fake_external_io</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="c1"># Simulate variable complexity/latency</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
+    <span class="k">return</span> <span class="s2">&quot;HTML for URL: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here we used two ipyparallel decorators. First we used <code>lview.parallel()</code> to declared this a parallel function. Second, we declared that this function depends on the modules time and random. Now that we have a load balanced function we can compare timings with our naive approach.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;foo</span><span class="si">{}</span><span class="s1">.com&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Naive single threaded</span>
+<span class="o">%</span><span class="k">time</span> res = list(map(fake_external_io, urls))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 10.1 ms, sys: 14.8 ms, total: 24.9 ms
+Wall time: 44.4 s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dv</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="s1">&#39;urls&#39;</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[None, None, None, None]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Naive paassignment</span>
+<span class="o">%</span><span class="k">time</span> %px results = list(map(fake_external_io, urls))
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 10.8 ms, sys: 10.2 ms, total: 21 ms
+Wall time: 13.6 s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load balanced version</span>
+<span class="o">%</span><span class="k">time</span> res = p_fake_external_io.map(urls).get()
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 253 ms, sys: 65.4 ms, total: 319 ms
+Wall time: 12.3 s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This isn't a perfect example but you can get the idea. The large the number of inputs to your parallel problem and the more variable the run time of each component process, the more time saving you can get from switching to a load balanced view.</p>
+<p>This is only scratching the surface of ipyparallel project. I would highly recommend taking a look at the docs. Here is a list of further topics i would look into if you are interested.</p>
+<ul>
+<li>support for numpy memmap to allow engine located on a single node to share large arrays</li>
+<li>complex dependencies and more specialized scheduling </li>
+<li>retry and recovery logic</li>
+<li>multiple clients working on the same cluster allowing remote collaborators to share an enviornment.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Ok-this-is-cool-but-i-want-more-cores!!!">Ok this is cool but i want more cores!!!<a class="anchor-link" href="#Ok-this-is-cool-but-i-want-more-cores!!!">&#182;</a></h2><p>The examples so far are a useful introduction to the api and the some features of ipyparallel. Hopefully you are convinced to try out the library. However, deploying a working cluster beyond a single machine introduces some issues.</p>
+<p>ipyparallel provides support for a range of cluster and batch job management systems such as PBS and WindowsHPC. The full list is provided in the documentation. ipyparallel also provides an SSH based launcher. Given passwordless ssh onto machine you can easily deploy engines and connect them to your controller and client. Also there is a wonderful project <a href="http://star.mit.edu/cluster/docs/latest/plugins/ipython.html">starcluster</a> that helps spin up machines from cloud providors.</p>
+<p>These tools are great. If you have access to existing HPC clusters or are planning on deploying dedicated clusters either on your own cold-iron (2016 version of bare-metal) or in the cloud then they meet your needs.</p>
+<p>However, we are big users of mesos, docker and marathon to manage our clusters and services. Furthermore, even with the existing launchers managing complex dependencies within the engines is a pain. Using docker to package all dependencies makes deploying heterogenous clusters easier. Targeting our existing cluster management system and simplifying dependencies is a big win for us.</p>
+<p>With this in mind, we are open sourcing a new ipyparallel launcher that deploys IPython clusters into mesos using docker and marathon. The code lives <a href="https://github.com/Activision/ipyparallel-mesos/">here</a> and on pypi/conda as <code>ipyparallel_mesos</code>.</p>
+<p>We have two prebuilt docker images for the <a href="https://hub.docker.com/r/jdennison/ipyparallel-marathon-controller/">Controller</a> and <a href="https://hub.docker.com/r/jdennison/ipyparallel-marathon-engine/">Engine</a>. These are striped down docker images. Internally we use conda for almost all our depencies, even inside our docker containers. However, extending from the <code>ipyparallel-marathon-engine</code> image will allow you to easily install your custom dependencies.</p>
+<p>The project is young but hopefully you will find it useful. Please open any issues on the github page. Please read the README for the project for more details.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div>
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="More-Resources">More Resources<a class="anchor-link" href="#More-Resources">&#182;</a></h2><ul>
+<li><a href="https://github.com/Activision/ipyparallel-mesos/">ipyparallel_mesos</a></li>
+<li><a href="http://star.mit.edu/cluster/docs/latest/plugins/ipython.html">StarCluster</a></li>
+<li><a href="https://github.com/jupyter/ngcm-tutorial/tree/master/Day-3">Great IPython Parallel Course - Day 3</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div></div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>

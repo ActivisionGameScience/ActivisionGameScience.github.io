@@ -3,7 +3,7 @@ layout: nb-post
 title: "IPython Parallel Introduction"
 author: John Dennison
 github: jofusa
-tags: [HPC, Python, IPython, Scientfic Computing, Parallel Computing]
+tags: [HPC, Python, IPython, Scientfic Computing, Parallel Computing] 
 ---
 
 <!--put these separators somewhere appropriate:-->
@@ -47,7 +47,9 @@ NOTE: the code in this notebook is shown for better readability. To toggle on/of
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Introduction-to-ipyparallel-and-deploying-an-IPython-cluster-using-Mesos-and-Docker">Introduction to ipyparallel and deploying an IPython cluster using Mesos and Docker<a class="anchor-link" href="#Introduction-to-ipyparallel-and-deploying-an-IPython-cluster-using-Mesos-and-Docker">&#182;</a></h1>
+<h1 id="How-to-Deploy-an-IPython-Cluster-Using-Mesos-and-Docker">How to Deploy an IPython Cluster Using Mesos and Docker<a class="anchor-link" href="#How-to-Deploy-an-IPython-Cluster-Using-Mesos-and-Docker">&#182;</a></h1><p><a href="https://github.com/jofusa">John Dennison</a></p>
+<p>April 19th, 2016</p>
+
 </div>
 </div>
 </div>
@@ -55,15 +57,14 @@ NOTE: the code in this notebook is shown for better readability. To toggle on/of
 <div>
 </div>
 <div class="inner_cell">
-<!--excerpt.start-->
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The Analytics Services team here at Activision are heavy users of <a href="http://mesos.apache.org/">Mesos</a> and <a href="https://github.com/mesosphere/marathon">Marathon</a> to deploy and mangage services on our clusters. We are also huge fans of Python and the jupyter project.</p>
-<p>The <a href="http://jupyter.org/">jupyter</a> project recently reogorganized from IPython, in a move refered to as "the split". One part that was orginally part of IPython (<code>IPython.parallel</code>) that was split off into a seperate project is <a href="https://github.com/ipython/ipyparallel">ipyparallel</a>. This powerful component of the IPython ecosystem is generally overlooked.</p>
+<!--excerpt.start-->
+<p>The members of the Analytics Services team here at Activision are heavy users of <a href="http://mesos.apache.org/">Mesos</a> and <a href="https://github.com/mesosphere/marathon">Marathon</a> to deploy and manage services on our clusters. We are also huge fans of Python and the <a href="http://jupyter.org/">Jupyter</a> project.</p>
+<p>The Jupyter project recently reorganized from IPython, in a move referred to as "the split". One part that was originally part of IPython (<code>IPython.parallel</code>) that was split off into a separate project is <a href="https://github.com/ipython/ipyparallel">ipyparallel</a>. This powerful component of the IPython ecosystem is generally overlooked.</p>
 <p>In this post I will give a quick introduction to the ipyparallel project and then introduce a new launcher we have open sourced to deploy IPython clusters to into Mesos clusters. While we have published this notebook in HTML, please feel free to download the <a href="https://github.com/ActivisionGameScience/ActivisionGameScience.github.io/blob/master/_notebooks/IPython%20Parallel%20Introduction.ipynb">original</a> to follow along.</p>
 <!--excerpt.end--><!--more-->
-
-<h2 id="Introduction-to-ipyparallel">Introduction to ipyparallel<a class="anchor-link" href="#Introduction-to-ipyparallel">&#182;</a></h2><p>The ipyparallel project is the new home of IPython.parallel module that was hosted within IPython core before 2015. The focus of the project is interactive cluster computing. I believe this focus on interactive computing and first class intergration with the IPython project is a distingishing feature. For a more complete dive into the internals of ipyparallel please visit the <a href="https://ipyparallel.readthedocs.org/en/latest/intro.html">docs</a>. I aim to give the bare minimum to get you started.</p>
-<p>At the most basic level an IPython cluster is a set of Python intereters that can be accessed over tcp. Under the hood it works very similar to how Jupyter/IPython work today. When you open a new notebook in the browser a Python process (called a kernel) is started to actually run the code you submit. ipyparallel does the same thing except instead of a single Python kernel, you can start many distributed over many machines.</p>
+<h2 id="Introduction-to-ipyparallel">Introduction to ipyparallel<a class="anchor-link" href="#Introduction-to-ipyparallel">&#182;</a></h2><p>The ipyparallel project is the new home of IPython.parallel module that was hosted within IPython core before 2015. The focus of the project is interactive cluster computing. I believe this focus on interactive computing and first class integration with the IPython project is a distinguishing feature. For a more complete dive into the internals of ipyparallel please visit the <a href="https://ipyparallel.readthedocs.org/en/latest/intro.html">docs</a>. I aim to give the bare minimum to get you started.</p>
+<p>At the most basic level an IPython cluster is a set of Python interpreters that can be accessed over TCP. Under the hood it works very similar to how Jupyter/IPython work today. When you open a new notebook in the browser a Python process (called a kernel) is started to actually run the code you submit. ipyparallel does the same thing except instead of a single Python kernel, you can start many distributed over many machines.</p>
 <p>There are three main components to the stack.</p>
 <ul>
 <li>Client: A Python process which submits work, Usually this is an IPython session or a Jupyter notebook. </li>
@@ -89,7 +90,7 @@ NOTE: the code in this notebook is shown for better readability. To toggle on/of
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Getting-your-enviornment-started">Getting your enviornment started<a class="anchor-link" href="#Getting-your-enviornment-started">&#182;</a></h3><p>Our team are big users of <a href="http://conda.pydata.org/">conda</a> to help manage our dependecies (Python and beyond). Here is a quick run through to get setup. A combination of pip and virtualenv will also work, but when you start installing packages from the scipy stack we find conda the easist to use.</p>
+<h3 id="Getting-your-environment-started">Getting your environment started<a class="anchor-link" href="#Getting-your-environment-started">&#182;</a></h3><p>Our team are big users of <a href="http://conda.pydata.org/">conda</a> to help manage our computational environments (Python and beyond). Here is a quick run through to get setup (our public conda recipes are <a href="https://github.com/ActivisionGameScience/ags_conda_recipes">here</a>). A combination of pip and virtualenv will also work, but when you start installing packages from the scipy stack we find conda the easiest to use.</p>
 <p>First find your version of Miniconda from <a href="http://conda.pydata.org/miniconda.html">here</a></p>
 <p>If your using linux these commands will work:</p>
 
@@ -444,7 +445,7 @@ foo
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <code>DirectView</code> object provides some syntaxic sugar to help distributing data to each engine. First is dictionary style retreival and assignment. First lets retieve the value of <code>foo</code> from each engine.</p>
+<p>The <code>DirectView</code> object provides some syntactic sugar to help distributing data to each engine. First is dictionary style retrieval and assignment. First let's retrieve the value of <code>foo</code> from each engine.</p>
 
 </div>
 </div>
@@ -567,7 +568,7 @@ foo
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Notice that this method completed almost immediately and returned an <code>AsyncResult</code>. All the methods we have used up to now have be blocking and syncronous. The <code>scatter</code> method is aysnc. To turn this scatter into a blocking call we can chain a <code>.get()</code> to the call.</p>
+<p>Notice that this method completed almost immediately and returned an <code>AsyncResult</code>. All the methods we have used up to now have be blocking and synchronous. The <code>scatter</code> method is aysnc. To turn this scatter into a blocking call we can chain a <code>.get()</code> to the call.</p>
 
 </div>
 </div>
@@ -727,7 +728,7 @@ transformed_user_ids = list(map(the_most_interesting_transformation_ever, user_i
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we have 4 seperate list of transformed ids. We want to stich the disperate lists into one list on our local notebook. <code>gather</code> is used for that.</p>
+<p>Now we have 4 separate list of transformed ids. We want to stitch the disparate lists into one list on our local notebook. <code>gather</code> is used for that.</p>
 
 </div>
 </div>
@@ -789,7 +790,7 @@ transformed_user_ids = list(map(the_most_interesting_transformation_ever, user_i
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="LoadBalancedView">LoadBalancedView<a class="anchor-link" href="#LoadBalancedView">&#182;</a></h3><p>The previous example where you scatter a list, preform a calculation and then gather a result works for lots of problems. One issue that this approach is that each engine has does an identical ammount of work. If the complexity of the process each engine is preforming is variable, this naive scheduling approach can waste processing power and time. Take for example this function:</p>
+<h3 id="LoadBalancedView">LoadBalancedView<a class="anchor-link" href="#LoadBalancedView">&#182;</a></h3><p>The previous example where you scatter a list, perform a calculation and then gather a result works for lots of problems. One issue that this approach is that each engine has does an identical amount of work. If the complexity of the process each engine is performing is variable, this naive scheduling approach can waste processing power and time. Take for example this function:</p>
 
 </div>
 </div>
@@ -892,7 +893,7 @@ Wall time: 835 ms
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If you had a list of urls to scrape and gave each worker an equal share, some workers would finish early and have to sit around doing nothing. A better approach is to assign work to each engine as it finishes. This way the work will be load balanced over the cluster and you will complete your process earlier. ipyparallel provides the <code>LoadBalancedView</code> for this exact use case. For this specific problem threading or an async event loop would likely be a better approach to speeding up or scalling out, but suspend your disbelief for this exercise.</p>
+<p>If you had a list of urls to scrape and gave each worker an equal share, some workers would finish early and have to sit around doing nothing. A better approach is to assign work to each engine as it finishes. This way the work will be load balanced over the cluster and you will complete your process earlier. ipyparallel provides the <code>LoadBalancedView</code> for this exact use case. For this specific problem threading or an async event loop would likely be a better approach to speeding up or scaling out, but suspend your disbelief for this exercise.</p>
 
 </div>
 </div>
@@ -1089,13 +1090,13 @@ Wall time: 13 s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This isn't a perfect example but you can get the idea. The large the number of inputs to your parallel problem and the more variable the run time of each component process, the more time saving you can get from switching to a load balanced view.</p>
+<p>This isn't a perfect example but you can get the idea. The larger the number of inputs to your parallel problem and the more variable the run time of each component process, the more time savings you can get from switching to a load balanced view.</p>
 <p>This is only scratching the surface of ipyparallel project. I would highly recommend taking a look at the docs. Here is a list of further topics i would look into if you are interested.</p>
 <ul>
 <li>support for numpy memmap to allow engine located on a single node to share large arrays</li>
 <li>complex dependencies and more specialized scheduling </li>
 <li>retry and recovery logic</li>
-<li>multiple clients working on the same cluster allowing remote collaborators to share an enviornment.</li>
+<li>multiple clients working on the same cluster allowing remote collaborators to share an environment.</li>
 </ul>
 
 </div>
@@ -1106,7 +1107,7 @@ Wall time: 13 s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Non-trival-Usecases">Non-trival Usecases<a class="anchor-link" href="#Non-trival-Usecases">&#182;</a></h2><p>Our team at Activision largely use ipython clusters for distibuted model training. This project has been vital for hyperparamater searches for our machine learning models. Allowing us to easily parallize these searches beyond one machine has speed up training by many orders of magnitude utilizing hundreds of cores.</p>
+<h2 id="Non-trival-Usecases">Non-trival Usecases<a class="anchor-link" href="#Non-trival-Usecases">&#182;</a></h2><p>Our team at Activision largely use ipython clusters for distributed model training. This project has been vital for hyperparameter searches for our machine learning models. Allowing us to easily parallelize these searches beyond one machine has speed up training by many orders of magnitude utilizing hundreds of cores.</p>
 
 </div>
 </div>
@@ -1117,9 +1118,9 @@ Wall time: 13 s
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Ok-this-is-cool-but-i-want-more-cores!!!">Ok this is cool but i want more cores!!!<a class="anchor-link" href="#Ok-this-is-cool-but-i-want-more-cores!!!">&#182;</a></h2><p>The examples so far are a useful introduction to the api and the some features of ipyparallel. Hopefully you are convinced to try out the library. However, deploying a working cluster beyond a single machine introduces some issues.</p>
-<p>ipyparallel provides support for a range of cluster and batch job management systems such as PBS and WindowsHPC. The full list is provided in the documentation. ipyparallel also provides an SSH based launcher. Given passwordless ssh onto machine you can easily deploy engines and connect them to your controller and client. Also there is a wonderful project <a href="http://star.mit.edu/cluster/docs/latest/plugins/ipython.html">starcluster</a> that helps spin up machines from cloud providors.</p>
+<p>ipyparallel provides support for a range of cluster and batch job management systems such as PBS and WindowsHPC. The full list is provided in the documentation. ipyparallel also provides an SSH based launcher. Given passwordless ssh onto machine you can easily deploy engines and connect them to your controller and client. Also there is a wonderful project <a href="http://star.mit.edu/cluster/docs/latest/plugins/ipython.html">starcluster</a> that helps spin up machines from cloud providers.</p>
 <p>These tools are great. If you have access to existing HPC clusters or are planning on deploying dedicated clusters either on your own cold-iron (2016 version of bare-metal) or in the cloud then they meet your needs.</p>
-<p>However, we are big users of Mesos, Docker and Marathon to manage our clusters and services. Furthermore, even with the existing launchers managing complex dependencies within the engines is a pain. Using Docker to package all dependencies makes deploying heterogenous clusters easier. Targeting our existing cluster management system and simplifying dependencies is a big win for us.</p>
+<p>However, we are big users of Mesos, Docker and Marathon to manage our clusters and services. Furthermore, even with the existing launchers managing complex dependencies within the engines is a pain. Using Docker to package all dependencies makes deploying heterogeneous clusters easier. Targeting our existing cluster management system and simplifying dependencies is a big win for us.</p>
 <p>With this in mind, we are open sourcing a new ipyparallel launcher that deploys IPython clusters into Mesos using Docker and Marathon. The code lives <a href="https://github.com/ActivisionGameScience/ipyparallel-mesos/">here</a> and on pypi/conda as <code>ipyparallel_mesos</code>.</p>
 <p>We have two prebuilt Docker images for the <a href="https://hub.docker.com/r/jdennison/ipyparallel-marathon-controller/">Controller</a> and <a href="https://hub.docker.com/r/jdennison/ipyparallel-marathon-engine/">Engine</a>. These are striped down Docker images. Internally we use conda for almost all our depencies, even inside our Docker containers. Please visit our public <a href="https://github.com/ActivisionGameScience/ags_conda_recipes">conda recipes</a> and <a href="https://anaconda.org/ActivisionGameScience">channel</a>. However, extending from the <code>ipyparallel-marathon-engine</code> image will allow you to easily install your custom dependencies with or with conda.</p>
 <p>The project is young but hopefully you will find it useful. Please note that this currently targets Python 3. PR's are welcome to support older versions of Python (it's 2016, we can now refer to 2.7 as old). Please open any issues on the github page. Please read the README for the project for more details.</p>

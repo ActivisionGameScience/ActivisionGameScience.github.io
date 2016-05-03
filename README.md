@@ -1,1 +1,1 @@
-Refer to `_posts/<data>-README.md` for details.
+Refer to `_drafts/README.md` for details.

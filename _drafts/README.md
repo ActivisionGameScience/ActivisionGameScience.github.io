@@ -9,7 +9,9 @@ tags:
 # Activision Game Science Blog
 
 <!--excerpt.start-->
+
 This README is and should always remain a draft. That is, it will not (and should not, ever) appear in the published blog.
+
 <!--excerpt.end--><!--more-->
 
 ## Jupyter (IPython) Notebooks

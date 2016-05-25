@@ -5,10 +5,11 @@ header-img: ""
 tags: [Pheidippides, Configuration Management]
 author: James Humphrey
 github: leafknode
+header-img: img/pheidippides.jpg
 ---
 
 <!--excerpt.start-->
-Besides all the math and modeling, we also do a bunch of big data engineering at Activision. At this year’s [MesosCon](http://events.linuxfoundation.org/events/mesoscon-north-america), we’ll be giving a [talk](https://mesosconna2016.sched.org/event/6jtX/all-marathons-need-a-runner-introducing-pheidippides-james-humphrey-john-dennison-activision-publishing) on an application configuration and deploy tool we built called Pheidippides, named after the [ancient Greek messenger](https://en.wikipedia.org/wiki/Pheidippides). Our Pheidippides technology was initially designed to help us more easily deploy our services into Marathon, but with use it has evolved into something more.
+Besides all the math and modeling, we also do a bunch of big data engineering at Activision. At this year’s [MesosCon](http://events.linuxfoundation.org/events/mesoscon-north-america), we’ll be giving a [talk](https://mesosconna2016.sched.org/event/6jtX/all-marathons-need-a-runner-introducing-pheidippides-james-humphrey-john-dennison-activision-publishing) on an application configuration and deploy tool we built called Pheidippides (named after the ancient Greek messenger [Pheidippides](https://en.wikipedia.org/wiki/Pheidippides)). This technology was initially designed to help us more easily deploy our services into Marathon, but with use it has evolved into something more.
 
 We are huge users and fans of open source software.  Where possible, we always like to give our learnings back to the community in the hopes that we could make other developers' lives a little easier in the same way that so many developers have made ours.  The rest of this post describes our issues, how we chose to solve them, and the resulting Pheidippides specification.  No code yet, but look for more after MesosCon.
 
@@ -132,21 +133,19 @@ a URI-like path that conforms to the following [Extended Backus-Norm
 Form](https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
 (EBNF) notation:
 
-````
-letter = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
+    letter = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z";
 
-digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+    digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 
-symbol = "_" | "-";
+    symbol = "_" | "-";
 
-character = letter | digit | symbol;
+    character = letter | digit | symbol;
 
-name = character, {character};
+    name = character, {character};
 
-delimeter = "/";
+    delimeter = "/";
 
-configuration path = delimeter, name, {configuration path};
-````
+    configuration path = delimeter, name, {configuration path};
 
 Example *configuration paths* for different services might look like the
 following:

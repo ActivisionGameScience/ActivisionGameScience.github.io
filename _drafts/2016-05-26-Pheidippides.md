@@ -74,7 +74,7 @@ The solution we built is a product we call Pheidippides, although
 calling it a product is arguably a mischaracterization. Even though
 there is some actual source code, Pheidippides is really more of a
 *specification* for managing configuration. The source code that does
-exist is primarily glue code that implements different components of the
+exist is primarily glue code that facilitates wiring together different components of the
 Pheidippides specification.
 
 At its core, the specification requires that micro service configuration
@@ -105,7 +105,7 @@ For our implementation, we choose ZooKeeper as our centralized store for
 our entire set of configuration properties.  We could have easily chosen some other
 key-value store solution (e.g. etcd, consul, etc) but ZooKeeper was already a
 core component to our stack so it made the most sense.  In Part 2, we'll go into much more detail on how exactly
-ZooKeeper is used and why it's the best choice for us.
+ZooKeeper is used and why it was the best choice for us.
 
 ## Hierarchical
 

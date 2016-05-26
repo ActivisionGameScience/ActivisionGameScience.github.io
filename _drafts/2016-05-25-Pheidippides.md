@@ -9,9 +9,10 @@ header-img: img/pheidippides.jpg
 ---
 
 <!--excerpt.start-->
-Besides all the math and modeling, we also do a bunch of big data engineering at Activision. At this year’s [MesosCon](http://events.linuxfoundation.org/events/mesoscon-north-america), we’ll be giving a [talk](https://mesosconna2016.sched.org/event/6jtX/all-marathons-need-a-runner-introducing-pheidippides-james-humphrey-john-dennison-activision-publishing) on an application configuration and deploy tool we built called Pheidippides (named after the ancient Greek messenger [Pheidippides](https://en.wikipedia.org/wiki/Pheidippides)). This technology was initially designed to help us more easily deploy our services into Marathon, but with use it has evolved into something more.
 
-We are huge users and fans of open source software.  Where possible, we always like to give our learnings back to the community in the hopes that we could make other developers' lives a little easier in the same way that so many developers have made ours.  The rest of this post describes our issues, how we chose to solve them, and the resulting Pheidippides specification.  No code yet, but look for more after MesosCon.
+Besides all the math and modeling, the Activision Game Science team also does a bunch of big data engineering at Activision. At this year’s [MesosCon](http://events.linuxfoundation.org/events/mesoscon-north-america), we’ll be giving a [talk](https://mesosconna2016.sched.org/event/6jtX/all-marathons-need-a-runner-introducing-pheidippides-james-humphrey-john-dennison-activision-publishing) on an application configuration and deploy tool we built called Pheidippides (named after the apocryphal [Marathon-to-Athens runner](https://en.wikipedia.org/wiki/Pheidippides)). Pheidippides was initially designed to help us more easily deploy our services into [Marathon](https://mesosphere.github.io/marathon/), but with use it has evolved into something more.
+
+Part 1 of this series is an abstract on our issues with configuration management, how we chose to solve these issues, and the resulting Pheidippides specification.  No code yet, but in Part 2 we'll continue with how exactly we implemented the Pheidippides specification and also provide some code that we use to glue it all together.
 
 # Problem Statement
 
@@ -105,7 +106,8 @@ failure.
 For our implementation, we choose ZooKeeper as our centralized store for
 our entire set of configuration properties.  We could have easily chosen some other
 key-value store solution (e.g. etcd, consul, etc) but ZooKeeper was already a
-core component to our stack so that choice made the most sense for us.
+core component to our stack so it made the most sense.  In Part 2, we'll go into much more detail on how exactly
+ZooKeeper is used and why it's the best choice for us.
 
 ## Hierarchical
 

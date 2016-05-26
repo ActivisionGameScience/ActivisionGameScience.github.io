@@ -1,15 +1,13 @@
 ---
 layout: post
 title: Pheidippides (Part 1)
-header-img: ""
+header-img: img/pheidippides.jpg
 tags: [Pheidippides, Configuration Management]
 author: James Humphrey
 github: leafknode
-header-img: img/pheidippides.jpg
 ---
 
 <!--excerpt.start-->
-
 Besides all the math and modeling, the Activision Game Science team also does a bunch of big data engineering at Activision. At this year’s [MesosCon](http://events.linuxfoundation.org/events/mesoscon-north-america), we’ll be giving a [talk](https://mesosconna2016.sched.org/event/6jtX/all-marathons-need-a-runner-introducing-pheidippides-james-humphrey-john-dennison-activision-publishing) on an application configuration and deploy tool we built called Pheidippides (named after the apocryphal [Marathon-to-Athens runner](https://en.wikipedia.org/wiki/Pheidippides)). Pheidippides was initially designed to help us more easily deploy our services into [Marathon](https://mesosphere.github.io/marathon/), but with use it has evolved into something more.
 
 Part 1 of this series is an abstract on our issues with configuration management, how we chose to solve these issues, and the resulting Pheidippides specification.  No code yet, but in Part 2 we'll continue with how exactly we implemented the Pheidippides specification and also provide some code that we use to glue it all together.

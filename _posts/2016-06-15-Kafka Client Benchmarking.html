@@ -1,6 +1,6 @@
 ---
 layout: nb-post
-title: "Kafka Client Benchmarking"
+title: "Python Kafka Client Benchmarking"
 author: John Dennison
 github: johnistan
 tags: [python, kafka]
@@ -48,8 +48,10 @@ NOTE: the code in shown notebook is hidden for better readability. To toggle on/
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 
+<h1 id="Python-Kafka-Client-Benchmarking">Python Kafka Client Benchmarking<a class="anchor-link" href="#Python-Kafka-Client-Benchmarking">&#182;</a></h1>
+
 <!--excerpt.start-->
-<h1 id="Python-Kafka-Client-Benchmarking">Python Kafka Client Benchmarking<a class="anchor-link" href="#Python-Kafka-Client-Benchmarking">&#182;</a></h1><p><a href="http://kafka.apache.org/">Kafka</a> is an incredibly powerful service that can help you process huge streams of data. It is written in Scala and has been undergoing lots of changes. Historically, the JVM clients have been better supported then those in the Python ecosystem. However, this doesn't need to be case! The Kafka binary protocol has largely solidified and many people in open source community are working to provide first class support for non-JVM languages.</p>
+<p><a href="http://kafka.apache.org/">Kafka</a> is an incredibly powerful service that can help you process huge streams of data. It is written in Scala and has been undergoing lots of changes. Historically, the JVM clients have been better supported then those in the Python ecosystem. However, this doesn't need to be case! The Kafka binary protocol has largely solidified and many people in open source community are working to provide first class support for non-JVM languages.</p>
 <p>In this post we will benchmark the three main Python Kafka clients. <a href="https://github.com/Parsely/pykafka">pykafka</a>, <a href="https://github.com/dpkp/kafka-python">python-kafka</a> and the newest arrival <a href="https://github.com/confluentinc/confluent-kafka-python">confluent-kafka-client</a>. This will also be useful as an introduction to the different clients in the python ecosystem and their high level APIs.</p>
 
 <!--excerpt.end--><!--more-->

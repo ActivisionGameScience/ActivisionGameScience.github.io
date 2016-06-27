@@ -36,17 +36,19 @@ Once you're happy, move `<post-name>.html` to `/_posts` and rename it to `<YR>-<
 ## Installing Jekyll
 
 The following seems to work on Ubuntu 14.04. YMMV.
-
-    sudo apt-get install ruby-dev zlib1g-dev nodejs
-    sudo gem install jekyll
-
+```
+    sudo apt-add-repository ppa:brightbox/ruby-ng
+	sudo apt-get update
+	sudo apt-get install ruby2.3 ruby2.3-dev
+	sudo gem install jekyll jekyll-paginate
+```
 
 ## Serving the Blog
 
 To serve the blog locally, run
-
+```
     jekyll serve
-
+```
 Add `--host 0.0.0.0` if you serve from a VM or an internal server. The site should be available on port 4000.
 
 Add `--drafts` if you want to see draft posts.

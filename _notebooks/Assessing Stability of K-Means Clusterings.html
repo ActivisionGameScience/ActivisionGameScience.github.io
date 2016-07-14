@@ -1,12 +1,14 @@
 ---
 layout: nb-post
-title: "A Method for Stability Testing of Unsupervised Methods"
-author: Dylan Rogerson
+title: "A Method for Stability Testing of Unsupervised Methods v6"
+author:
 github:
 tags: 
 ---
 
 <!--put these separators somewhere appropriate:-->
+<!--excerpt.start-->
+<!--excerpt.end--><!--more-->
 
 <!--you can set this to false if you want code displayed by default-->
 <script>
@@ -47,8 +49,8 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Assessing-Stability-of-Unsupervised-Clusterings">Assessing Stability of Unsupervised Clusterings<a class="anchor-link" href="#Assessing-Stability-of-Unsupervised-Clusterings">&#182;</a></h1><p>Dylan Rogerson<br>
-June 24th, 2016</p>
+<h1 id="Assessing-Stability-of-K-Means-Clusterings">Assessing Stability of K-Means Clusterings<a class="anchor-link" href="#Assessing-Stability-of-K-Means-Clusterings">&#182;</a></h1><p>Dylan Rogerson<br>
+July 13th, 2016</p>
 
 </div>
 </div>
@@ -58,16 +60,14 @@ June 24th, 2016</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<!--excerpt.start-->	
-<p>In data analysis we often use unsupervised clustering methods to allow us to assess the structure of unlabeled data. Here at Activision, an easy example would be to use one of these methods to characterize our players. A highly engaged player who's been with us for years has a different concept of the game from a newer player who just picked up a controller for the first time. When we sift through our data we might expect to see groups of more and less experienced players, calling these players 'Hardcore' and 'Newbie', adding perhaps a third category for 'Midcore' (players that have played a bit, but aren't Hardcore). But what does the data actually tell us? What groups naturally arise out of the data itself? Which variables should we consider and how do these variables define our groups? These are all areas where machine learning and unsupervised clustering methods in particular can help out.</p>
-<!--excerpt.end--><!--more-->
-<p>The topic today assumes you have a working knowledge around unsupervised methods. In particular we will focus on K-means clustering, a popular method in the space. As such there are few a properties that we would like our final segmentation to have:</p>
+<p>In data analysis we often use unsupervised methods to allow us to assess the structure of unlabeled data. Here at Activision, an easy example would be to use one of these methods to characterize our players. A highly engaged player who's been with us for years has a different concept of the game from a newer player who just picked up a controller for the first time. When we sift through our data we might expect to see groups of more and less experienced players, calling these players 'Hardcore' and 'Newbie', adding perhaps a third category for 'Midcore' (players that have played a bit, but aren't Hardcore). But what does the data actually tell us? What groups naturally arise out of the data itself? Which variables should we consider and how do these variables define our groups? These are all areas where machine learning, unsupervised methods, and clustering in particular can help out.</p>
+<p>The topic in this post assumes you have a working knowledge around unsupervised methods. In particular we will focus on K-means clustering, a popular method in the space. As such there are few a properties that we would like our final segmentation to have:</p>
 <p>1) We want our work to be reproducible in the same dataset. While different distance metrics and clustering methods may lead to different interpretations of the data, we at least strive to get the same interpretations for the same method in the same dataset.</p>
-<p>2) We want to pick a 'good' number of clusters, k. Traditionally we pick k from an information theory or explained varience approach where our goal is to have a clustering that does a good job of explaining the dataset (<a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set">https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set</a>). We'll see that we can further improve our determination of k by picking a clustering that is also stable.</p>
+<p>2) We want to pick a 'good' number of clusters, k. Traditionally we pick k from an information theory or explained variance approach where our goal is to have a clustering that does a good job of explaining the dataset (<a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set">https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set</a>). We'll see that we can further improve our determination of k by picking a clustering that is also stable.</p>
 <p>3) We want our segments to be interpretable and actionable. This in a way limits our number of clusters. Too many segments and we lose our ability to interpret the clusters and therefore create an effective action plan. Too few and we might risk generalizing our audience, creating a simplistic treatment and missing the opportunity for a more tailored and effective approach.</p>
-<p>Most of the work done here focuses on reseach from 'Clustering Stability: An Overview' by Luxburg 2010 (<a href="http://arxiv.org/abs/1007.1075">http://arxiv.org/abs/1007.1075</a>). This paper is definitely worth a read through and gives a strong background on the sources of instability and what others are doing in the field to address it.</p>
-<p>There's a lot to digest here so let's start with a dataset (<a href="https://www.kaggle.com/census/2013-american-community-survey">https://www.kaggle.com/census/2013-american-community-survey</a>). The linked dataset is the 2013 American Community Survey which contains a great wealth of information: a combination of tax data and surveys about house electronics.</p>
-<p>Today let's focus on the wealth distribution of Americans. We would like to see how much people work and where their earning comes from (including investing or other sources of income). Additionally, we expect this behavior to be different for different age groups and levels of education. Let's throw all of this together to see if can find identifiable groups.</p>
+<p>Most of the work done here focuses on research from 'Clustering Stability: An Overview' by Luxburg 2010 (<a href="http://arxiv.org/abs/1007.1075">http://arxiv.org/abs/1007.1075</a>). This paper delivers a strong background on the sources of instability in K-means and gives an overview of current academic research in the space.</p>
+<p>We'll begin with our dataset (<a href="https://www.kaggle.com/census/2013-american-community-survey">https://www.kaggle.com/census/2013-american-community-survey</a>). The linked dataset is the 2013 American Community Survey which contains a great wealth of information: a combination of tax data and surveys about house electronics. It's also particularly ideal for our analysis today because (like some of the work we do at Activision), it allows us to segment a population of people by characteristics that we might find valuable to action upon.</p>
+<p>Let's focus on the wealth distribution of Americans. We would like to see how much people work and where their earning comes from (including investing or other sources of income). Additionally, we expect this behavior to be different for different age groups and levels of education. Let's throw all of this together to see if can find identifiable groups.</p>
 
 </div>
 </div>
@@ -86,7 +86,7 @@ June 24th, 2016</p>
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="kp">setwd</span><span class="p">(</span><span class="s">&quot;D:/Work Directory&quot;</span><span class="p">)</span>
+<div class=" highlight hl-r"><pre><span class="kp">setwd</span><span class="p">(</span><span class="s">&quot;D:/Work Directory&quot;</span><span class="p">)</span>
 
 
 <span class="c1">#install.packages(&quot;flexclust&quot;,repos=&quot;http://cran.stat.ucla.edu/&quot;)</span>
@@ -116,7 +116,7 @@ June 24th, 2016</p>
 <span class="c1"># Creating a palette for Heatmaps</span>
 mypalette <span class="o">&lt;-</span> brewer.pal<span class="p">(</span><span class="m">10</span><span class="p">,</span><span class="s">&quot;RdBu&quot;</span><span class="p">)</span>
 
-<span class="c1"># Our Survey Data</span>
+<span class="c1"># Our Survey Data - Please read this file from the downloaded data from the American Community Survey</span>
 datacs <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class="s">&quot;./GAS Presentation/ss13pusa.csv&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -130,7 +130,7 @@ datacs <span class="o">&lt;-</span> read.csv<span class="p">(</span><span class=
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>datprep1 <span class="o">&lt;-</span> datacs<span class="p">[</span>datacs<span class="o">$</span>AGEP<span class="o">&gt;=</span><span class="m">21</span><span class="p">,</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;WAGP&quot;</span><span class="p">,</span><span class="s">&quot;WKHP&quot;</span><span class="p">,</span><span class="s">&quot;SCHL&quot;</span><span class="p">,</span><span class="s">&quot;OIP&quot;</span><span class="p">,</span><span class="s">&quot;INTP&quot;</span><span class="p">,</span><span class="s">&quot;AGEP&quot;</span><span class="p">,</span><span class="s">&quot;SEX&quot;</span><span class="p">,</span><span class="s">&quot;pwgtp1&quot;</span><span class="p">,</span><span class="s">&quot;pwgtp2&quot;</span><span class="p">)]</span>
+<div class=" highlight hl-r"><pre>datprep1 <span class="o">&lt;-</span> datacs<span class="p">[</span>datacs<span class="o">$</span>AGEP<span class="o">&gt;=</span><span class="m">21</span><span class="p">,</span><span class="kt">c</span><span class="p">(</span><span class="s">&quot;WAGP&quot;</span><span class="p">,</span><span class="s">&quot;WKHP&quot;</span><span class="p">,</span><span class="s">&quot;SCHL&quot;</span><span class="p">,</span><span class="s">&quot;OIP&quot;</span><span class="p">,</span><span class="s">&quot;INTP&quot;</span><span class="p">,</span><span class="s">&quot;AGEP&quot;</span><span class="p">,</span><span class="s">&quot;pwgtp1&quot;</span><span class="p">,</span><span class="s">&quot;pwgtp2&quot;</span><span class="p">)]</span>
 
 datprep1<span class="p">[</span><span class="kp">is.na</span><span class="p">(</span>datprep1<span class="p">)]</span> <span class="o">&lt;-</span> <span class="m">0</span>
 
@@ -155,7 +155,7 @@ datprep1a <span class="o">&lt;-</span> <span class="p">(</span>datprep1<span cla
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Total Number of Rows in Our Dataset&#34;
+<pre>[1] &quot;Total Number of Rows in Our Dataset&quot;
 </pre>
 </div>
 </div>
@@ -170,7 +170,7 @@ datprep1a <span class="o">&lt;-</span> <span class="p">(</span>datprep1<span cla
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;First 6 Rows in Our Dataset&#34;
+<pre>[1] &quot;First 6 Rows in Our Dataset&quot;
 </pre>
 </div>
 </div>
@@ -179,14 +179,14 @@ datprep1a <span class="o">&lt;-</span> <span class="p">(</span>datprep1<span cla
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <table>
-<thead><tr><th></th><th scope=col>WAGP</th><th scope=col>WKHP</th><th scope=col>SCHL</th><th scope=col>OIP</th><th scope=col>INTP</th><th scope=col>AGEP</th><th scope=col>SEX</th><th scope=col>pwgtp1</th><th scope=col>pwgtp2</th></tr></thead>
+<thead><tr><th></th><th scope=col>WAGP</th><th scope=col>WKHP</th><th scope=col>SCHL</th><th scope=col>OIP</th><th scope=col>INTP</th><th scope=col>AGEP</th><th scope=col>pwgtp1</th><th scope=col>pwgtp2</th></tr></thead>
 <tbody>
-	<tr><th scope=row>2</th><td>52000</td><td>40</td><td>20</td><td>0</td><td>0</td><td>55</td><td>2</td><td>45</td><td>51</td></tr>
-	<tr><th scope=row>6</th><td>39000</td><td>40</td><td>21</td><td>0</td><td>0</td><td>63</td><td>2</td><td>481</td><td>575</td></tr>
-	<tr><th scope=row>12</th><td>90000</td><td>48</td><td>16</td><td>0</td><td>0</td><td>59</td><td>1</td><td>83</td><td>58</td></tr>
-	<tr><th scope=row>13</th><td>46000</td><td>40</td><td>18</td><td>0</td><td>0</td><td>56</td><td>2</td><td>69</td><td>49</td></tr>
-	<tr><th scope=row>17</th><td>20000</td><td>25</td><td>21</td><td>0</td><td>0</td><td>72</td><td>1</td><td>60</td><td>163</td></tr>
-	<tr><th scope=row>18</th><td>28000</td><td>40</td><td>19</td><td>0</td><td>0</td><td>52</td><td>2</td><td>29</td><td>91</td></tr>
+	<tr><th scope=row>2</th><td>52000</td><td>40</td><td>20</td><td>0</td><td>0</td><td>55</td><td>45</td><td>51</td></tr>
+	<tr><th scope=row>6</th><td>39000</td><td>40</td><td>21</td><td>0</td><td>0</td><td>63</td><td>481</td><td>575</td></tr>
+	<tr><th scope=row>12</th><td>90000</td><td>48</td><td>16</td><td>0</td><td>0</td><td>59</td><td>83</td><td>58</td></tr>
+	<tr><th scope=row>13</th><td>46000</td><td>40</td><td>18</td><td>0</td><td>0</td><td>56</td><td>69</td><td>49</td></tr>
+	<tr><th scope=row>17</th><td>20000</td><td>25</td><td>21</td><td>0</td><td>0</td><td>72</td><td>60</td><td>163</td></tr>
+	<tr><th scope=row>18</th><td>28000</td><td>40</td><td>19</td><td>0</td><td>0</td><td>52</td><td>29</td><td>91</td></tr>
 </tbody>
 </table>
 
@@ -196,7 +196,7 @@ datprep1a <span class="o">&lt;-</span> <span class="p">(</span>datprep1<span cla
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Summary of Our Dataset&#34;
+<pre>[1] &quot;Summary of Our Dataset&quot;
 </pre>
 </div>
 </div>
@@ -212,20 +212,13 @@ datprep1a <span class="o">&lt;-</span> <span class="p">(</span>datprep1<span cla
  Mean   : 47441   Mean   :39.03   Mean   :18.6   Mean   :  404.2  
  3rd Qu.: 60000   3rd Qu.:43.00   3rd Qu.:21.0   3rd Qu.:    0.0  
  Max.   :660000   Max.   :99.00   Max.   :24.0   Max.   :83000.0  
-      INTP             AGEP            SEX            pwgtp1      
- Min.   :     0   Min.   :21.00   Min.   :1.000   Min.   : -28.0  
- 1st Qu.:     0   1st Qu.:32.00   1st Qu.:1.000   1st Qu.:  36.0  
- Median :     0   Median :44.00   Median :1.000   Median :  75.0  
- Mean   :  1465   Mean   :44.22   Mean   :1.484   Mean   : 103.3  
- 3rd Qu.:     0   3rd Qu.:55.00   3rd Qu.:2.000   3rd Qu.: 131.0  
- Max.   :300000   Max.   :95.00   Max.   :2.000   Max.   :2494.0  
-     pwgtp2      
- Min.   :  -8.0  
- 1st Qu.:  36.0  
- Median :  75.0  
- Mean   : 103.4  
- 3rd Qu.: 131.0  
- Max.   :2420.0  </pre>
+      INTP             AGEP           pwgtp1           pwgtp2      
+ Min.   :     0   Min.   :21.00   Min.   : -28.0   Min.   :  -8.0  
+ 1st Qu.:     0   1st Qu.:32.00   1st Qu.:  36.0   1st Qu.:  36.0  
+ Median :     0   Median :44.00   Median :  75.0   Median :  75.0  
+ Mean   :  1465   Mean   :44.22   Mean   : 103.3   Mean   : 103.4  
+ 3rd Qu.:     0   3rd Qu.:55.00   3rd Qu.: 131.0   3rd Qu.: 131.0  
+ Max.   :300000   Max.   :95.00   Max.   :2494.0   Max.   :2420.0  </pre>
 </div>
 
 </div>
@@ -239,7 +232,7 @@ datprep1a <span class="o">&lt;-</span> <span class="p">(</span>datprep1<span cla
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Again, today we're going to focus on the wealth distribution on Americans. We'll segment people based off of the following attributes and see what the data tells us. We're also focused more on the stability methodology, so if you like to clean your data differently or use a different clustering method, go for it!</p>
+<p>Again, we're going to focus on the wealth distribution of americans and try to find interpretable groups. We'll segment people based off of the following attributes and see what the data tells us. In this post we’re also focused more on the stability methodology than data preparation or feature selection. You may want to clean your data differently or focus on different attributes depending on your use case.</p>
 <p>The variables used in clustering:</p>
 <p>WAGP = Wages in the past 12 Months<br>
 WKHP = Working Hours Per Week<br>
@@ -248,11 +241,9 @@ OIP  = All other income past 12 months<br>
 INTP = Interest, dividends and net rental income past 12 months<br>
 AGEP = Age</p>
 <p>Other variables worth mentioning:</p>
-<p>SEX  = 1 Male 2 Female<br>
-pwgtp1 = A weight replicate<br>
+<p>pwgtp1 = A weight replicate<br>
 pwgtp2 = A different weight replicate</p>
-<p>While most of the variables seem straightforward, we should cover weight replicates. They're included in the survey because the people surveyed are not represented equally across the general population. By including these weights in measurements (such as weighted averages). You can get a more accurate picture. For the sake of simplicity, today we're going to ignore this field, but if you want to calculate individual metrics, you should take this variable into account.</p>
-<p>Secondly, when we started our investigation we included sex, however there didn't seem to be a drastic change in the interpretation of groups when sex was introduced. Effectively, we ended up just splitting existing groups by gender. Since this variable increased the number of segments without adding any new interpretation or information, we decided to drop this variable.</p>
+<p>While most of the variables seem straightforward, we should cover weight replicates. They're included in the survey because the people surveyed are not represented equally across the general population. By including these weights in measurements (such as weighted averages), you can get a more accurate picture. For the sake of simplicity, today we're going to ignore this field, but if you want to calculate population metrics, you should take this variable into account.</p>
 <p>We also wanted to look at working adults (or those earning interest) and concentrated on people of at least 21 years of age.</p>
 <p>Our final dataset includes 707k people.</p>
 
@@ -264,7 +255,7 @@ pwgtp2 = A different weight replicate</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Our-Method-for-Today">Our Method for Today<a class="anchor-link" href="#Our-Method-for-Today">&#182;</a></h3>
+<h3 id="Our-Clustering-Approach">Our Clustering Approach<a class="anchor-link" href="#Our-Clustering-Approach">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -273,12 +264,12 @@ pwgtp2 = A different weight replicate</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>For our approach today we'll focus on using a popular unsupervised clustering method, K-means. Even though this method is widely used for it's robustness and versitility. There are several assumptions that are relevant to K-means as well as drawbacks (clusters tend to be equally sized and the distribution of clusters is assumed to be spherical to name a few). For a more detailed discussion of the assumptions that go into the method feel free to check out <a href="http://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means">http://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means</a>.</p>
+<p>For our approach we'll focus on using a popular unsupervised clustering method, K-means. Even though this method is widely used for its robustness and versatility there are several assumptions that are relevant to K-means as well as drawbacks (clusters tend to be equally sized and the distribution of clusters is assumed to be spherical to name a few). For a more detailed discussion of the assumptions that go into the method feel free to check out <a href="http://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means">http://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means</a>.</p>
 <p>Working with our dataset. We'll follow these steps:</p>
-<p>1) First we scale the data set (subtract the mean and divide by the standard deviation for each variables) in order to evenly weight each variable. K-Means can also be sensitive to outliers (since it's concerned with means instead of medians) and so we also curb outliers in the data set to an absolute maximum of 2 standard deviations. In other words, if the absolute value of the datapoint is over 2, we set it to 2. Notice that we also create a train and holdout dataset. In the future we'll want to compare how different clusterings perform on the same dataset.</p>
-<p>2) Run the resulting data through PCA, cutting out the last loading and leaving 93% of the varience. This helps reduce overweighting of variables in a highly correlated dataset. Since there is not a high degree of correlation in our variables this will not have a strong effect, however it has become a standard procedure that has many side benefits we've come to appreciate. Additionally, like K, there is debate as to what makes a 'good' cutoff and how many loadings explain enough of the varience in the data. Cutoffs in the range of 80-90% are common in the space.</p>
-<p>3) Since we're using K-means we need to pick K. We can perform a clustering methodology or test to find a starting value for the number of clusters. There are a variety of methods to employ here (as mentioned above and in <a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set">https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set</a>) though we'll constrain ourselves to evaluating a dendrogram from a hierarchical clustering of the dataset.</p>
-<p>4) Seed K-means. The typical implementation of the K-means algorithm selects the initial centers randomly from the dataset. There are stronger methods for initalizing K-means to more accurately cover the space of the data and converge to the global minimum in the dataset quickly. Such methods are outlined in Bubeck 2009 (<a href="http://www.jmlr.org/papers/volume10/bubeck09a/bubeck09a.pdf">http://www.jmlr.org/papers/volume10/bubeck09a/bubeck09a.pdf</a>) and Dasgupta and Schulman 2007 (<a href="http://dl.acm.org/citation.cfm?id=1248666">http://dl.acm.org/citation.cfm?id=1248666</a>) and simplified in Luxburg 2010.</p>
+<p>1) First we scale the data set (subtract the mean and divide by the standard deviation for each variables) in order to evenly weight each variable. Since K-Means can also be sensitive to outliers (since it's concerned with means instead of medians) we also curb outliers in the data set to an absolute maximum of 2 standard deviations. In other words, if the absolute value of the data point is over 2, we set it to 2. Notice that we also create a train and holdout dataset. Later on in the post, when evaluating stability, we'll want to compare how different clusterings perform on the same dataset.</p>
+<p>2) We run the resulting data through PCA, cutting out the last loading and leaving 93% of the variance. We do this because in any dataset some of your variables will end up being correlated in some way. PCA performs an orthogonal transformation on the dataset with the goal of maximizing variance on each subsequent component (<a href="https://en.wikipedia.org/wiki/Principal_component_analysis">https://en.wikipedia.org/wiki/Principal_component_analysis</a>). In effect PCA shows us how many components explain how much of the variance of the data and if we see components explaining very little of the data they are most likely a linear combination of other factors. In k-means, this means that these 'unnecessary components' will weight the data in that direction. In our case we avoid this by cutting the last loading. As an aside, the definition of a 'good' cutoff can vary depending on your use case though cutoffs in the range of 80-90% are common in the space.</p>
+<p>3) Since we're using K-means we need to pick K. There are a variety of methods to help us in selecting an initial guess for K ( <a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set">https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set</a>) though we'll constrain ourselves to evaluating a dendrogram from a hierarchical clustering of the dataset.</p>
+<p>4) Seed K-means. The typical implementation of the K-means algorithm selects the initial centers randomly from the dataset. Instead we'll use a stronger method for initializing K-means to more accurately cover the space of the data and converge to the global minimum in the dataset quickly. Such methods are outlined in Bubeck 2009 (<a href="http://www.jmlr.org/papers/volume10/bubeck09a/bubeck09a.pdf">http://www.jmlr.org/papers/volume10/bubeck09a/bubeck09a.pdf</a>) and Dasgupta and Schulman 2007 (<a href="http://dl.acm.org/citation.cfm?id=1248666">http://dl.acm.org/citation.cfm?id=1248666</a>) and simplified in Luxburg 2010.</p>
 <p>5) Finally we'll use this seed to initialize K-means on a subsample of our training dataset.</p>
 
 </div>
@@ -289,7 +280,7 @@ pwgtp2 = A different weight replicate</p>
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Prep the Full Dataset</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Prep the Full Dataset</span>
 
 datprep2<span class="o">&lt;-</span>datprep1a<span class="p">[,</span><span class="m">1</span><span class="o">:</span><span class="m">6</span><span class="p">]</span>
 datprep4 <span class="o">&lt;-</span> <span class="kp">apply</span><span class="p">(</span>datprep2<span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="kp">scale</span><span class="p">)</span>
@@ -329,7 +320,7 @@ trainRaw<span class="o">&lt;-</span>datprep2<span class="p">[</span>randomSample
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Summary of the PCA Components of Our Dataset&#34;
+<pre>[1] &quot;Summary of the PCA Components of Our Dataset&quot;
 </pre>
 </div>
 </div>
@@ -365,8 +356,8 @@ Cumulative Proportion  0.2887 0.4744 0.6399 0.7961 0.9306 1.00000</pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As an aside I'd like to address how to interpret a Hierarchical Clustering Dendrogram. This is one of many ways (similar to the Elbow Plot method) to determine the number of clusters and there is some art to it.</p>
-<p>First a dendrogram shows where our splits occur in our dataset as we increase the number of clusters. The vertical height denotes how much error we incur when we say that every datapoint is actually its closest centroid or the intercluster dissimilarity. In this way it's similar to an Elbow Plot. We're looking for the biggest change in error (in this case in height) that will meaningfully describe the data.</p>
+<p>As an aside I'd like to address how to interpret a hierarchical clustering dendrogram. This is one of many ways (similar to the Elbow Method in <a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set">https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set</a>) to determine the number of clusters and there is some art to it. To start we'll perform a hierarchical clustering on a small subsample of our dataset. For background on hierarchical clustering please read <a href="https://en.wikipedia.org/wiki/Hierarchical_clustering">https://en.wikipedia.org/wiki/Hierarchical_clustering</a> .</p>
+<p>We then inspect the dendrogram of our clustering. The dendrogram shows where our splits occur in our dataset as we increase the number of clusters. The vertical height denotes how much error we incur when we say that every data point is actually its closest centroid or the intercluster dissimilarity. In this way it's similar to an elbow plot. We're looking for the biggest change in error (in this case in height) that will meaningfully describe the data.</p>
 
 </div>
 </div>
@@ -376,7 +367,7 @@ Cumulative Proportion  0.2887 0.4744 0.6399 0.7961 0.9306 1.00000</pre>
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1"># Perform Hclust on a 2k sample</span>
+<div class=" highlight hl-r"><pre><span class="c1"># Perform Hclust on a 2k sample</span>
 samp <span class="o">&lt;-</span> datprep6<span class="p">[</span><span class="kp">sample</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="kp">nrow</span><span class="p">(</span>datprep6<span class="p">),</span><span class="m">2000</span><span class="p">),]</span>
 d <span class="o">&lt;-</span> dist<span class="p">(</span>samp<span class="p">,</span> method <span class="o">=</span> <span class="s">&quot;euclidean&quot;</span><span class="p">)</span>
 fit <span class="o">&lt;-</span> hclust<span class="p">(</span>d<span class="p">,</span> method <span class="o">=</span> <span class="s">&quot;ward.D&quot;</span><span class="p">)</span> 
@@ -399,7 +390,7 @@ centroids <span class="o">&lt;-</span> aggregate<span class="p">(</span>samp<spa
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;A Visualization of Our Hierarchical Clustering Dendogram&#34;
+<pre>[1] &quot;A Visualization of Our Hierarchical Clustering Dendogram&quot;
 </pre>
 </div>
 </div>
@@ -423,7 +414,7 @@ centroids <span class="o">&lt;-</span> aggregate<span class="p">(</span>samp<spa
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Looking top to bottom we see that the split to 2 clusters causes a very big drop in error and the next biggest splits occurs at 4 (3 is a pretty negligable difference). So 4 clusters seems like a good start.</p>
+<p>Looking top to bottom we see that the split to 2 clusters causes a very big drop in error and the next biggest splits occurs at 4 (3 is a pretty negligable difference). 4 clusters seems like a good starting guess for our number of clusters.</p>
 
 </div>
 </div>
@@ -433,7 +424,7 @@ centroids <span class="o">&lt;-</span> aggregate<span class="p">(</span>samp<spa
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-Initialization-Method">The Initialization Method<a class="anchor-link" href="#The-Initialization-Method">&#182;</a></h3><p>In point 4 of 'A Clustering Method' we mentioned the R implementation of K-means initializes off of random points in the dataset. The largest issue here is that of coverage, and outliers. Are we picking points that cover the full space of the data without ignoring outliers? A robust initialization scheme for this issue can be found in Dasgupta and Schulman (2007) / Bubeck (2009) and is best described for K-means in Luxburg (2010).</p>
+<h3 id="The-Initialization-Method">The Initialization Method<a class="anchor-link" href="#The-Initialization-Method">&#182;</a></h3><p>In point 4 of 'Our Clustering Approach' we mentioned the R implementation of K-means initializes off of random points in the dataset. The largest issue here is that of coverage, and outliers. Are we picking points that cover the full space of the data without ignoring outliers? A robust initialization scheme to address this issue can be found in Dasgupta and Schulman (2007) / Bubeck (2009) and is best described for K-means in Luxburg (2010).</p>
 <p>We'll initialize with the following procedure (copied directly from Luxburg (2010):</p>
 <p>1) Select L preliminary centers uniformly at random from the given data set, where L ≈ K log(K).</p>
 <p>2) Run one step of K-means, that is assign the data points to the preliminary centers and re-adjust the centers once.</p>
@@ -451,7 +442,7 @@ centroids <span class="o">&lt;-</span> aggregate<span class="p">(</span>samp<spa
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Turn Off Warnings</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Turn Off Warnings</span>
 <span class="kp">options</span><span class="p">(</span>warn<span class="o">=</span><span class="m">-1</span><span class="p">)</span>
 
 ksize <span class="o">&lt;-</span> <span class="m">4</span>
@@ -508,7 +499,7 @@ ksize <span class="o">&lt;-</span> <span class="m">4</span>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Running-our-First-K-Means-Clustering">Running our First K-Means Clustering<a class="anchor-link" href="#Running-our-First-K-Means-Clustering">&#182;</a></h3><p>Now that we have our inital centers we can run K-means. Let's also save our initial clustering (called 'initialSegmentation') in the code so we can compare it to other clusterings that we run.</p>
+<h3 id="Running-our-First-K-Means-Clustering">Running our First K-Means Clustering<a class="anchor-link" href="#Running-our-First-K-Means-Clustering">&#182;</a></h3><p>Now that we have our initial centers we can run K-means. Let's also save our initial clustering (called 'initialSegmentation') in the code so we can compare it to other clusterings that we run.</p>
 
 </div>
 </div>
@@ -518,7 +509,7 @@ ksize <span class="o">&lt;-</span> <span class="m">4</span>
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Run K means on the whole dataset</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Run K means on the whole dataset</span>
 
 PCAKmeans <span class="o">&lt;-</span> kmeans<span class="p">(</span>datprep6<span class="p">,</span> initialCenters<span class="p">)</span>
 clustersize <span class="o">&lt;-</span> PCAKmeans<span class="o">$</span>size<span class="o">/</span><span class="kp">sum</span><span class="p">(</span>PCAKmeans<span class="o">$</span>size<span class="p">)</span><span class="o">*</span><span class="m">100</span>
@@ -543,8 +534,8 @@ initialSegmentation <span class="o">&lt;-</span> initialSegmentation<span class=
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Our First Attempt at Clustering&#34;
-[1] &#34;Segment Mean Values&#34;
+<pre>[1] &quot;Our First Attempt at Clustering&quot;
+[1] &quot;Segment Mean Values&quot;
 </pre>
 </div>
 </div>
@@ -584,7 +575,7 @@ initialSegmentation <span class="o">&lt;-</span> initialSegmentation<span class=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So what did we get back from all of this? We see 4 segments.</p>
+<p>After performing our first K-means clustering we see 4 segments.</p>
 <p>Group 1 - Our Young Workforce: Not just the youngest segment, but the one with the least amount of investing and other sources of income. Many of these people may be part-time and still in college.</p>
 <p>Group 2 - High Education / Work Week: This group is comprised of professionals with a good deal of experience in age and education (and a moderate amount of income from other sources.</p>
 <p>Group 3 - Other Sources of Income: This very small group (3.8%) relies on other sources of income as well as a standard wage. While similar in age to the High Education group, they have slightly less education.</p>
@@ -608,12 +599,13 @@ initialSegmentation <span class="o">&lt;-</span> initialSegmentation<span class=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So we're done right? We picked our cutoff by looking at a dendogram (hey it looks like 4 clusters will work fine) and maybe we even run this whole thing a few times on different datasets to make sure we see the same kind of clusters. Unfortunately this isn't the whole story. We can easily decieve ourselves into thinking we have a stable result and unsupervised clustering methods have a particularly nasty habit of 'jumping around' under different samples of data (more on that later). Running this clustering several times may produce different results. In fact let's do just that.</p>
-<p>In this method we're comparing each subsequent segmentation to our initial segmentation (first run). How often subsequent clusterings agree will dictate whether we're happy with current clustering methodology. To say it another way, if we get different clusters every time, our work isn't reproducible.</p>
+<p>So we're done right? We picked our cutoff by looking at a dendogram (hey it looks like 4 clusters will work fine) and maybe we even run this whole thing a few times on different datasets to make sure we see the same kind of clusters. Unfortunately this isn't the whole story. We can easily deceive ourselves into thinking we have a stable result and K-means has a particularly nasty habit of 'jumping around' under different samples of data (more on that later). Running this clustering several times may produce different results. In fact let's do just that.</p>
+<p>In this method we're comparing each subsequent segmentation to our initial segmentation (first run). This method is similar to the one described by (Levine and Domany,
+2001 <a href="http://www.ncbi.nlm.nih.gov/pubmed/11674852">http://www.ncbi.nlm.nih.gov/pubmed/11674852</a>) along with other protocols listed in Luxburg 2010 page 7. How often subsequent clusterings agree will dictate whether we're happy with our current clustering methodology. To say it another way, if we get different clusters every time, our work isn't reproducible.</p>
 <p>Here we sample 100,000 points from our training dataset and go through the same steps we mentioned in sections 'The Initial Segmentation Method', 'Running our First K-mean Clustering Method' and 'Results' 10 times. The first time we save our result as the 'initialSegmentation'. We then compare the next 9 iterations (or runs) to the initial segmentation.</p>
-<p>Every time we perform a new run we determine our labels from scratch. That is to say that cluster 1 from our initial segmentation may be 'Low Education / Work Week' and cluster 1 from our second run may be 'Our Young Workforce'. In order to make sure that cluster 1 is always talking about 'Low Education / Work Week', we compare each clusters in run 2 to the initial one and assign labels based on the minimum euclidean distance between each cluster (ignoring the clusters we've already assigned). For instance we might find that cluster 3 in run 2 is very close to cluster 1 from our intial run, and therefore our best guess for 'Low Education / Work Week'. We then reassign cluster 3 in run 2 as cluster 1 and move through the rest of the clusters in run 2 reassigning as necessary. You can see the code for this in the section "Reorder Labels to Match First Clustering" below.</p>
-<p>Once all of these clusters have been relabeled we will have the minimum cluster to cluster distance between these segmentations. Dividing by the number of clusters gives us the 'Mean Cluster to Cluster Distance' reported in the output. If this number is large then our new segmentation is quite dissimilar from our inital segmentation.</p>
-<p>While this is a helpful measurement of cluster dissimilarity a far more robust measure of cluster dissimilarity is the Rand Index (refered to in Luxberg 2010). We'll report this too and after we see some results we'll go into a bit more depth on exactly what the Rand Index is and how to interpret our findings.</p>
+<p>Every time we perform a new run we determine our labels from scratch. That is to say that cluster 1 from our initial segmentation may be 'Low Education / Work Week' and cluster 1 from our second run may be 'Our Young Workforce'. In order to make sure that cluster 1 is always talking about 'Low Education / Work Week', we compare each cluster in run 2 to the initial one and assign labels based on the minimum euclidean distance between each cluster (ignoring the clusters we've already assigned). For instance we might find that cluster 3 in run 2 is very close to cluster 1 from our initial run, and therefore our best guess for 'Low Education / Work Week'. We then reassign cluster 3 in run 2 as cluster 1 and move through the rest of the clusters in run 2 reassigning as necessary. You can see the code for this in the section "Reorder Labels to Match First Clustering" below.</p>
+<p>Once all of these clusters have been relabeled we will have the minimum cluster to cluster distance between these segmentations. Dividing by the number of clusters gives us the 'Mean Cluster to Cluster Distance' reported in the output. If this number is large, then our new segmentation is quite dissimilar from our initial segmentation.</p>
+<p>While this is one helpful measurement of cluster similarity, we will also include a far more common measurement of cluster similarity, the Rand index (referred to in Luxberg 2010). We'll report this too and after we see some results we'll go into a bit more depth on exactly what the Rand index is and how to interpret our findings.</p>
 <p>For brevity we'll suppress the code, but feel free to expand it.</p>
 
 </div>
@@ -624,7 +616,7 @@ initialSegmentation <span class="o">&lt;-</span> initialSegmentation<span class=
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Turn Off Warnings</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Turn Off Warnings</span>
 <span class="kp">options</span><span class="p">(</span>warn<span class="o">=</span><span class="m">-1</span><span class="p">)</span>
 
 ksize<span class="o">&lt;-</span><span class="m">4</span>
@@ -788,44 +780,44 @@ randResults<span class="o">&lt;-</span><span class="kt">c</span><span class="p">
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Run                                   :  1&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  2&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.232962984867752&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  14.6535690777866&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  3&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.987185074113396&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00103289705216875&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  4&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.98453419862814&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00206193074501161&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  5&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.543519018344705&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  7.71738488093683&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  6&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.987864916938343&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00119873728593507&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  7&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.985213332884012&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.000980403030227557&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  8&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.989991857335321&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.000989368363884431&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  9&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.989991857335321&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.000713881570771952&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  10&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.543250318710281&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  7.10868911808337&#34;
-[1] &#34;&#34;
+<pre>[1] &quot;Run                                   :  1&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  2&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.232962984867752&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  14.6535690777866&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  3&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.987185074113396&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00103289705216875&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  4&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.98453419862814&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00206193074501161&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  5&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.543519018344705&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  7.71738488093683&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  6&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.987864916938343&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00119873728593507&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  7&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.985213332884012&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.000980403030227557&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  8&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.989991857335321&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.000989368363884431&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  9&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.989991857335321&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.000713881570771952&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  10&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.543250318710281&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  7.10868911808337&quot;
+[1] &quot;&quot;
 </pre>
 </div>
 </div>
@@ -839,8 +831,8 @@ randResults<span class="o">&lt;-</span><span class="kt">c</span><span class="p">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So now we have several runs of our segmentation on different samples of the dataset and we found that the majority of the time we get 'similar segments'. What do I mean by 'similar'?</p>
-<p>First, let's look at two runs that have small cluster to cluster distance. In the tables below we shows the clusters for our initial segmentation and run 3. We see that the two tables are quite similar if we compare each cell. We can also visualize this table with a heatmap, coloring high values with Blue and low with Red. Looking at values this way, Run 3 and the Initial Segmentation have very similar patterns and are nearly identical.</p>
+<p>Now we have several runs of our segmentation on different samples of the dataset and we found that the majority of the time we get 'similar segments'. What do I mean by 'similar'?</p>
+<p>First, let's look at two runs that have small cluster to cluster distance. In the tables below we show the clusters for our initial segmentation and run 3. We see that the two tables are quite similar if we compare each cell. We can also visualize this table with a heatmap, coloring high values with blue and low with red. Looking at values this way, run 3 and the initial segmentation have very similar patterns and are nearly identical.</p>
 
 </div>
 </div>
@@ -850,7 +842,7 @@ randResults<span class="o">&lt;-</span><span class="kt">c</span><span class="p">
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Print Results</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Print Results</span>
 <span class="kp">print</span><span class="p">(</span><span class="s">&quot;Our Initial Segmentation&quot;</span><span class="p">)</span>
 outputraw<span class="p">[</span>outputraw<span class="o">$</span>run <span class="o">==</span> <span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)]</span>
 <span class="kp">print</span><span class="p">(</span><span class="s">&quot;Our Results from Run 3&quot;</span><span class="p">)</span>
@@ -873,7 +865,7 @@ plot2<span class="o">&lt;-</span>heatmap.2<span class="p">(</span><span class="k
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Our Initial Segmentation&#34;
+<pre>[1] &quot;Our Initial Segmentation&quot;
 </pre>
 </div>
 </div>
@@ -897,7 +889,7 @@ plot2<span class="o">&lt;-</span>heatmap.2<span class="p">(</span><span class="k
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Our Results from Run 3&#34;
+<pre>[1] &quot;Our Results from Run 3&quot;
 </pre>
 </div>
 </div>
@@ -948,7 +940,7 @@ plot2<span class="o">&lt;-</span>heatmap.2<span class="p">(</span><span class="k
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can also look at the raw difference between these clusterings. The largest difference is in WKHP (Working Hours Per Week) in segment 2 at 2% of the standard deviation of WKHP.</p>
+<p>We can also look at the raw difference between these clusterings. The largest difference is in WKHP (working hours per week) in segment 2 at 2% of the standard deviation of WKHP.</p>
 
 </div>
 </div>
@@ -958,7 +950,7 @@ plot2<span class="o">&lt;-</span>heatmap.2<span class="p">(</span><span class="k
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Normalizing the Variables</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Normalizing the Variables</span>
 m <span class="o">&lt;-</span> <span class="kp">colMeans</span><span class="p">(</span>datprep2<span class="p">)</span>
 sd <span class="o">&lt;-</span> <span class="kp">apply</span><span class="p">(</span>datprep2<span class="p">,</span><span class="m">2</span><span class="p">,</span>FUN <span class="o">=</span> sd<span class="p">)</span>
 M <span class="o">&lt;-</span> <span class="kp">t</span><span class="p">(</span><span class="kt">matrix</span><span class="p">(</span>m<span class="p">))[</span><span class="kp">rep</span><span class="p">(</span><span class="m">1</span><span class="p">,</span>ksize<span class="p">),]</span>
@@ -1002,14 +994,15 @@ S <span class="o">&lt;-</span> <span class="kp">t</span><span class="p">(</span>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Measuring-Cluster-Similarity:-Rand-Index">Measuring Cluster Similarity: Rand Index<a class="anchor-link" href="#Measuring-Cluster-Similarity:-Rand-Index">&#182;</a></h3><p>You may have noticed in the output that cluster similarity was measured in two ways. The first is a simple calculation of cluster to cluster distance between centroids. A more robust method often used to compare clusterings is the Rand Index (<a href="https://en.wikipedia.org/wiki/Rand_index">https://en.wikipedia.org/wiki/Rand_index</a>). For the Rand Index we compare how often two clusterings agree on the labels assigned to a datapoints in the cluster. Now, normally we would have a problem since cluster 1 in run 1 may not be the same are cluster 1 in run 2, but you'll recall that we reordered our labels using minimum distance in order to match our initial segmentation. In Luxburg 2010 the Rand Index is typically the maximum taken over ALL permutations of the index, but we'll use our short cut for now so we don't have to permute over all K.</p>
-<p>As for properties of the Rand Index, if two clusterings completely agree on labels then the Rand Index is 1. If the clusterings complete disagree the Rand Index will be 0. In reality Rand Index should never drop below 0.5 since this value of a clustering compared against completely random labels.</p>
-<p>We use the holdout set defined earlier in 'Our Method for Today' (point 1) in order to evaluate the Rand Index.</p>
-<p>Let's look at some examples. Here we see segmentations agree when we have a low cluster to cluster (Euclidean) distance and a high Rand Index:</p>
+<h3 id="Measuring-Cluster-Similarity:-Rand-Index">Measuring Cluster Similarity: Rand Index<a class="anchor-link" href="#Measuring-Cluster-Similarity:-Rand-Index">&#182;</a></h3><p>You may have noticed in the output that cluster similarity was measured in two ways. The first is a simple calculation of cluster to cluster distance between centroids. A more robust method often used to compare clusterings is the Rand index (<a href="https://en.wikipedia.org/wiki/Rand_index">https://en.wikipedia.org/wiki/Rand_index</a>). For the Rand index we compare how often two clusterings agree on the labels assigned to a data points in the cluster. Now, normally we would have a problem since cluster 1 in run 1 may not be the same are cluster 1 in run 2, but you'll recall that we reordered our labels using minimum distance in order to match our initial segmentation. In Luxburg 2010 the Rand index is typically the maximum taken over ALL permutations of the index, but we'll use this short cut for now so we don't have to permute over all K.</p>
+<p>As for properties of the Rand index, if two clusterings completely agree on labels then the Rand index is 1. If the clusterings complete disagree the Rand index will be 0. In reality Rand index should never drop below 0.5 since this value of a clustering compared against completely random labels.</p>
+<p>Additionally, this property is why the Rand index is helpful for evaluating if a cluster is similar, but not how dissimilar it is. For dissimilarity we can look to the earlier calculation of the mean cluster to cluster distance (which does not have an upper bound).</p>
+<p>We use the holdout set defined earlier in 'Our Method for Today' (point 1) in order to evaluate the Rand index.</p>
+<p>Let's look at some examples. Here we see segmentations agree when we have a low cluster to cluster (euclidean) distance and a high Rand index:</p>
 <p>[1] "Run                                   :  3"<br>
 [1] "Rand Index (Cluster Similarity)       :  0.987185074113396"<br>
 [1] "Mean Cluster to Cluster Distance      :  0.00103289705216875"</p>
-<p>Conversely, we can also look at a segmentation that is completely different from what we started with. Here we see that not only is the Rand Index low, but the distance between our Initial Segmentation and our new run is massive.</p>
+<p>Conversely, we can also look at a segmentation that is completely different from what we started with. Here we see that not only is the Rand index low, but the distance between our initial segmentation and our new run is massive.</p>
 <p>[1] "Run                                   :  5"<br>
 [1] "Rand Index (Cluster Similarity)       :  0.543519018344705"<br>
 [1] "Mean Cluster to Cluster Distance      :  7.71738488093683"</p>
@@ -1023,7 +1016,7 @@ S <span class="o">&lt;-</span> <span class="kp">t</span><span class="p">(</span>
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="kp">print</span><span class="p">(</span><span class="s">&quot;Our Initial Segmentation&quot;</span><span class="p">)</span>
+<div class=" highlight hl-r"><pre><span class="kp">print</span><span class="p">(</span><span class="s">&quot;Our Initial Segmentation&quot;</span><span class="p">)</span>
 <span class="kp">as.matrix</span><span class="p">(</span>outputraw<span class="p">[</span>outputraw<span class="o">$</span>run<span class="o">==</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)])</span>
 <span class="kp">print</span><span class="p">(</span><span class="s">&quot;Our Results from Run 5&quot;</span><span class="p">)</span>
 <span class="kp">as.matrix</span><span class="p">(</span>outputraw<span class="p">[</span>outputraw<span class="o">$</span>run<span class="o">==</span><span class="m">5</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)])</span>
@@ -1045,7 +1038,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Our Initial Segmentation&#34;
+<pre>[1] &quot;Our Initial Segmentation&quot;
 </pre>
 </div>
 </div>
@@ -1069,7 +1062,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Our Results from Run 5&#34;
+<pre>[1] &quot;Our Results from Run 5&quot;
 </pre>
 </div>
 </div>
@@ -1130,7 +1123,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="p">(</span>outputraw<span class="p">[</span>outputraw<span class="o">$</span>run <span class="o">==</span> <span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)]</span><span class="o">-</span>M<span class="p">)</span><span class="o">/</span>S <span class="o">-</span> <span class="p">(</span>outputraw<span class="p">[</span>outputraw<span class="o">$</span>run <span class="o">==</span> <span class="m">5</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)]</span><span class="o">-</span>M<span class="p">)</span><span class="o">/</span>S
+<div class=" highlight hl-r"><pre><span class="p">(</span>outputraw<span class="p">[</span>outputraw<span class="o">$</span>run <span class="o">==</span> <span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)]</span><span class="o">-</span>M<span class="p">)</span><span class="o">/</span>S <span class="o">-</span> <span class="p">(</span>outputraw<span class="p">[</span>outputraw<span class="o">$</span>run <span class="o">==</span> <span class="m">5</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="p">(</span><span class="kp">ncol</span><span class="p">(</span>outputraw<span class="p">)</span><span class="m">-2</span><span class="p">)]</span><span class="o">-</span>M<span class="p">)</span><span class="o">/</span>S
 </pre></div>
 
 </div>
@@ -1167,7 +1160,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So now we're looking at a completely different segmentation. We see that Run 4 has very different attributes for WKHP, OIP and AGEP compared to the initial clustering especially in clusters 2 and 3. We can say that when see a particularly high cluster to cluster distance or low Rand Index between clusterings we end up with a different interpretation of the data. This is what we wish to avoid. Let's look at this in another way.</p>
+<p>Now we're looking at a completely different segmentations. We see that Run 4 has very different attributes for WKHP, OIP and AGEP compared to the initial clustering especially in clusters 2 and 3. We can say that when see a particularly high cluster to cluster distance or low Rand index between clusterings we end up with a different interpretation of the data. This is what we wish to avoid. Let's look at this in another way.</p>
 
 </div>
 </div>
@@ -1186,7 +1179,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We have 10 Runs of Segmentation (Plus our Initial Segmentation). Let's plot the values for WAGP for every segmentation. What we'll see below is the value of WAGP for every 4 segments in our 10 runs. The first segment is colored red. Over 10 runs we see that there's a small amount of variation in WAGP for segments 1 and 4. In segment 3 (teal) however we see two vastly different values for WAGP in certain runs (under 15k and over 70k in runs 2 and 5 respectively), diverging from what we would normally expect (25k).</p>
+<p>We have 10 runs of segmentation (plus our initial segmentation). Let's plot the values for WAGP for every segmentation. What we'll see below is the value of WAGP for every 4 segments in our 10 runs. The first segment is colored red. Over 10 runs we see that there's a small amount of variation in WAGP for segments 1 and 4. In segment 3 (teal) however we see two vastly different values for WAGP in certain runs (under 15k and over 70k in runs 2 and 5 respectively), diverging from what we would normally expect (25k).</p>
 <p>If we weren't looking at multiple runs we would never see this and might assume we'd always get the same clustering! Additionally this suggests that perhaps four clusters is not the best way to express this data...</p>
 
 </div>
@@ -1197,7 +1190,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>output2<span class="o">&lt;-</span>outputraw<span class="p">[</span><span class="kp">order</span><span class="p">(</span>outputraw<span class="o">$</span>segment<span class="p">),]</span>
+<div class=" highlight hl-r"><pre>output2<span class="o">&lt;-</span>outputraw<span class="p">[</span><span class="kp">order</span><span class="p">(</span>outputraw<span class="o">$</span>segment<span class="p">),]</span>
 output2<span class="o">$</span>segment <span class="o">&lt;-</span> <span class="kp">as.factor</span><span class="p">(</span>output2<span class="o">$</span>segment<span class="p">)</span>
 output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">1</span><span class="o">:</span><span class="kp">nrow</span><span class="p">(</span>output2<span class="p">)</span>
 
@@ -1242,7 +1235,7 @@ ggplot<span class="p">(</span>output2<span class="p">,</span> aes<span class="p"
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>With the methods above as a framework we can step through different clustering sizes and see if we arrive at more stable segmentations. We can also assess stability by using the mean Rand Index for each run (excluding the first). In our code we express this as 'randResults'. Unfortunately an old problem rears its ugly here. In this method we started with an initial segmentation (run 1) to compare to each subsequent segmentation. In a stable regime we're more than likely to land on the 'stable' segmentation on our first time, but this is always not the case. When we land on a bad segment we will need to reinitialize and try again. Hoping our first segmentation is a good one.</p>
-<p>Suffice to say, there are better methods for getting around problems of initialization (discussed in detail in page 9 of Luxburg 2010). For now we'll leave that to a future blog post and say that working through this dataset we found that a segmentation with 9 clusters is quite stable.</p>
+<p>Suffice to say, there are better methods for getting around problems of initialization (discussed in detail in page 7 of Luxburg 2010). For now we'll leave that to a future blog post and say that working through this dataset we found that a segmentation with 9 clusters is quite stable.</p>
 <p>Below we'll run the same code as in our 'Stability Testing' section, however we'll increase our number of clusters (K) to 9.</p>
 
 </div>
@@ -1253,7 +1246,7 @@ ggplot<span class="p">(</span>output2<span class="p">,</span> aes<span class="p"
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#Turn Off Warnings</span>
+<div class=" highlight hl-r"><pre><span class="c1">#Turn Off Warnings</span>
 <span class="kp">options</span><span class="p">(</span>warn<span class="o">=</span><span class="m">-1</span><span class="p">)</span>
 
 ksize<span class="o">&lt;-</span><span class="m">9</span>
@@ -1418,44 +1411,44 @@ randResults<span class="o">&lt;-</span><span class="kt">c</span><span class="p">
 
 <div class="output_area">
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[1] &#34;Run                                   :  1&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  2&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.986049054884462&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00269780812889357&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  3&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.988947565909515&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00311277776394503&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  4&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.972996345261564&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00257998568441758&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  5&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.989686398500866&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00169287432254583&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  6&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.97134062698434&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00162410785864138&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  7&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.994805512037336&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.0022019464336647&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  8&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.603446290448172&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.61363871360895&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  9&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.979488621012037&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00457590899548947&#34;
-[1] &#34;&#34;
-[1] &#34;Run                                   :  10&#34;
-[1] &#34;Rand Index (Cluster Similarity)       :  0.988407863751361&#34;
-[1] &#34;Mean Cluster to Cluster Distance      :  0.00440116014977276&#34;
-[1] &#34;&#34;
+<pre>[1] &quot;Run                                   :  1&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  2&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.986049054884462&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00269780812889357&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  3&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.988947565909515&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00311277776394503&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  4&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.972996345261564&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00257998568441758&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  5&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.989686398500866&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00169287432254583&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  6&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.97134062698434&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00162410785864138&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  7&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.994805512037336&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.0022019464336647&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  8&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.603446290448172&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.61363871360895&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  9&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.979488621012037&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00457590899548947&quot;
+[1] &quot;&quot;
+[1] &quot;Run                                   :  10&quot;
+[1] &quot;Rand Index (Cluster Similarity)       :  0.988407863751361&quot;
+[1] &quot;Mean Cluster to Cluster Distance      :  0.00440116014977276&quot;
+[1] &quot;&quot;
 </pre>
 </div>
 </div>
@@ -1469,7 +1462,7 @@ randResults<span class="o">&lt;-</span><span class="kt">c</span><span class="p">
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>output2<span class="o">&lt;-</span>outputraw<span class="p">[</span><span class="kp">order</span><span class="p">(</span>outputraw<span class="o">$</span>segment<span class="p">),]</span>
+<div class=" highlight hl-r"><pre>output2<span class="o">&lt;-</span>outputraw<span class="p">[</span><span class="kp">order</span><span class="p">(</span>outputraw<span class="o">$</span>segment<span class="p">),]</span>
 output2<span class="o">$</span>segment <span class="o">&lt;-</span> <span class="kp">as.factor</span><span class="p">(</span>output2<span class="o">$</span>segment<span class="p">)</span>
 output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">1</span><span class="o">:</span><span class="kp">nrow</span><span class="p">(</span>output2<span class="p">)</span>
 </pre></div>
@@ -1484,7 +1477,7 @@ output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now with 9 Segments we see a very different behavior. Our Cluster to Cluster distances are very small and our Rand Indicies are quite large. This is really noticable in the output. Plotting WAGP for each cluster again we see very stable results. Though WAGP for segment 2 and 4 seems to have a tad more error than other segments we only see 'hopping' once in run 8 as opposed to the multiple times we saw it in the clustersize 4 treatment.</p>
+<p>Now with 9 Segments we see a very different behavior. Our Cluster to Cluster distances are very small and our Rand indices are quite large. This is really noticeable in the output. Plotting WAGP for each cluster again we see very stable results. Though WAGP for segment 2 and 4 seems to have a tad more error than other segments we only see 'hopping' once in run 8 as opposed to the multiple times we saw it in the 4 Segment treatment.</p>
 
 </div>
 </div>
@@ -1494,7 +1487,7 @@ output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">
 <div></div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>ggplot<span class="p">(</span>output2<span class="p">,</span> aes<span class="p">(</span>x <span class="o">=</span> index<span class="p">,</span> y <span class="o">=</span> WAGP<span class="p">,</span> colour <span class="o">=</span> segment<span class="p">))</span> <span class="o">+</span> xlab<span class="p">(</span><span class="s">&quot;Cluster Run Index&quot;</span><span class="p">)</span> <span class="o">+</span> 
+<div class=" highlight hl-r"><pre>ggplot<span class="p">(</span>output2<span class="p">,</span> aes<span class="p">(</span>x <span class="o">=</span> index<span class="p">,</span> y <span class="o">=</span> WAGP<span class="p">,</span> colour <span class="o">=</span> segment<span class="p">))</span> <span class="o">+</span> xlab<span class="p">(</span><span class="s">&quot;Cluster Run Index&quot;</span><span class="p">)</span> <span class="o">+</span> 
   geom_point<span class="p">(</span>size <span class="o">=</span> <span class="m">3</span><span class="p">)</span> <span class="o">+</span> ggtitle<span class="p">(</span><span class="s">&quot;Plot of WAGP for Different Cluster in Different Runs&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -1525,7 +1518,7 @@ output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So we see from the 4-cluster that picking a small and sensible k from the dendrogram does not yield the same results every time. In fact our 9-cluster result was far more stable (mean 0.94 Rand Index compared to 0.804).</p>
+<p>We see from our 4-cluster result that picking a small and sensible k from the dendrogram does not yield the same results every time. In fact our 9-cluster result was far more stable (mean 0.94 Rand index compared to 0.804).</p>
 
 </div>
 </div>
@@ -1544,14 +1537,14 @@ output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So now we've seen failures and successes and more importantly we have a new set of tools at our disposal in order to assess how often we get similarly interpretable results from our method. So what did we originally want?</p>
+<p>In this post we've seen failures and successes, but more importantly we have a new set of tools at our disposal in order to assess how often we get similarly interpretable results from our method. What did we originally want?</p>
 <p>1) We want our work to be reproducible in the same dataset.</p>
-<p>This framework has provided us with several tools that allows us to evaluate the reproducibility of results (most significantly the Rand Index). Over several runs a mean Rand Index of at least 0.8 indicates that the majority of the time (around 70% - 80% depending on your data) there exists an identical interpretation of the clusters, though without at least a 0.9 Rand Index we suggest cautioning that there may be alternative descriptions of the data.</p>
+<p>This framework has provided us with several tools that allow us to evaluate the reproducibility of results (most significantly the Rand index). Over several runs a mean Rand index of at least 0.8 indicates that the majority of the time (around 70% - 80% depending on your data) there exists an identical interpretation of the clusters, though without at least a 0.9 Rand index we suggest cautioning that there may be alternative descriptions of the data.</p>
 <p>2) We want stronger way to evaluate k.</p>
 <p>Fundamentally stability and traditional methods for picking k go hand in hand. While originally we wanted to pick k in order to find a good fit of our model to the dataset, we also want to have reliability. We want to find that 'good' model over and over again. At first we wanted 4 groups and now we see that 9 may lead to far more stable results. And it is not always clear that more or less clusters will be more or less stable. If you run this yourself you'll find that k=5 is pretty unstable as well as k=10.</p>
 <p>One could automate this process and grid-search the space for a viable stable numbers of segments. With these results we could narrow our search from all possible k's to a handful of stable ones which fit the data well.</p>
 <p>3) We want our segments to be interpretable and actionable.</p>
-<p>There's still some 'art' here. Can we effectively action and interpret on 9 separate groups? That depends on the work you plan to do with this data. However, with this approach we now know that a 9 segment approach is stable and while we haven't shown it, others (5 and 10) are not. With this knowledge we can make better calls for the right number of clusters.</p>
+<p>There's still some 'art' here. Can we effectively action on and give a solid interpretation for 9 separate groups? That depends on the work you plan to do with this data. However, with this approach we now know that a 9 segment approach is stable and while we haven't shown it, others (5 and 10) are not. With this knowledge we can make better calls for the right number of clusters.</p>
 
 </div>
 </div>
@@ -1574,10 +1567,10 @@ output2<span class="o">$</span>index<span class="o">&lt;-</span><span class="m">
 <p>1) Extension across different clustering methods (should work across a diverse number of unsupervised methods).</p>
 <p>We've found a good deal of value in considering stability in our k-mean clustering method and evaluating the quality of our approach. How much of this work can be extended to other methods? In comparing an idealized version of K-means to results from actual datasets Luxburg 2010 remains convinced that stability can be generally extendable to other algorithms, but they point out 'Whether this principle can be proved to work well for algorithms very different from K-means is an open question.'</p>
 <p>2) Initialization.</p>
-<p>In our methodology we always led with the belief that out initial segmentation was correct. For stable K's this is mostly likely correct. However, the less stable a K the less likely that we'll correctly guess the most common segmentation the first time. In our 4-cluster scenario we lucked into the right initial segmentation only 70% of the time. In practice we re-run the whole process several times looking for the highest Rand Index (indicating that we lucked into the right initial clustering) and inspecting individual runs for patterns.</p>
-<p>There is more than likely a better approach done by not picking an initial segmentation at all and simply storing and comparing the segmentation results. That is perhaps for a future blog post!</p>
+<p>In our methodology we always evaluated our stability metrics (Rand index and cluster to cluster distance) against our initial segmentation, assuming it was the stable one. For stable K's this is mostly likely correct. However, the less stable a K the less likely that we'll correctly guess the most common segmentation the first time. In our 4-cluster scenario we only find the best initial segmentation around 70% of the time. In practice we re-ran the whole process several times looking for the highest Rand index (indicating that we lucked into the right initial clustering) and inspecting individual runs for patterns.</p>
+<p>There is more than likely a better approach done by not picking an initial segmentation at all and simply storing and comparing the segmentation results. We could also look into implementing a different protocol that doesn't rely on initialization (as mentioned in Luxburg 2010 page 7). That is perhaps for a future blog post!</p>
 <p>3) Stability criterion.</p>
-<p>Right now we consider similar mean Rand Indices as a strong metric for Stability, however several metrics are still up for debate in Academic circles including: Rand index, Jaccard index, Hamming distance, minimal matching distance and Variation of Information distance (Meila 2003).</p>
+<p>Right now we consider similar mean Rand indices as a strong metric for stability, however several metrics are used in a variety of different applications and might be worth considering depending on your use case: Rand index, Jaccard index, Hamming distance, minimal matching distance and variation of information distance (Meila 2003) to name a few.</p>
 <p>4) Thanks for coming along and good luck picking your K's! I hope to delve into this a bit more with a future blog post and if you have any questions about the method, feel free to contact us!</p>
 
 </div>

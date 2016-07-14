@@ -7,8 +7,6 @@ tags:
 ---
 
 <!--put these separators somewhere appropriate:-->
-<!--excerpt.start-->
-<!--excerpt.end--><!--more-->
 
 <!--you can set this to false if you want code displayed by default-->
 <script>
@@ -60,7 +58,9 @@ July 13th, 2016</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<!--excerpt.start-->
 <p>In data analysis we often use unsupervised methods to allow us to assess the structure of unlabeled data. Here at Activision, an easy example would be to use one of these methods to characterize our players. A highly engaged player who's been with us for years has a different concept of the game from a newer player who just picked up a controller for the first time. When we sift through our data we might expect to see groups of more and less experienced players, calling these players 'Hardcore' and 'Newbie', adding perhaps a third category for 'Midcore' (players that have played a bit, but aren't Hardcore). But what does the data actually tell us? What groups naturally arise out of the data itself? Which variables should we consider and how do these variables define our groups? These are all areas where machine learning, unsupervised methods, and clustering in particular can help out.</p>
+<!--excerpt.end--><!--more-->
 <p>The topic in this post assumes you have a working knowledge around unsupervised methods. In particular we will focus on K-means clustering, a popular method in the space. As such there are few a properties that we would like our final segmentation to have:</p>
 <p>1) We want our work to be reproducible in the same dataset. While different distance metrics and clustering methods may lead to different interpretations of the data, we at least strive to get the same interpretations for the same method in the same dataset.</p>
 <p>2) We want to pick a 'good' number of clusters, k. Traditionally we pick k from an information theory or explained variance approach where our goal is to have a clustering that does a good job of explaining the dataset (<a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set">https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set</a>). We'll see that we can further improve our determination of k by picking a clustering that is also stable.</p>

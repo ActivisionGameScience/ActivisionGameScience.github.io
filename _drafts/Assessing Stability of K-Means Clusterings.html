@@ -1,9 +1,9 @@
 ---
 layout: nb-post
 title: "Assessing Stability of K-Means Clusterings"
-author:
-github:
-tags: 
+author: Dylan Rogerson
+github: drogerson
+tags: [R]
 ---
 
 <!--put these separators somewhere appropriate:-->
@@ -49,7 +49,7 @@ NOTE: the code in this notebook is hidden for better readability. To toggle on/o
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Assessing-Stability-of-K-Means-Clusterings">Assessing Stability of K-Means Clusterings<a class="anchor-link" href="#Assessing-Stability-of-K-Means-Clusterings">&#182;</a></h1><p>Dylan Rogerson<br>
-July 13th, 2016</p>
+August 1st, 2016</p>
 
 </div>
 </div>
@@ -417,7 +417,7 @@ centroids <span class="o">&lt;-</span> aggregate<span class="p">(</span>samp<spa
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Looking top to bottom we see that the split to 2 clusters causes a very big drop in error and the next biggest splits occurs at 4 (3 is a pretty negligable difference). 4 clusters seems like a good starting guess for our number of clusters.</p>
+<p>Looking top to bottom we see that the split to 2 clusters causes a very big drop in error and the next biggest splits occurs at 4 (3 is a pretty negligible difference). 4 clusters seems like a good starting guess for our number of clusters.</p>
 
 </div>
 </div>
@@ -1162,7 +1162,7 @@ heatmap.2<span class="p">(</span><span class="kp">as.matrix</span><span class="p
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we're looking at a completely different segmentations. We see that Run 4 has very different attributes for WKHP, OIP and AGEP compared to the initial clustering especially in clusters 2 and 3. We can say that when see a particularly high cluster to cluster distance or low Rand index between clusterings we end up with a different interpretation of the data. This is what we wish to avoid. Let's look at this in another way.</p>
+<p>Now we're looking at a completely different segmentation. We see that Run 4 has very different attributes for WKHP, OIP and AGEP compared to the initial clustering especially in clusters 2 and 3. We can say that when see a particularly high cluster to cluster distance or low Rand index between clusterings we end up with a different interpretation of the data. This is what we wish to avoid. Let's look at this in another way.</p>
 
 </div>
 </div>
@@ -1238,7 +1238,7 @@ ggplot<span class="p">(</span>output2<span class="p">,</span> aes<span class="p"
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>With the methods above as a framework we can step through different clustering sizes and see if we arrive at more stable segmentations. We can also assess stability by using the mean Rand Index for each run (excluding the first). In our code we express this as 'randResults'. Unfortunately an old problem rears its ugly head. In this method we started with an initial segmentation (run 1) to compare to each subsequent segmentation. In a stable regime we're more than likely to land on the 'stable' segmentation on our first time, but this is always not the case. When we land on a bad segment we will need to reinitialize and try again, hoping our first segmentation is a good one.</p>
 <p>Suffice it to say, there are better methods for getting around problems of initialization (discussed in detail in page 7 of Luxburg 2010). For now we'll leave that to a future blog post and say that working through this dataset we found that a segmentation with 9 clusters is quite stable.</p>
-<p>Below we'll run the same code as in our 'Stability Testing' section, however we'll increase our number of clusters (K) to 9.</p>
+<p>Below we'll run the same code as in our 'Stability Testing' section; however we'll increase our number of clusters (K) to 9.</p>
 
 </div>
 </div>
